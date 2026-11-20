@@ -1,5 +1,5 @@
 ## Liên kết
-Closes #<số issue>  · Phase: <1|2|3|4> · Module: <river|quan|ui|qa|content|contracts>
+Closes #<số issue>  · Phase: <1|2|3|4> · Module: <gather|quan|ui|qa|content|contracts>
 
 ## Tiêu chí chấp nhận đã đạt
 - [ ] AC-P?-?? …

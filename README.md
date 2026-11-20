@@ -1,6 +1,6 @@
 # Day 12 — AI SDLC: Quán Ăn Chợ Nổi (làm theo nhóm)
 
-> **Nhóm 4–6 người** · Áp dụng SDLC cùng AI để xây game **2D** *Quán Ăn Chợ Nổi* qua **4 phase** trong **3 giờ**: Út Sen chèo xuồng đi lấy nguyên liệu buổi sáng, tối mở quán phục vụ khách.
+> **Nhóm 4–6 người** · Áp dụng SDLC cùng AI để xây game **2D** *Quán Ăn Chợ Nổi* qua **4 phase** trong **3 giờ**: Út Sen lặn bắt cá và hái rau cỏ trên mặt nước buổi sáng, tối mở quán phục vụ khách.
 > Yêu cầu từng phase được phát tại **lab board** (đúng mốc giờ). Repo này chỉ chứa **khung kỹ thuật** và **mẫu quy trình** của nhóm.
 
 ## Cách vào lab (trưởng nhóm làm, ~5 phút)
@@ -25,8 +25,18 @@ Ghi `Co-authored-by: Tên <email>` trong commit khi làm cặp. Thành viên m�
 ```bash
 git clone <fork-của-nhóm> && cd <fork-của-nhóm>
 PYTHONPATH=tests:. python3 -m unittest discover -s tests -v     # smoke test (phải xanh; nếu dùng starter Python)
-python3 -m chonoi.headless --mode river --seed 1 --ticks 600 --out out.jsonl
+python3 -m chonoi.headless --mode gather --seed 1 --ticks 600 --out out.jsonl
 ```
+
+Hai chế độ của contract v1.0: `gather` (buổi sáng: lặn và hái, nhìn ngang, vị trí `[x, d]`, `d` là độ sâu) và `quan` (buổi tối: mở quán, nhìn từ trên xuống, vị trí `[x, z]`). Chế độ `day` có từ phase sau.
+
+## Chơi thử trực tiếp trên trình duyệt (không cần cài gì)
+
+```bash
+python3 -m chonoi.live --mode gather      # hoặc: --mode quan   [--seed N] [--port 8000]
+```
+
+Lệnh in một địa chỉ (mặc định `http://127.0.0.1:8000/`); mở nó bằng trình duyệt. Phím: **WASD / mũi tên** di chuyển, **E** (`interact`), **Space** (`catch`), **R** chơi lại. Cửa sổ chạy **cùng một lớp sim** với headless (60 tick/s) và chỉ **đọc snapshot**, nên nhóm viết luật tới đâu thì thanh oxy, Máu, giỏ, cá, nút hái... hiện tới đó (trường chưa có sẽ bị bỏ qua). Đây chỉ là hình khối tạm để thử luật; đồ họa thật do nhóm làm. Chơi `gather` rồi chuyển sang `quan`: thêm `--inventory-out kho.json` ở lệnh đầu và `--inventory kho.json` ở lệnh sau. File chỉ dùng thư viện chuẩn Python (`chonoi/live.py`, `chonoi/web/index.html`); đổi ngôn ngữ thì xóa hoặc thay bằng cửa sổ của nhóm.
 
 ## Công nghệ: tự chọn (starter chỉ là gợi ý, KHÔNG bắt buộc)
 
@@ -36,16 +46,17 @@ Nhóm được dùng **bất kỳ ngôn ngữ/engine nào**. Thứ duy nhất b�
 
 | Khung Python đã có | Nhóm viết |
 |---|---|
-| CLI + kiểm lỗi, mã thoát 0/1/2 | `chonoi/sim/river.py`: hái, chài, xoáy, lật xuồng, hết phao |
+| CLI + kiểm lỗi, mã thoát 0/1/2 | `chonoi/sim/gather.py`: oxy, ngạt, Máu, ngất, hái nút, bắt cá, giỏ (LIFO) |
 | Đọc inputs, cạnh lên, chuẩn hóa vector | `chonoi/sim/quan.py`: khách, giữ chỗ, bếp, bưng, phục vụ, tiền, uy tín |
-| Chèo xuồng, chặn mép, cập bến, hết giờ | Nút hái / bầy cá / xoáy mặc định của màn |
+| Bơi, tăng/giảm tốc, chặn mép (`d` không âm), cập bến, hết giờ | Điều chỉnh nút hái / bầy cá mặc định (dữ liệu ở `game.contract.json`) |
 | Đọc/ghi file kho, ghi nguyên tử | Kiểm mâu thuẫn scenario mức luật (`scenario.py`) |
-| JSONL tất định, làm tròn 3 chữ số, sắp id | Hiển thị / HUD (khung **chưa có cửa sổ**: tự chọn thư viện 2D) |
+| JSONL tất định, làm tròn 3 chữ số, sắp id | Hiển thị / HUD thật (khung chỉ có cửa sổ thử `chonoi.live` bằng hình khối tạm) |
+| Cửa sổ thử trên trình duyệt (`python3 -m chonoi.live`) | Đồ họa, âm thanh, menu, HUD hoàn chỉnh theo PRD |
 
 ### Nếu nhóm đổi sang ngôn ngữ khác (một PR, Integrator duyệt)
-1. Sửa `build_cmd`, `run_cmd`, `headless_cmd` trong `game.contract.json` cho ngôn ngữ của nhóm.
+1. Sửa `build_cmd`, `run_cmd` (hiện là `python3 -m chonoi.live --mode gather`), `headless_cmd` trong `game.contract.json` cho ngôn ngữ của nhóm.
 2. Sửa bước **Build** và **Test** trong `.github/workflows/ci.yml` (cài runtime cần thiết). **Giữ tên job `ci / test`** và giữ bước kiểm danh sách thành viên.
-3. **Giữ** `tests/test_smoke_p1.py`: đây là test **hộp đen**, chỉ chạy `headless_cmd` rồi đọc JSONL/file kho, nên dùng nguyên cho mọi ngôn ngữ. **Xóa** `chonoi/` và `tests/test_python_starter_units.py` nếu không dùng; viết unit test bằng ngôn ngữ của nhóm.
+3. **Giữ** `tests/test_smoke_p1.py`: đây là test **hộp đen**, chỉ chạy `headless_cmd` rồi đọc JSONL/file kho, nên dùng nguyên cho mọi ngôn ngữ. **Xóa** `chonoi/`, `tests/test_python_starter_units.py` và `tests/test_live.py` nếu không dùng; viết unit test bằng ngôn ngữ của nhóm.
 4. Vẫn phải qua cùng Test Contract: cùng seed → output giống từng byte.
 
 Lưu ý: `tools/check_team.py` (kiểm danh sách thành viên) là script Python chạy **chỉ trong CI**, không liên quan tới ngôn ngữ của game; giữ nguyên.

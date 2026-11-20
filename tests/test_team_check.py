@@ -10,8 +10,8 @@ import check_team  # noqa: E402
 GOOD = """# TEAM
 | Thành viên | GitHub handle | Module chính | Vai quy trình | Người dự phòng cho |
 |---|---|---|---|---|
-| An | @an-nguyen | sim/river | Integrator | quan |
-| Bình | binh-tran | sim/quan | PO | river |
+| An | @an-nguyen | sim/gather | Integrator | quan |
+| Bình | binh-tran | sim/quan | PO | gather |
 | Chi | chi-le | client/ui | QA | quan |
 | Dũng | dung-pham | qa | Scrum | ui |
 """

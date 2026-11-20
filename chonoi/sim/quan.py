@@ -84,7 +84,7 @@ class QuanSim:
         speed = self.t["walk_speed"]
         mx, mz = inp.move
         target = (mx * speed, mz * speed)
-        step = speed / 6.0
+        step = speed / max(1, int(self.t.get("ramp_max_ticks", 6)))
         b = self.t["bounds"]
         for i, axis in enumerate(("x", "z")):
             diff = target[i] - self.vel[i]

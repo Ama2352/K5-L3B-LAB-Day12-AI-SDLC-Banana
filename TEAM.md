@@ -4,7 +4,7 @@
 
 | Thành viên | GitHub handle | Module chính | Vai quy trình | Người dự phòng cho |
 |---|---|---|---|---|
-| | | `sim/river` | | |
+| | | `sim/gather` | | |
 | | | `sim/quan` | | |
 | | | `client/ui` | | |
 | | | `qa` | | |

@@ -1,7 +1,8 @@
 """File inputs (Contract C): frames, kế thừa trường vắng, cạnh lên (false -> true).
 
 Dùng: ip = InputPlayer(frames); mỗi bước k: state = ip.advance(k)
-  state.move -> (x, z) đã chuẩn hóa; state.pressed("interact") -> True nếu CẠNH LÊN ở bước này.
+  state.move -> (x, d) trong gather hoặc (x, z) trong quan, đã chuẩn hóa;
+  state.pressed("interact") -> True nếu CẠNH LÊN ở bước này.
 """
 
 import json
@@ -9,7 +10,7 @@ import math
 
 from .errors import BadInput
 
-BUTTONS_V10 = ("interact", "net")
+BUTTONS_V10 = ("interact", "catch")  # v1.0; các nút khác có từ phiên bản sau
 
 
 class InputState:
@@ -52,7 +53,7 @@ def load_frames(path, buttons=BUTTONS_V10):
             ok = (isinstance(m, list) and len(m) == 2 and
                   all(isinstance(c, (int, float)) and not isinstance(c, bool) and math.isfinite(c) and -1 <= c <= 1 for c in m))
             if not ok:
-                raise BadInput(f"frame {i}: move phải là [x, z] trong [-1, 1]")
+                raise BadInput(f"frame {i}: move phải là [x, d] (gather) hoặc [x, z] (quan), mỗi số trong [-1, 1]")
         for b in buttons:
             if b in fr and not isinstance(fr[b], bool):
                 raise BadInput(f"frame {i}: {b} phải là boolean")
@@ -61,11 +62,11 @@ def load_frames(path, buttons=BUTTONS_V10):
 
 
 def normalize(move):
-    x, z = float(move[0]), float(move[1])
-    n = math.hypot(x, z)
+    x, y = float(move[0]), float(move[1])
+    n = math.hypot(x, y)
     if n > 1:
-        return (x / n, z / n)
-    return (x, z)
+        return (x / n, y / n)
+    return (x, y)
 
 
 class InputPlayer:
@@ -87,4 +88,31 @@ class InputPlayer:
                     if fr[b] and not self._held[b]:
                         edges.add(b)
                     self._held[b] = fr[b]
+        return InputState(self._move, dict(self._held), edges)
+
+
+class LiveInputs:
+    """Input trực tiếp (cửa sổ chơi): giữ trạng thái nút, nhớ cạnh lên giữa hai tick để không mất cú bấm nhanh.
+
+    Luồng khác gọi set(); luồng mô phỏng gọi advance() mỗi tick (cần khóa ngoài nếu dùng nhiều luồng).
+    """
+
+    def __init__(self, buttons=BUTTONS_V10):
+        self._buttons = buttons
+        self._move = (0.0, 0.0)
+        self._held = {b: False for b in buttons}
+        self._pending = set()
+
+    def set(self, move=None, **buttons):
+        if move is not None:
+            self._move = normalize(move)
+        for b, v in buttons.items():
+            if b not in self._held:
+                continue
+            if v and not self._held[b]:
+                self._pending.add(b)
+            self._held[b] = bool(v)
+
+    def advance(self) -> InputState:
+        edges, self._pending = self._pending, set()
         return InputState(self._move, dict(self._held), edges)

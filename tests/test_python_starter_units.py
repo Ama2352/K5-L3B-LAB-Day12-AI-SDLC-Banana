@@ -1,11 +1,13 @@
-"""Unit test của khung PYTHON trong starter (ids, inputs). Nếu nhóm thay bằng ngôn ngữ khác, XÓA file này
+"""Unit test của khung PYTHON trong starter (ids, inputs, Session). Nếu nhóm thay bằng ngôn ngữ khác, XÓA file này
 (và viết unit test tương đương bằng ngôn ngữ của nhóm); test hộp đen test_smoke_p1.py vẫn dùng nguyên."""
 
 import unittest
 
 from chonoi.errors import BadInput
 from chonoi.ids import IdAllocator, id_key, sort_by_id
-from chonoi.inputs import InputPlayer, load_frames
+from chonoi.contract import load_contract
+from chonoi.inputs import InputPlayer, LiveInputs, load_frames
+from chonoi.runner import Session
 
 from helpers import Workdir, frames, write_json
 
@@ -40,6 +42,36 @@ class Units(unittest.TestCase):
         with Workdir() as w:
             with self.assertRaises(BadInput):
                 load_frames(write_json(w.path("i.json"), frames({"tick": 0, "move": [2, 0]})))
+
+    def test_catch_is_a_v10_button_and_attack_is_not(self):
+        with Workdir() as w:
+            load_frames(write_json(w.path("i.json"), frames({"tick": 0, "catch": True})))
+            with self.assertRaises(BadInput):
+                load_frames(write_json(w.path("j.json"), frames({"tick": 0, "attack": True})))
+
+    def test_live_inputs_keep_fast_tap_edge(self):
+        li = LiveInputs()
+        li.set(interact=True)
+        li.set(interact=False)  # bấm và nhả giữa hai tick: vẫn phải thấy một cạnh lên
+        self.assertTrue(li.advance().pressed("interact"))
+        self.assertFalse(li.advance().pressed("interact"))
+        li.set(move=[1, 1], catch=True)
+        st = li.advance()
+        self.assertTrue(st.pressed("catch"))
+        self.assertAlmostEqual(st.move[0] ** 2 + st.move[1] ** 2, 1.0)
+
+    def test_session_steps_gather_and_dock(self):
+        tuning = load_contract()["tuning"]
+        s = Session("gather", tuning, {"hold": ["ca_loc"]}, 1)
+        self.assertEqual(s.snapshot()["tick"], 0)
+        li = LiveInputs()
+        self.assertEqual(s.step(li.advance()), [])
+        li.set(interact=True)
+        rows = s.step(li.advance())
+        self.assertEqual([r["name"] for r in rows], ["gather_end"])
+        self.assertTrue(s.done)
+        self.assertEqual(s.snapshot()["tick"], 2)
+        self.assertEqual(s.end_row()["reason"], "docked")
 
 
 if __name__ == "__main__":
