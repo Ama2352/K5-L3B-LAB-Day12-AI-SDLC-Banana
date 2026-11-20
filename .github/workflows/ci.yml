@@ -1,0 +1,24 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  # Tên check bắt buộc của ruleset: "ci / test". Đừng đổi tên job hoặc workflow.
+  test:
+    name: ci / test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Mỗi PR / commit lên main của repo nhóm phải có danh sách thành viên hợp lệ (TEAM.md).
+      # Bỏ qua ở chính repo gốc của giảng viên (TEAM.md ở đó là bản mẫu).
+      - name: Kiểm danh sách thành viên
+        if: github.repository != 'VinUni-AI20k/K5-L3B-LAB-Day12-AI-SDLC'
+        run: python3 tools/check_team.py
+      - name: Test (unit + scenario headless)
+        run: PYTHONPATH=tests:. python3 -m unittest discover -s tests -v

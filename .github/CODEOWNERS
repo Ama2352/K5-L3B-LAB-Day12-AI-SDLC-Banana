@@ -1,0 +1,11 @@
+# Mỗi thư mục module có CHỦ SỞ HỮU + MỘT NGƯỜI DỰ PHÒNG (điền GitHub handle thật ở kickoff).
+# Khi chủ sở hữu là tác giả PR hoặc vắng, người dự phòng duyệt.
+# Ví dụ (thay @handle-... bằng handle thật, nhiều người cách nhau bằng dấu cách):
+
+/chonoi/sim/river.py    @handle-song @handle-du-phong-1
+/chonoi/sim/quan.py     @handle-quan @handle-du-phong-2
+/chonoi/ui/             @handle-ui @handle-du-phong-3
+/tests/                 @handle-qa @handle-du-phong-4
+/game.contract.json     @handle-integrator @handle-du-phong-4
+/docs/contracts/        @handle-integrator @handle-du-phong-4
+/.github/               @handle-integrator @handle-qa
