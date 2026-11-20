@@ -1,0 +1,46 @@
+"""Unit test của khung PYTHON trong starter (ids, inputs). Nếu nhóm thay bằng ngôn ngữ khác, XÓA file này
+(và viết unit test tương đương bằng ngôn ngữ của nhóm); test hộp đen test_smoke_p1.py vẫn dùng nguyên."""
+
+import unittest
+
+from chonoi.errors import BadInput
+from chonoi.ids import IdAllocator, id_key, sort_by_id
+from chonoi.inputs import InputPlayer, load_frames
+
+from helpers import Workdir, frames, write_json
+
+
+class Units(unittest.TestCase):
+    def test_id_sorting(self):
+        self.assertEqual([e["id"] for e in sort_by_id([{"id": "F10"}, {"id": "F2"}, {"id": "B1"}])], ["B1", "F2", "F10"])
+        self.assertLess(id_key("F2"), id_key("F10"))
+
+    def test_id_allocator_continues_after_max(self):
+        a = IdAllocator()
+        a.reserve("F3")
+        a.reserve("F10")
+        self.assertEqual(a.new("F"), "F11")
+        self.assertEqual(a.new("F"), "F12")
+        self.assertEqual(a.new("S"), "S1")
+
+    def test_input_edges_and_inherit(self):
+        with Workdir() as w:
+            p = write_json(w.path("i.json"), frames({"tick": 1, "interact": True}, {"tick": 2, "move": [1, 1]}, {"tick": 3, "interact": False}, {"tick": 4, "interact": True}))
+            pl = InputPlayer(load_frames(p))
+            self.assertFalse(pl.advance(0).pressed("interact"))
+            self.assertTrue(pl.advance(1).pressed("interact"))
+            s2 = pl.advance(2)
+            self.assertFalse(s2.pressed("interact"), "giữ true không lặp lại")
+            self.assertAlmostEqual(s2.move[0] ** 2 + s2.move[1] ** 2, 1.0)
+            pl.advance(3)
+            self.assertTrue(pl.advance(4).pressed("interact"))
+            self.assertEqual(pl.advance(5).move, s2.move, "move giữ giá trị cũ khi vắng frame")
+
+    def test_bad_frames_raise(self):
+        with Workdir() as w:
+            with self.assertRaises(BadInput):
+                load_frames(write_json(w.path("i.json"), frames({"tick": 0, "move": [2, 0]})))
+
+
+if __name__ == "__main__":
+    unittest.main()

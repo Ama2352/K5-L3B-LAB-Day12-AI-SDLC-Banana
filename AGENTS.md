@@ -7,7 +7,7 @@
 - Headless: `python3 -m chonoi.headless --mode river|quan --seed 1 --ticks 600 --out out.jsonl`
 
 ## Cấu trúc & quy ước
-- Khung do giảng viên cấp: `chonoi/{cli-headless,inputs,scenario,rng,ids,jsonl,inventory,runner}.py`. Hạn chế sửa; nếu phải sửa thì qua PR riêng có ADR.
+- (Starter Python là TÙY CHỌN; nhóm có thể dùng ngôn ngữ khác nếu giữ Test Contract.) Khung do giảng viên cấp: `chonoi/{cli-headless,inputs,scenario,rng,ids,jsonl,inventory,runner}.py`. Hạn chế sửa; nếu phải sửa thì qua PR riêng có ADR.
 - Luật chơi của nhóm: `chonoi/sim/river.py`, `chonoi/sim/quan.py` (tìm `TODO(nhóm)`).
 - **Số liệu chỉ đọc từ `game.contract.json` / dữ liệu**, không hard-code trong luật.
 - Mọi số ngẫu nhiên đi qua `Streams` (`chonoi/rng.py`); không dùng `random` toàn cục, không dùng đồng hồ hệ thống.

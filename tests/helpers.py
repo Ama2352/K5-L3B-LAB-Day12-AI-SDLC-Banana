@@ -3,8 +3,8 @@
 import json
 import math
 import os
+import shlex
 import subprocess
-import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,10 +20,15 @@ def frames(*fr):
     return {"frames": list(fr)}
 
 
+def headless_cmd():
+    """Lệnh headless khai trong game.contract.json — test chạy qua đây nên dùng được với MỌI ngôn ngữ."""
+    with open(os.path.join(ROOT, "game.contract.json"), encoding="utf-8") as f:
+        return shlex.split(json.load(f)["headless_cmd"])
+
+
 def run_headless(*args, cwd=ROOT):
-    """Chạy `python3 -m chonoi.headless ...`; trả (mã thoát, stderr)."""
-    p = subprocess.run([sys.executable, "-m", "chonoi.headless", *args], cwd=cwd,
-                       capture_output=True, text=True)
+    """Chạy `<headless_cmd> <args>`; trả (mã thoát, stderr)."""
+    p = subprocess.run([*headless_cmd(), *args], cwd=cwd, capture_output=True, text=True)
     return p.returncode, p.stderr
 
 

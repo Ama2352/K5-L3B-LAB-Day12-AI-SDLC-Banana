@@ -24,24 +24,31 @@ Ghi `Co-authored-by: Tên <email>` trong commit khi làm cặp. Thành viên m�
 
 ```bash
 git clone <fork-của-nhóm> && cd <fork-của-nhóm>
-PYTHONPATH=tests:. python3 -m unittest discover -s tests -v     # smoke test (phải xanh)
+PYTHONPATH=tests:. python3 -m unittest discover -s tests -v     # smoke test (phải xanh; nếu dùng starter Python)
 python3 -m chonoi.headless --mode river --seed 1 --ticks 600 --out out.jsonl
 ```
 
-## Khung kỹ thuật (Python 3, chỉ thư viện chuẩn)
+## Công nghệ: tự chọn (starter chỉ là gợi ý, KHÔNG bắt buộc)
 
-Khung lo: đọc tham số, đọc inputs/scenario/kho, kiểm lỗi (mã thoát 2), vòng tick 60 Hz, RNG có seed, cấp/sắp id, ghi JSONL tất định, ghi file kho an toàn. **Luật chơi do nhóm viết** (tìm `TODO(nhóm)`).
+Nhóm được dùng **bất kỳ ngôn ngữ/engine nào**. Thứ duy nhất bắt buộc là **Test Contract** (chế độ headless theo tài liệu phase) và `game.contract.json` khai đúng `build_cmd`, `headless_cmd`.
 
-| Đã có | Nhóm viết |
+`chonoi/` là một khung **Python 3** (chỉ thư viện chuẩn) giảng viên làm sẵn để tiết kiệm thời gian: đọc tham số, đọc inputs/scenario/kho, kiểm lỗi (mã thoát 2), vòng tick 60 Hz, RNG có seed, cấp/sắp id, ghi JSONL tất định, ghi file kho an toàn. **Luật chơi do nhóm viết** (tìm `TODO(nhóm)`). Dùng hay không tùy nhóm.
+
+| Khung Python đã có | Nhóm viết |
 |---|---|
 | CLI + kiểm lỗi, mã thoát 0/1/2 | `chonoi/sim/river.py`: hái, chài, xoáy, lật xuồng, hết phao |
 | Đọc inputs, cạnh lên, chuẩn hóa vector | `chonoi/sim/quan.py`: khách, giữ chỗ, bếp, bưng, phục vụ, tiền, uy tín |
 | Chèo xuồng, chặn mép, cập bến, hết giờ | Nút hái / bầy cá / xoáy mặc định của màn |
 | Đọc/ghi file kho, ghi nguyên tử | Kiểm mâu thuẫn scenario mức luật (`scenario.py`) |
 | JSONL tất định, làm tròn 3 chữ số, sắp id | Hiển thị / HUD (khung **chưa có cửa sổ**: tự chọn thư viện 2D) |
-| Smoke test + kiểm danh sách thành viên | Test cho luật của nhóm (mỗi lát ≥ 1 scenario) |
 
-Không ràng buộc công nghệ hiển thị; chỉ cần giữ đúng Test Contract.
+### Nếu nhóm đổi sang ngôn ngữ khác (một PR, Integrator duyệt)
+1. Sửa `build_cmd`, `run_cmd`, `headless_cmd` trong `game.contract.json` cho ngôn ngữ của nhóm.
+2. Sửa bước **Build** và **Test** trong `.github/workflows/ci.yml` (cài runtime cần thiết). **Giữ tên job `ci / test`** và giữ bước kiểm danh sách thành viên.
+3. **Giữ** `tests/test_smoke_p1.py`: đây là test **hộp đen**, chỉ chạy `headless_cmd` rồi đọc JSONL/file kho, nên dùng nguyên cho mọi ngôn ngữ. **Xóa** `chonoi/` và `tests/test_python_starter_units.py` nếu không dùng; viết unit test bằng ngôn ngữ của nhóm.
+4. Vẫn phải qua cùng Test Contract: cùng seed → output giống từng byte.
+
+Lưu ý: `tools/check_team.py` (kiểm danh sách thành viên) là script Python chạy **chỉ trong CI**, không liên quan tới ngôn ngữ của game; giữ nguyên.
 
 ## Quy tắc vàng
 

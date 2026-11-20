@@ -1,4 +1,5 @@
-"""Smoke test Phase 1 (công khai). Các test này PHẢI xanh trên starter; nhóm viết thêm test cho luật của mình.
+"""Smoke test Phase 1 (công khai), kiểu HỘP ĐEN: chỉ chạy `headless_cmd` trong game.contract.json và đọc JSONL/file kho.
+Vì vậy chạy được với BẤT KỲ ngôn ngữ nào nhóm chọn, miễn đúng Test Contract. Nhóm viết thêm test cho luật của mình.
 
 Chạy: python3 -m unittest discover -s tests -v
 """
@@ -6,10 +7,6 @@ Chạy: python3 -m unittest discover -s tests -v
 import json
 import os
 import unittest
-
-from chonoi.ids import IdAllocator, id_key, sort_by_id
-from chonoi.inputs import InputPlayer, load_frames
-from chonoi.errors import BadInput
 
 from helpers import (Workdir, close, events, frames, read_jsonl, run_headless, snapshots, write_json)
 
@@ -115,38 +112,6 @@ class Integration(unittest.TestCase):
             sc = write_json(w.path("sc.json"), {"quan": {"stock": {"ca_loc": 1}}})
             self.assertEqual(run_headless("--mode", "quan", "--seed", "1", "--ticks", "0", "--inventory", inv,
                                           "--scenario", sc, "--out", w.path("q.jsonl"))[0], 2)
-
-
-class Units(unittest.TestCase):
-    def test_id_sorting(self):
-        self.assertEqual([e["id"] for e in sort_by_id([{"id": "F10"}, {"id": "F2"}, {"id": "B1"}])], ["B1", "F2", "F10"])
-        self.assertLess(id_key("F2"), id_key("F10"))
-
-    def test_id_allocator_continues_after_max(self):
-        a = IdAllocator()
-        a.reserve("F3")
-        a.reserve("F10")
-        self.assertEqual(a.new("F"), "F11")
-        self.assertEqual(a.new("F"), "F12")
-        self.assertEqual(a.new("S"), "S1")
-
-    def test_input_edges_and_inherit(self):
-        with Workdir() as w:
-            p = write_json(w.path("i.json"), frames({"tick": 1, "interact": True}, {"tick": 2, "move": [1, 1]}, {"tick": 3, "interact": False}, {"tick": 4, "interact": True}))
-            pl = InputPlayer(load_frames(p))
-            self.assertFalse(pl.advance(0).pressed("interact"))
-            self.assertTrue(pl.advance(1).pressed("interact"))
-            s2 = pl.advance(2)
-            self.assertFalse(s2.pressed("interact"), "giữ true không lặp lại")
-            self.assertAlmostEqual(s2.move[0] ** 2 + s2.move[1] ** 2, 1.0)
-            pl.advance(3)
-            self.assertTrue(pl.advance(4).pressed("interact"))
-            self.assertEqual(pl.advance(5).move, s2.move, "move giữ giá trị cũ khi vắng frame")
-
-    def test_bad_frames_raise(self):
-        with Workdir() as w:
-            with self.assertRaises(BadInput):
-                load_frames(write_json(w.path("i.json"), frames({"tick": 0, "move": [2, 0]})))
 
 
 if __name__ == "__main__":
