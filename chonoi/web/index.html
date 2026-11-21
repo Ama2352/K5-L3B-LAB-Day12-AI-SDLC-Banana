@@ -1207,7 +1207,8 @@
       const previous = shownScreen;
       shownScreen = screen;
       if (screen !== "playing") {
-        clearInput();
+        down.clear();
+        lastSent = "";
         helpModal.classList.remove("is-open");
       }
       if (screen === "menu" || screen === "exit") captions.replaceChildren();
