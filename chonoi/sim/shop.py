@@ -42,7 +42,8 @@ class ShopSim:
         self.money = int(state.get("money", 0))
         self.earned = int(state.get("earned", 0))
         self.reputation = float(state.get("reputation", 3.0))
-        self.stock = dict(state.get("stock", {}))
+        raw_stock = state.get("stock", {})
+        self.stock = list(raw_stock) if isinstance(raw_stock, list) else dict(raw_stock)
 
         # upgrades: cấp đã mua (hiển thị ngay khi mua thành công)
         self.upgrades = dict(state.get("upgrades", {}))
@@ -72,10 +73,14 @@ class ShopSim:
         return UPGRADES_DEFAULT
 
     def snapshot(self) -> dict:
+        if isinstance(self.stock, list):
+            stock_snap = [dict(item, fresh=float(item["fresh"])) if isinstance(item, dict) and "fresh" in item else item for item in self.stock]
+        else:
+            stock_snap = {k: self.stock[k] for k in sorted(self.stock) if self.stock[k] > 0}
         return {
             "phase": "shop",
             "time_left_ticks": self.time_left_ticks,
-            "stock": {k: self.stock[k] for k in sorted(self.stock) if self.stock[k] > 0},
+            "stock": stock_snap,
             "upgrades": dict(self.upgrades),
             "active_upgrades": dict(self.active_upgrades),
             "money": self.money,
