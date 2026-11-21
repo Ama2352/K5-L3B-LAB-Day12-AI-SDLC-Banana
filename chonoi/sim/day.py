@@ -67,7 +67,7 @@ def gather_tuning(tuning, active):
 
 
 def check_evening_fixture(scenario, stock, menu):
-    available = Counter(stock)
+    available = None if isinstance(stock, list) else Counter(stock)
     customers = {c["id"]: c for c in scenario.get("customers", [])}
     assigned = set()
     for customer in customers.values():
@@ -76,6 +76,9 @@ def check_evening_fixture(scenario, stock, menu):
             raise BadInput("đơn quán ngoài kế hoạch ngày")
         status = customer.get("order_status", "reserved")
         if status == "reserved":
+            # QuanSim validates individual reservations against the handed-off stock.
+            if available is None:
+                continue
             recipe = menu[dish]["recipe"]
             if customer.get("reserved", recipe) != recipe:
                 raise BadInput("giữ chỗ sai công thức")
@@ -93,7 +96,7 @@ def check_evening_fixture(scenario, stock, menu):
                 assigned.add(customer["id"])
         else:
             raise BadInput("trạng thái đơn sai")
-    if any(qty < 0 for qty in available.values()):
+    if available is not None and any(qty < 0 for qty in available.values()):
         raise BadInput("giữ chỗ vượt kho bàn giao")
     payloads = [scenario.get("hand")]
     for stove in scenario.get("stoves", []):
@@ -127,12 +130,12 @@ class ShopSim:
         self.time_left_ticks = config["max_ticks"]
         self.upgrades = upgrades
         self.money, self.earned, self.reputation = previous.money, previous.earned, previous.reputation
-        self.stock = dict(previous.stock)
+        self.stock = previous.snapshot()["stock"]
         self.done = False
         self.reason = None
 
     def snapshot(self):
-        return {"stock": {k: v for k, v in sorted(self.stock.items()) if v}}
+        return {"stock": self.stock}
 
     def step(self, inp):
         events = []

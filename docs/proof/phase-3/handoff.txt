@@ -1,0 +1,39 @@
+# Smoke bàn giao kho cá thể Phase 3 (Contract v1.2) — phía gather (TV2)
+# Contract v1.2 tạm: docs/proof/phase-3/contract-v1.2.json (preset gốc + contract_version 1.2 + tuning.freshness). Chạy với CHONOI_CONTRACT.
+
+## 1. Fixture ngưỡng trong ticket (I1 fresh 30, 1 bước, không input)
+$ CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json python3 -m chonoi.headless --mode gather --seed 1 --ticks 1 --scenario docs/proof/phase-3/spoil-scenario.json --out docs/proof/phase-3/spoil-gather.jsonl
+{"type":"event","tick":1,"phase":"gather","name":"spoiled","data":{"item_id":"I1","kind":"ca_linh","location":"hold"}}
+
+## 2. Smoke file kho trong ticket (I1 fresh 100, interact ở frame 0 -> cập bến)
+$ CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json python3 -m chonoi.headless --mode gather --seed 1 --ticks 1 --scenario docs/proof/phase-3/smoke-scenario.json --inputs docs/proof/phase-3/smoke-inputs.json --inventory-out docs/proof/phase-3/smoke-kho.json --out docs/proof/phase-3/smoke-gather.jsonl
+kho.json: {"items":[{"id":"I1","kind":"ca_linh","fresh":99.99166666666666}]}
+gather_end: {"type":"event","tick":1,"phase":"gather","name":"gather_end","data":{"reason":"docked","inventory":{"items":[{"id":"I1","kind":"ca_linh","fresh":99.992}]}}}
+
+## 3. check_handoff (v1.2 so id, kind, fresh) — chạy lại trên main 8d9fb80 (đã có quán P3 của TV3) + thay đổi chưa commit của TV2
+$ CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json python3 tools/check_handoff.py docs/proof/phase-3/smoke-gather.jsonl docs/proof/phase-3/smoke-kho.json
+contract 1.2 (kho cá thể) · gather_end reason: docked
+id    kind                fresh (kho.json)  gather_end  quan.stock
+I1    ca_linh            99.99166666666666      99.992      99.992
+tổng: 1 cá thể, ươn (< 30): 0
+KẾT QUẢ: KHỚP
+
+Mục 1–2 chạy lại ra file giống từng byte (cmp).
+
+## 4. Mode day ở v1.2 (bàn giao trong bộ nhớ)
+$ CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json python3 -m chonoi.headless --mode day --days 2 --seed 1 --ticks 30000 --inputs docs/proof/phase-2/integration-inputs.json --out day.jsonl
+mã 1 khi chuyển pha gather -> quan:
+  chonoi/sim/day.py:70 check_evening_fixture: available = Counter(stock)
+  TypeError: unhashable type: 'dict'
+(không có input thì giỏ rỗng nên không lộ lỗi; có hàng thì vỡ)
+
+## 5. Ngưỡng phía quán với giá trị gather ghi ra (fresh = 30 + 1/240 = 30.004166666666666)
+$ CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json python3 -m chonoi.headless --mode quan --seed 1 --ticks 3 --inventory docs/proof/phase-3/edge-kho.json --out docs/proof/phase-3/edge-quan.jsonl
+{"type":"event","tick":1,"phase":"quan","name":"spoiled","data":{"item_id":"I1","kind":"ca_loc","location":"stock"}}
+Kỳ vọng: spoiled ở tick 2 (sau 1 tick còn đúng 30.0, chưa < 30). Thực tế tick 1.
+
+## Kết luận
+- Phía gather v1.2: ĐẠT — spoiled đúng tick 1; file kho cá thể đúng id/kind, fresh = 100 - 0.5/60 đủ chính xác; gather_end khớp file.
+- Bàn giao qua file gather -> quan v1.2: ĐẠT — quan.stock ở tick 0 khớp id, kind, fresh.
+- Bàn giao trong day v1.2: CHƯA ĐẠT — `check_evening_fixture` (day.py, TV1) còn đếm kho theo kind. Việc của TV1; chạy lại mục 4 khi xong.
+- Ngưỡng phía quán: CHƯA ĐẠT — spoiled sớm 1 tick do FreshStock (TV3) dùng Fraction(str(fresh)); cần báo TV3, đề xuất Fraction(round(fresh*240), 240). Xem mục 5.

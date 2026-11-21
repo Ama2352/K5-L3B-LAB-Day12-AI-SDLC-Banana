@@ -104,6 +104,8 @@ class QuanSim:
                              else dict(c.get("reserved", {}))),
                 "base_price": base_price if base_price is not None else 0,
                 "tip": c.get("tip", 0),
+                "is_angry": c.get("is_angry", False),
+                "warning": c.get("warning", None),
             }
             # Thiếu reserved ở đơn reserved thì cấp theo công thức món
             if (self.fresh_stock is None and cust["order_status"] == "reserved"
@@ -171,12 +173,18 @@ class QuanSim:
             elif s["state"] == "cooking":
                 s["cook_ticks_left"] -= 1
 
+        total_patience = int(round(self.t["patience_s"] * TICK))
         for c in self.customers:
             if c["state"] == "eating":
                 c["eat_ticks_left"] = max(0, c["eat_ticks_left"] - 1)
+                c["is_angry"] = False
+                c["warning"] = None
             elif c["state"] == "waiting":
                 # Giảm thời gian kiên nhẫn
                 c["patience_ticks_left"] = max(0, c["patience_ticks_left"] - 1)
+                is_angry = (c["patience_ticks_left"] < total_patience * 0.25)
+                c["is_angry"] = is_angry
+                c["warning"] = "patience_low" if is_angry else None
 
         if self.fresh_stock is not None:
             self._age_fresh_stock(events)
@@ -628,6 +636,8 @@ class QuanSim:
             events.append(("no_dish", {}))  # PRD-0 mục E: data {} khi có bàn mà thiếu món
             return
         dish_id = self.rng.get("customer_order").choice(sorted(candidates))
+        total_patience = int(round(self.t["patience_s"] * TICK))
+        is_angry = (self.patience_ticks < total_patience * 0.25)
         customer = {
             "id": self.ids.new("C"),
             "table_id": table["id"],
@@ -640,6 +650,8 @@ class QuanSim:
             "eat_ticks_left": 0,
             "base_price": self.menu[dish_id]["price"],
             "tip": 0,
+            "is_angry": is_angry,
+            "warning": "patience_low" if is_angry else None,
         }
         self.customers.append(customer)
         # PRD-0 mục E: order_id,table_id,dish_id (order_id = id khách)
