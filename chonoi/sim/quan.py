@@ -8,6 +8,7 @@ Nhóm viết tiếp (PRD-0 mục F, Quán):
 """
 
 from ..ids import sort_by_id
+from .ramp import ramp_velocity
 
 TICK = 60.0
 
@@ -24,18 +25,20 @@ class QuanSim:
         self.ids = ids
         p = scenario.get("player", {})
         self.pos = list(p.get("pos", t["start_pos"]))
-        self.vel = [0.0, 0.0]
+        self.vel = [float(c) for c in p.get("vel", [0.0, 0.0])]
+        self._tgt = None
+        self._ramp_left = 0
         # kho: --inventory HOẶC scenario.stock (cả hai -> cli đã báo mã 2)
         self.stock = dict(inventory if inventory is not None else scenario.get("stock", {}))
         self.hand = scenario.get("hand")
-        self.time_left_ticks = scenario.get("time_left_ticks", t["duration_s"] * 60)
+        self.time_left_ticks = scenario.get("time_left_ticks", int(round(t["duration_s"] * 60)))
         self.reputation = scenario.get("reputation", t["reputation_initial"])
         self.stoves = [dict(s, state=s.get("state", "idle"), dish=s.get("dish"),
                             cook_ticks_left=s.get("cook_ticks_left", 0), ready_ticks=s.get("ready_ticks", 0))
                        for s in self._merge(t["stoves"], scenario.get("stoves", []))]
         self.tables = self._merge(t["tables"], scenario.get("tables", []))
         # TODO(nhóm): khách dựng sẵn từ scenario (customers[]) và suy ra giữ chỗ (reserved).
-        self.customers = [dict(c) for c in scenario.get("customers", [])]
+        self.customers = [dict(c, reserved=c.get("reserved", {})) for c in scenario.get("customers", [])]
         for e in self.customers:
             ids.reserve(e["id"])
         self.money = 0
@@ -83,15 +86,12 @@ class QuanSim:
     def _move(self, inp):
         speed = self.t["walk_speed"]
         mx, mz = inp.move
-        target = (mx * speed, mz * speed)
-        step = speed / max(1, int(self.t.get("ramp_max_ticks", 6)))
+        self.vel = ramp_velocity(self, (mx * speed, mz * speed), int(self.t.get("ramp_max_ticks", 6)))
         b = self.t["bounds"]
         for i, axis in enumerate(("x", "z")):
-            diff = target[i] - self.vel[i]
-            self.vel[i] += max(-step, min(step, diff))
             self.pos[i] += self.vel[i] / TICK
             lo, hi = b[axis]
-            if self.pos[i] < lo:
+            if self.pos[i] <= lo:
                 self.pos[i], self.vel[i] = lo, max(0.0, self.vel[i])
-            elif self.pos[i] > hi:
+            elif self.pos[i] >= hi:
                 self.pos[i], self.vel[i] = hi, min(0.0, self.vel[i])

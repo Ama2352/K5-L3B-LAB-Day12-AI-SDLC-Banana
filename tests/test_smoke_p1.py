@@ -41,7 +41,7 @@ class Contract(unittest.TestCase):
             self.assertEqual(s["player"]["pos"], [2, 0])
             for key in ("oxygen_ticks", "hp", "oxygen_max_ticks", "hp_max", "at_surface"):
                 self.assertIn(key, s["player"])
-            self.assertEqual(s["hold_capacity"], 12)
+            self.assertEqual(s["hold_capacity"], tuning_gather()["hold_capacity"])
             self.assertEqual(len(s["fish"]), 6)
             self.assertTrue(all(n["pos"][1] == 0 for n in s["nodes"]))
 
@@ -82,12 +82,62 @@ class Contract(unittest.TestCase):
             for block in ({"player": {"pos": [101, 0]}}, {"player": {"pos": [5, -1]}},
                           {"nodes": [{"id": "N1", "kind": "bong_sung", "pos": [5, 3]}]},
                           {"nodes": [{"id": "N1", "kind": "bong_sung", "pos": [5, 0]}, {"id": "N1", "kind": "bong_sung", "pos": [9, 0]}]},
-                          {"hold": ["ca_loc"] * 13}, {"vortices": []}):
+                          {"hold": ["ca_loc"] * (tuning_gather()["hold_capacity"] + 1)}, {"vortices": []}):
                 sc = write_json(w.path("sc.json"), {"gather": block})
                 self.assertEqual(run_headless("--mode", "gather", "--seed", "1", "--ticks", "0", "--scenario", sc, "--out", out)[0], 2, block)
 
 
+class ScenarioModes(unittest.TestCase):
+    def test_khoi_sai_mode_exit_2(self):
+        with Workdir() as w:
+            sc = write_json(w.path("sc.json"), {"quan": {"stock": {}}})
+            self.assertEqual(run_headless("--mode", "gather", "--seed", "1", "--ticks", "0", "--scenario", sc,
+                                          "--out", w.path("o.jsonl"))[0], 2)
+            sc = write_json(w.path("sc2.json"), {"gather": {"hold": []}})
+            self.assertEqual(run_headless("--mode", "quan", "--seed", "1", "--ticks", "0", "--scenario", sc,
+                                          "--out", w.path("o.jsonl"))[0], 2)
+
+    def test_quan_fixture_khong_hop_le_exit_2(self):
+        with Workdir() as w:
+            for block in ({"player": {"pos": [17, 0]}}, {"customers": [{"id": "C1"}]},
+                          {"customers": [{"id": "C1", "table_id": "T9"}]}):
+                sc = write_json(w.path("sc.json"), {"quan": block})
+                self.assertEqual(run_headless("--mode", "quan", "--seed", "1", "--ticks", "0", "--scenario", sc,
+                                              "--out", w.path("o.jsonl"))[0], 2, block)
+
+    def test_quan_player_vel_hop_le(self):
+        with Workdir() as w:
+            sc = write_json(w.path("sc.json"), {"quan": {"player": {"pos": [8, 5], "vel": [0, 0]}}})
+            self.assertEqual(run_headless("--mode", "quan", "--seed", "1", "--ticks", "1", "--scenario", sc,
+                                          "--out", w.path("o.jsonl"))[0], 0)
+
+
 class Movement(unittest.TestCase):
+    def test_move_ramp_doi_huong_trong_tran(self):
+        """Đảo từ +speed sang -speed: vận tốc chạm mục tiêu sau tối đa ramp_max_ticks tick kể từ lúc đổi input."""
+        g = tuning_gather()
+        ramp = g["ramp_max_ticks"]
+        with Workdir() as w:
+            sc = write_json(w.path("sc.json"), {"gather": {"player": {"pos": [50, 10]}}})
+            inp = write_json(w.path("in.json"), frames({"tick": 0, "move": [1, 0]}, {"tick": 20, "move": [-1, 0]}))
+            code, err = run_headless("--mode", "gather", "--seed", "1", "--ticks", str(20 + ramp + 2), "--scenario", sc,
+                                     "--inputs", inp, "--snapshot-every", "1", "--out", w.path("o.jsonl"))
+            self.assertEqual(code, 0, err)
+            s = {r["tick"]: r for r in snapshots(read_jsonl(w.path("o.jsonl")))}
+            self.assertTrue(close(s[20 + ramp]["player"]["vel"][0], -g["swim_speed"], 0.01), s[20 + ramp]["player"]["vel"])
+
+    def test_move_mep_vel_ve_0(self):
+        with Workdir() as w:
+            b = tuning_gather()["bounds"]
+            sc = write_json(w.path("sc.json"), {"gather": {"player": {"pos": [b["x"][1] - 1, 10]}}})
+            inp = write_json(w.path("in.json"), frames({"tick": 0, "move": [1, 0]}))
+            code, err = run_headless("--mode", "gather", "--seed", "1", "--ticks", "240", "--scenario", sc,
+                                     "--inputs", inp, "--out", w.path("o.jsonl"))
+            self.assertEqual(code, 0, err)
+            p = snapshots(read_jsonl(w.path("o.jsonl")))[-1]["player"]
+            self.assertEqual(p["pos"][0], b["x"][1])
+            self.assertEqual(p["vel"][0], 0)
+
     def test_move_01_swim_speed_after_ramp(self):
         """Bỏ 6 tick tăng tốc rồi đo 60 tick: quãng ≈ swim_speed × 1 s (±0.1). Ngang, xuống, chéo (không nhanh hơn)."""
         speed = tuning_gather()["swim_speed"]
@@ -122,7 +172,9 @@ class Movement(unittest.TestCase):
             with Workdir() as w:
                 sc = write_json(w.path("sc.json"), {"gather": {"player": {"pos": pos}}})
                 inp = write_json(w.path("in.json"), frames({"tick": 0, "move": mv}))
-                code, err = run_headless("--mode", "gather", "--seed", "1", "--ticks", "120", "--scenario", sc,
+                g = tuning_gather()
+                ticks = int((abs(want - pos[axis]) / g["swim_speed"]) * 60) + g["ramp_max_ticks"] + 30
+                code, err = run_headless("--mode", "gather", "--seed", "1", "--ticks", str(ticks), "--scenario", sc,
                                          "--inputs", inp, "--out", w.path("o.jsonl"))
                 self.assertEqual(code, 0, err)
                 self.assertEqual(last_pos(read_jsonl(w.path("o.jsonl")))[axis], want, (pos, mv))
@@ -147,7 +199,7 @@ class Movement(unittest.TestCase):
 
 class Integration(unittest.TestCase):
     def test_inv_01_gather_writes_inventory_quan_reads_it(self):
-        """Ví dụ smoke test trong PRD mục 13.6: cập bến ở tick 0, quán đọc kho đúng nội dung."""
+        """Ví dụ smoke test trong PRD-0 mục G: cập bến ở tick 0, quán đọc kho đúng nội dung."""
         with Workdir() as w:
             sc = write_json(w.path("sc.json"), {"gather": {"hold": ["ca_loc", "bong_sung", "bong_sung"]}})
             inp = write_json(w.path("in.json"), frames({"tick": 0, "interact": True}))

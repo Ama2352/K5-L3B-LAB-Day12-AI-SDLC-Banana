@@ -24,6 +24,7 @@ import math
 
 from ..ids import sort_by_id
 from ..inventory import hold_to_items
+from .ramp import ramp_velocity
 
 TICK = 60.0
 AXES = ("x", "d")
@@ -41,6 +42,8 @@ class GatherSim:
         p = scenario.get("player", {})
         self.pos = [float(c) for c in p.get("pos", t["start_pos"])]
         self.vel = [float(c) for c in p.get("vel", [0.0, 0.0])]
+        self._tgt = None
+        self._ramp_left = 0
         self.heading = float(p.get("heading_deg", t["start_heading_deg"]))
         self.oxygen_max = int(round(t["oxygen_max_s"] * TICK))
         self.oxygen_ticks = p.get("oxygen_ticks", self.oxygen_max)
@@ -138,22 +141,17 @@ class GatherSim:
 
     def _move(self, inp):
         speed = self.t["swim_speed"]
-        ramp = max(1, int(self.t["ramp_max_ticks"]))
         mx, md = inp.move
-        target = (mx * speed, md * speed)
-        step = speed / ramp
-        for i in (0, 1):
-            diff = target[i] - self.vel[i]
-            self.vel[i] += max(-step, min(step, diff))
+        self.vel = ramp_velocity(self, (mx * speed, md * speed), int(self.t["ramp_max_ticks"]))
         if (mx, md) != (0.0, 0.0):
             self.heading = math.degrees(math.atan2(md, mx)) % 360
         b = self.t["bounds"]
         for i, axis in enumerate(AXES):
             self.pos[i] += self.vel[i] / TICK
             lo, hi = b[axis]
-            if self.pos[i] < lo:
+            if self.pos[i] <= lo:
                 self.pos[i] = lo
                 self.vel[i] = max(0.0, self.vel[i])
-            elif self.pos[i] > hi:
+            elif self.pos[i] >= hi:
                 self.pos[i] = hi
                 self.vel[i] = min(0.0, self.vel[i])

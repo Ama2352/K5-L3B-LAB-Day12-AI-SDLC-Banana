@@ -15,6 +15,7 @@ GATHER_PLAYER_KEYS = {"pos", "vel", "heading_deg", "hp", "oxygen_ticks", "zero_o
                       "invuln_ticks", "catch_cd_ticks"}
 NODE_KINDS = ("bong_dien_dien", "bong_sung")
 FISH_KINDS = ("ca_linh", "ca_loc")
+QUAN_PLAYER_KEYS = {"pos", "vel"}
 QUAN_KEYS = {"player", "stock", "hand", "stoves", "tables", "customers", "random_customers",
              "reputation", "time_left_ticks"}
 
@@ -40,7 +41,9 @@ def load_scenario(path, mode: str, tuning: dict) -> dict:
     except (OSError, ValueError) as e:
         raise BadInput(f"không đọc được scenario {path}: {e}")
     if not isinstance(data, dict) or not set(data) <= {"gather", "quan"}:
-        raise BadInput("scenario chỉ được có khối 'gather' và/hoặc 'quan'")
+        raise BadInput("scenario chỉ được có khối 'gather' hoặc 'quan'")
+    if set(data) - {mode}:
+        raise BadInput(f"khối sai mode: chạy --mode {mode} chỉ nhận khối '{mode}'")
     block = data.get(mode, {})
     if not isinstance(block, dict):
         raise BadInput(f"khối {mode} phải là object")
@@ -48,7 +51,7 @@ def load_scenario(path, mode: str, tuning: dict) -> dict:
     extra = set(block) - allowed
     if extra:
         raise BadInput(f"trường lạ/chưa hỗ trợ trong {mode}: {sorted(extra)}")
-    dur = tuning[mode]["duration_s"] * 60
+    dur = int(round(tuning[mode]["duration_s"] * 60))
     if "time_left_ticks" in block:
         t = block["time_left_ticks"]
         if isinstance(t, bool) or not isinstance(t, int) or not (1 <= t <= dur):
@@ -69,10 +72,10 @@ def _nonneg_int(name, v):
         raise BadInput(f"{name} phải là số nguyên không âm")
 
 
-def _pos(name, pos, bounds):
+def _pos(name, pos, bounds, axes=("x", "d")):
     if not (isinstance(pos, list) and len(pos) == 2 and all(_num(c) for c in pos)):
-        raise BadInput(f"{name} phải là [x, d]")
-    for c, axis in zip(pos, ("x", "d")):
+        raise BadInput(f"{name} phải là [{axes[0]}, {axes[1]}]")
+    for c, axis in zip(pos, axes):
         lo, hi = bounds[axis]
         if not (lo <= c <= hi):
             raise BadInput(f"{name} nằm ngoài vùng nước ({axis} ∈ [{lo}, {hi}])")
@@ -143,6 +146,18 @@ def _validate_quan(b, tuning):
             _check_ids(arr, b[arr])
     if "stock" in b:
         validate_items(b["stock"])
+    p = b.get("player", {})
+    if not isinstance(p, dict) or set(p) - QUAN_PLAYER_KEYS:
+        raise BadInput("quan.player chỉ có pos và vel")
+    qb = tuning["quan"]["bounds"]
+    if "pos" in p:
+        _pos("player.pos", p["pos"], qb, axes=("x", "z"))
+    if "vel" in p and not (isinstance(p["vel"], list) and len(p["vel"]) == 2 and all(_num(c) for c in p["vel"])):
+        raise BadInput("player.vel phải là [x, z]")
     table_ids = [c.get("table_id") for c in b.get("customers", [])]
+    known = {t["id"] for t in tuning["quan"]["tables"]} | {t.get("id") for t in b.get("tables", [])}
+    for c in b.get("customers", []):
+        if not isinstance(c.get("table_id"), str) or c["table_id"] not in known:
+            raise BadInput(f"customers.{c['id']}: table_id phải là bàn có thật")
     if len(table_ids) != len(set(table_ids)):
         raise BadInput("hai khách cùng bàn")
