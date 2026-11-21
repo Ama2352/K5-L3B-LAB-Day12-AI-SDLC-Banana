@@ -1,72 +1,56 @@
-# Day 12 — AI SDLC: Quán Ăn Chợ Nổi (làm theo nhóm)
+# Day 12 — AI SDLC: Quán Ăn Chợ Nổi
 
-> **Nhóm 4–6 người** · Áp dụng SDLC cùng AI để xây game **2D** *Quán Ăn Chợ Nổi* qua **4 phase** trong **3 giờ**: Út Sen lặn bắt cá và hái rau cỏ trên mặt nước buổi sáng, tối mở quán phục vụ khách.
-> Yêu cầu từng phase được phát tại **lab board** (đúng mốc giờ). Repo này chỉ chứa **khung kỹ thuật** và **mẫu quy trình** của nhóm.
+> **Làm theo nhóm 4–6 người** · Dùng AI để xây game 2D qua **4 phase** trong **3 giờ**: Út Sen lặn bắt cá, hái rau trên mặt nước rồi tối mở quán phục vụ khách.
+> **Yêu cầu từng phase mở đúng mốc giờ tại lab board:** **[Chợ Nổi Lab](https://claude.ai/artifact/E35v787wSx2wDgPTNhMVDg)** (cần đăng nhập claude.ai; có trợ giảng AI cho từng phase).
 
-## Cách làm việc: tự do, miễn là làm nhóm thật
+## Bắt buộc (chỉ có thế)
 
-**Quy trình kỹ thuật là TỰ DO.** CI/CD, Pull Request, review, branch protection, issue/board… **không bắt buộc**: nhóm tự chọn cách làm (push thẳng, nhánh + PR, pair/mob, review trực tiếp, có hay không CI…). **Bắt buộc chỉ có:**
+Cách làm việc kỹ thuật là **tự do** (push thẳng, nhánh + PR, pair, có hay không CI…). Cái bắt buộc:
 
-1. **Một repo chung của nhóm.** Trưởng nhóm **fork** repo này về tài khoản của mình, đặt tên `Day12-ChoNoi-<ten-nhom>`, rồi *Settings → Collaborators → Add people* (quyền **Write**) cho **tất cả thành viên và giảng viên** (handle do giảng viên thông báo).
-2. **Mọi thành viên commit vào repo chung bằng tài khoản GitHub của chính mình** (làm cặp thì ghi `Co-authored-by:`). Cần tối thiểu **3 commit có nội dung mỗi người** trong cả buổi.
-3. **Điền [`TEAM.md`](TEAM.md)**: danh sách thành viên (tên, GitHub handle, module chính, vai) và thỏa thuận làm việc nhóm ngắn; sửa `team_size` trong [`game.contract.json`](game.contract.json) cho khớp. Commit của người **không có trong `TEAM.md`** không được tính.
-4. **Gắn tag `phase-1` … `phase-4`** đúng hạn; chạy được tại từng tag.
-5. **Ghi chép tối thiểu:** `docs/verification/phase-n.md`, `docs/clarify.md`, `docs/ai-usage-log.md`, `docs/retro.md`, `docs/members/<github-handle>.md`.
+1. **Một repo chung:** trưởng nhóm **fork** repo này, đặt tên `Day12-ChoNoi-<ten-nhom>`, thêm mọi thành viên **và giảng viên** làm collaborator (*Settings → Collaborators*, quyền Write).
+2. **Cả nhóm cùng commit** bằng tài khoản GitHub của mình, mỗi người **≥ 3 commit có nội dung** (làm cặp thì ghi `Co-authored-by:`).
+3. **Điền [`TEAM.md`](TEAM.md):** danh sách thành viên + thỏa thuận làm việc nhóm; sửa `team_size` trong [`game.contract.json`](game.contract.json). Commit của người không có trong `TEAM.md` không được tính.
+4. **Gắn tag** `phase-1` … `phase-4` đúng hạn; chạy được tại từng tag.
+5. **Ghi chép tối thiểu:** `docs/verification/phase-n.md`, `docs/clarify.md`, `docs/ai-usage-log.md`, `docs/retro.md`, `docs/members/<handle>.md`.
 
-Gợi ý thực hành tốt (**không bắt buộc**, làm tốt được cộng): backlog và chia lát rõ, review code của nhau (PR hoặc trực tiếp), CI chạy test, ghi lại quyết định thiết kế quan trọng, chốt sớm hợp đồng file kho giữa `gather` và `quan`. `.github/` có sẵn `ci.yml`, mẫu PR/issue, `ruleset-main.json`: **dùng, sửa hay xóa đều được**. Script `python3 tools/check_team.py` kiểm bảng thành viên trong `TEAM.md`.
-
-## Tự do sáng tạo
-
-Ngoài những gì PRD và Contract yêu cầu, nhóm được **tự do thêm**: nhân vật, loài cá/cây, sinh vật mới, món, bản đồ, cơ chế, sự kiện, câu chuyện, đồ họa, âm nhạc, giao diện… Ba điều kiện: (a) **không phá phần cố định** (luật lõi, số chuẩn, Test Contract; phần thêm tắt ở headless hoặc không đổi đầu ra theo contract), (b) **ghi mục "Sáng tạo của nhóm" trong README** kèm bằng chứng ngắn rằng phần lõi vẫn đúng, (c) **làm lõi đúng trước, sáng tạo sau**.
-
-## 3 lệnh để bắt đầu
+## Bắt đầu nhanh
 
 ```bash
 git clone <fork-của-nhóm> && cd <fork-của-nhóm>
-PYTHONPATH=tests:. python3 -m unittest discover -s tests -v     # smoke test (phải xanh; nếu dùng starter Python)
-python3 -m chonoi.headless --mode gather --seed 1 --ticks 600 --out out.jsonl
+PYTHONPATH=tests:. python3 -m unittest discover -s tests -v        # smoke test
+python3 -m chonoi.live --mode gather                                # chơi thử trên trình duyệt (tùy chọn)
 ```
 
-Hai chế độ của contract v1.0: `gather` (buổi sáng: lặn và hái, nhìn ngang, vị trí `[x, d]`, `d` là độ sâu) và `quan` (buổi tối: mở quán, nhìn từ trên xuống, vị trí `[x, z]`). Chế độ `day` có từ phase sau.
+Game cần chế độ **headless** theo Test Contract (`python3 -m chonoi.headless --mode gather|quan …`) để được chạy và chấm tự động. **Công nghệ không ràng buộc**: khung Python trong `chonoi/` chỉ là gợi ý, chi tiết ở [`docs/STARTER.md`](docs/STARTER.md).
 
-## Chơi thử trực tiếp trên trình duyệt (không cần cài gì)
+## Tự do sáng tạo
 
-```bash
-python3 -m chonoi.live --mode gather      # hoặc: --mode quan   [--seed N] [--port 8000]
-```
+Ngoài phần đề yêu cầu, nhóm được **thêm** nhân vật, loài cá/cây, sinh vật, món, bản đồ, cơ chế, câu chuyện, đồ họa, âm nhạc… với ba điều kiện: **không phá phần cố định** (tắt ở headless), ghi mục **"Sáng tạo của nhóm"** trong README của nhóm, và **làm lõi đúng trước**.
 
-Lệnh in một địa chỉ (mặc định `http://127.0.0.1:8000/`); mở nó bằng trình duyệt. Phím: **WASD / mũi tên** di chuyển, **E** (`interact`), **Space** (`catch`), **R** chơi lại. Cửa sổ chạy **cùng một lớp sim** với headless (60 tick/s) và chỉ **đọc snapshot**, nên nhóm viết luật tới đâu thì thanh oxy, Máu, giỏ, cá, nút hái... hiện tới đó (trường chưa có sẽ bị bỏ qua). Đây chỉ là hình khối tạm để thử luật; đồ họa thật do nhóm làm. Chơi `gather` rồi chuyển sang `quan`: thêm `--inventory-out kho.json` ở lệnh đầu và `--inventory kho.json` ở lệnh sau. File chỉ dùng thư viện chuẩn Python (`chonoi/live.py`, `chonoi/web/index.html`); đổi ngôn ngữ thì xóa hoặc thay bằng cửa sổ của nhóm.
+## Lịch 3 giờ
 
-## Công nghệ: tự chọn (starter chỉ là gợi ý, KHÔNG bắt buộc)
+| Mốc | Phase | Hạn tag |
+|---|---|---|
+| 0:00 | Phase 1 (PRD-0) | `phase-1` trước 1:00 |
+| 1:00 | Phase 2 | `phase-2` trước 1:55 |
+| 1:55 | Phase 3 | `phase-3` trước 2:30 |
+| 2:30 | Phase 4 | `phase-4` + Release `v1.0.0` trước 3:00 |
 
-Nhóm được dùng **bất kỳ ngôn ngữ/engine nào**. Thứ duy nhất bắt buộc là **Test Contract** (chế độ headless theo tài liệu phase) và `game.contract.json` khai đúng `build_cmd`, `headless_cmd`.
+Hết giờ mỗi phase thì gắn tag rồi đi tiếp; chỗ chưa xong ghi trung thực trong bằng chứng.
 
-`chonoi/` là một khung **Python 3** (chỉ thư viện chuẩn) giảng viên làm sẵn để tiết kiệm thời gian: đọc tham số, đọc inputs/scenario/kho, kiểm lỗi (mã thoát 2), vòng tick 60 Hz, RNG có seed, cấp/sắp id, ghi JSONL tất định, ghi file kho an toàn. **Luật chơi do nhóm viết** (tìm `TODO(nhóm)`). Dùng hay không tùy nhóm.
+## Đánh giá (100 điểm)
 
-| Khung Python đã có | Nhóm viết |
+| Hạng mục | Điểm |
 |---|---|
-| CLI + kiểm lỗi, mã thoát 0/1/2 | `chonoi/sim/gather.py`: oxy, ngạt, Máu, ngất, hái nút, bắt cá, giỏ (LIFO) |
-| Đọc inputs, cạnh lên, chuẩn hóa vector | `chonoi/sim/quan.py`: khách, giữ chỗ, bếp, bưng, phục vụ, tiền, uy tín |
-| Bơi, tăng/giảm tốc, chặn mép (`d` không âm), cập bến, hết giờ | Điều chỉnh nút hái / bầy cá mặc định (dữ liệu ở `game.contract.json`) |
-| Đọc/ghi file kho, ghi nguyên tử | Kiểm mâu thuẫn scenario mức luật (`scenario.py`) |
-| JSONL tất định, làm tròn 3 chữ số, sắp id | Hiển thị / HUD thật (khung chỉ có cửa sổ thử `chonoi.live` bằng hình khối tạm) |
-| Cửa sổ thử trên trình duyệt (`python3 -m chonoi.live`) | Đồ họa, âm thanh, menu, HUD hoàn chỉnh theo PRD |
+| Test tự động ẩn (headless, gồm kiểm tra lại phase trước) | 25 |
+| Làm việc nhóm (một repo chung, chia việc, tích hợp, đổi yêu cầu) | 25 |
+| Kiểm chứng & bằng chứng | 15 |
+| Harness AI (AGENTS.md, skill, nhật ký dùng AI) | 10 |
+| Đánh giá & retro | 10 |
+| Chất lượng sản phẩm (đúng yêu cầu, mở rộng/sáng tạo) | 10 |
+| Demo | 5 |
 
-### Nếu nhóm đổi sang ngôn ngữ khác
-1. Sửa `build_cmd`, `run_cmd` (hiện là `python3 -m chonoi.live --mode gather`), `headless_cmd` trong `game.contract.json` cho ngôn ngữ của nhóm.
-2. Nếu nhóm dùng CI: sửa bước **Build** và **Test** trong `.github/workflows/ci.yml` (cài runtime cần thiết); không dùng CI thì xóa file đó.
-3. **Giữ** `tests/test_smoke_p1.py`: đây là test **hộp đen**, chỉ chạy `headless_cmd` rồi đọc JSONL/file kho, nên dùng nguyên cho mọi ngôn ngữ. **Xóa** `chonoi/`, `tests/test_python_starter_units.py` và `tests/test_live.py` nếu không dùng; viết unit test bằng ngôn ngữ của nhóm.
-4. Vẫn phải qua cùng Test Contract: cùng seed → output giống từng byte.
+## Quy định
 
-Lưu ý: `tools/check_team.py` (kiểm danh sách thành viên) là script Python độc lập, không liên quan tới ngôn ngữ của game.
-
-## Quy tắc vàng
-
-- Số liệu chỉ nằm trong `game.contract.json`; luật chỉ đọc từ đó.
-- Ngẫu nhiên chỉ qua `Streams`; không dùng đồng hồ hệ thống. Cùng seed → output giống từng byte.
-- Nhánh chính luôn **chạy được** (nhất là lúc gắn tag). Cách đạt điều đó do nhóm chọn.
-- Cùng commit vào một repo chung; mỗi người có dấu vết của mình.
-
-## Tài liệu trong repo
-
-[`TEAM.md`](TEAM.md) (vai + thỏa thuận nhóm) · [`AGENTS.md`](AGENTS.md) · `docs/contracts/` (hợp đồng tích hợp: nên chốt sớm, hình thức tự chọn) · `docs/{plan,verification,proof,adr,members}/` (gợi ý) · `docs/{clarify,standup,retro,ai-usage-log}.md`.
+- Dùng AI thoải mái; **không sao chép repo của nhóm khác**; bằng chứng phải thật.
+- Nhân vật, bối cảnh là bản gốc của lab; asset ngoài chỉ dùng CC0/CC-BY/MIT hoặc tự tạo, ghi nguồn trong `CREDITS.md`. Không commit API key, token, `.env`.
