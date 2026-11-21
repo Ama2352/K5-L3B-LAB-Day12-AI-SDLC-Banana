@@ -29,6 +29,10 @@ python3 -m chonoi.bench --seed 42 --duration 30 --out bench.json
 python3 -m chonoi.soak --seed 7 --days 10 --out soak.json
 ```
 
+## Video demo
+
+[Quan_An_Cho_Noi_demo_thuyet_minh.mp4](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/releases/download/v1.0.0/Quan_An_Cho_Noi_demo_thuyet_minh.mp4) (2 phút 48 giây, có thuyết minh), nằm trong mục Assets của Release v1.0.0.
+
 ## Kiểm chứng
 
 - Cảnh lặn lõi 1280×720, seed 42, làm nóng 3 giây rồi đo trong 30 giây. [Kết quả benchmark](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/blob/v1.0.0/docs/proof/phase-4/bench.json)
