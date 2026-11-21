@@ -42,3 +42,17 @@
 - **Điều tôi học được:**
   - Hiểu sâu về tính tất định và thứ tự ưu tiên của các hệ thống con trong cùng một tick mô phỏng game (simulation pipeline order), cùng kỹ thuật dùng phân số (`Fraction`) để tính toán số học chính xác tuyệt đối mà không bị sai số dấu phẩy động.
 
+## Phase 4
+- **Tôi đã làm:**
+  - Bổ sung cờ cảnh báo khách sắp giận (`is_angry: true` và `warning: "patience_low"`) khi kiên nhẫn của khách dưới 25% (900 tick) trong snapshot của Quán, giúp TV5 dễ dàng render cảnh báo trực quan trên HUD UI.
+  - Tự động xóa cảnh báo khi khách được phục vụ chuyển sang trạng thái ăn (`eating`).
+  - Kiểm chứng độ bền vững của Quán và Shop qua nhiều ngày liên tiếp (đảm bảo không rò rỉ bộ nhớ, dọn dẹp kết ca đúng luật, bảo toàn `money`, `earned`, `reputation`, và `upgrades`) sẵn sàng cho bài soak test 10 ngày.
+  - Viết bộ unit test `tests/test_tv4_phase4.py` kiểm chứng 100% các tính năng trên (3/3 test PASS).
+  - Phối hợp với nhóm rà soát hoàn thiện `docs/retro.md` và kiểm thử toàn hệ thống (141/141 test PASS).
+- **Tôi đã review:**
+  - Đọc chéo mã nguồn tích hợp soak test của TV1 và kiểm tra giao diện kết nối cảnh báo khách sắp giận với HUD của TV5.
+- **AI sai ở đâu và tôi phát hiện thế nào:**
+  - AI ban đầu không khai báo `order_status: "assigned"` khi dựng fixture khách đã có món trên tay trong test nhiều ngày, dẫn đến sim cố gắng giữ chỗ nguyên liệu trong kho rỗng và báo lỗi. Tôi đã phát hiện qua test runner và sửa lại fixture test chuẩn xác.
+- **Điều tôi học được:**
+  - Kỹ năng tổng kết dự án và chuẩn bị bản phát hành phần mềm hoàn chỉnh (v1.0.0): từ quản lý chu kỳ ngày, kiểm tra hiệu năng, bảo đảm chất lượng qua kiểm thử hồi quy (regression testing) đến viết tài liệu phản tư và phối hợp nhóm Agile/AI-SDLC.
+
