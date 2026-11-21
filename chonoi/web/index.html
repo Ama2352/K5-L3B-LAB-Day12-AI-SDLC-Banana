@@ -690,6 +690,26 @@
     const cv = document.getElementById("c");
     const ctx = cv.getContext("2d");
 
+    // TICKET-04: benchmark the gameplay canvas only when requested.
+    const BENCH = (() => {
+      const query = new URLSearchParams(location.search);
+      if (query.get("bench") !== "1") return null;
+      return {
+        width: 1280,
+        height: 720,
+        warmupMs: Number(query.get("warmup") || 3) * 1000,
+        durationMs: Number(query.get("duration") || 30) * 1000,
+        firstFrame: null,
+        firstFrameEpochMs: 0,
+        marks: [],
+        sent: false,
+      };
+    })();
+    if (BENCH) {
+      cv.style.width = BENCH.width + "px";
+      cv.style.height = BENCH.height + "px";
+    }
+
     let snap = null;
     let offline = false;
     let soundEnabled = localStorage.getItem("chonoi_muted") !== "1";
@@ -1273,8 +1293,9 @@
     }
 
     function fit() {
-      const dpr = window.devicePixelRatio || 1;
-      const w = innerWidth, h = innerHeight;
+      const dpr = BENCH ? 1 : (window.devicePixelRatio || 1);
+      const w = BENCH ? BENCH.width : innerWidth;
+      const h = BENCH ? BENCH.height : innerHeight;
       if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
         cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
       }
@@ -1773,7 +1794,29 @@
       }
     }
 
-    function frame() {
+    function benchFrame(timestamp) {
+      if (BENCH.sent) return;
+      if (BENCH.firstFrame === null) {
+        BENCH.firstFrame = timestamp;
+        BENCH.firstFrameEpochMs = Date.now();
+      }
+      if (timestamp - BENCH.firstFrame < BENCH.warmupMs) return;
+
+      BENCH.marks.push(timestamp);
+      if (timestamp - BENCH.marks[0] < BENCH.durationMs) return;
+
+      BENCH.sent = true;
+      fetch("/bench-result", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          frame_ts_ms: BENCH.marks,
+          first_frame_epoch_ms: BENCH.firstFrameEpochMs,
+        }),
+      });
+    }
+
+    function frame(timestamp) {
       requestAnimationFrame(frame);
       const [w, h] = fit();
       ctx.fillStyle = "#0e1d2b";
@@ -1781,6 +1824,7 @@
       if (snap) {
         if (activePhase() === "quan") drawQuan(w, h);
         else drawGather(w, h);
+        if (BENCH && activePhase() === "gather") benchFrame(timestamp);
       }
     }
     requestAnimationFrame(frame);

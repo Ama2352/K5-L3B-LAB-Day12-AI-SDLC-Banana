@@ -1,6 +1,7 @@
 """Đọc game.contract.json và kiểm dải hợp lệ của tuning P1 (PRD mục 13.2, Test Contract)."""
 
 import json
+import math
 import os
 
 # Phiên bản dùng kho cá thể + độ tươi: v1.3 (TICKET-04) giữ gameplay, tuning, kho và JSONL theo v1.2
@@ -29,7 +30,7 @@ def load_contract(path=DEFAULT_PATH) -> dict:
             c = json.load(f)
     except (OSError, ValueError) as e:
         raise BadInput(f"không đọc được {path}: {e}")
-    validate_tuning(c.get("tuning"))
+    validate_tuning(c.get("tuning"), c.get("extensions") or [])
     _validate_freshness(c)
     c["tuning"]["contract_version"] = c.get("contract_version")  # để sim chọn schema kho (is_v12)
     return c
@@ -168,7 +169,7 @@ def _span(name, v, lo, hi):
         raise BadInput(f"tuning.{name} phải là [lo, hi] trong [{lo}, {hi}]")
 
 
-def validate_tuning(t):
+def validate_tuning(t, extensions=()):
     if not isinstance(t, dict):
         raise BadInput("thiếu khối tuning")
     g, q, menu = t.get("gather"), t.get("quan"), t.get("menu")
@@ -193,8 +194,13 @@ def validate_tuning(t):
         raise BadInput("quan.tip_min_patience_ratio phải thuộc (0, 1]")
     if not (_num(q.get("tip_reputation")) and q["tip_reputation"] > 0):
         raise BadInput("quan.tip_reputation phải > 0")
-    if q.get("burn_s") is not None:
-        raise BadInput("burn_s phải là null ở Phase 1")
+    # Lõi: burn_s null. Mở rộng "burn" (TICKET-02 mục 3, v1.1 mục 4.1): quan.burn_s hữu hạn, dương
+    burn = q.get("burn_s")
+    if "burn" in extensions:
+        if not (_num(burn) and math.isfinite(burn) and burn > 0):
+            raise BadInput("extensions có burn: quan.burn_s phải là số dương hữu hạn")
+    elif burn is not None:
+        raise BadInput("burn_s phải là null khi chưa khai mở rộng burn")
     # TODO(nhóm): bổ sung kiểm các khóa còn lại nếu muốn chặt hơn (bếp/bàn, uy tín, ...).
     for dish_id, d in menu.items():
         price, cook = d.get("price"), d.get("cook_s")
