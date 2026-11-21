@@ -200,7 +200,16 @@ def _validate_quan(b, tuning):
         if arr in b:
             _check_ids(arr, b[arr])
     if "stock" in b:
-        validate_items(b["stock"])
+        # TICKET-03: v1.2 quan.stock là mảng cá thể {id,kind,fresh}; kho đếm → mã 2
+        if is_v12(tuning):
+            validate_instances(b["stock"], name="quan.stock")
+        else:
+            validate_items(b["stock"])
+    if is_v12(tuning):
+        for c in b.get("customers", []):
+            if "reserved" in c and not (isinstance(c["reserved"], list)
+                                        and all(isinstance(i, str) for i in c["reserved"])):
+                raise BadInput(f"customers.{c['id']}.reserved phải là mảng id cá thể (contract v1.2)")
     p = b.get("player", {})
     if not isinstance(p, dict) or set(p) - QUAN_PLAYER_KEYS:
         raise BadInput("quan.player chỉ có pos và vel")

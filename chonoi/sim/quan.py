@@ -3,6 +3,7 @@
 
 import math
 
+from ..contract import is_v12
 from ..ids import id_key, sort_by_id
 from ..errors import BadInput
 from .fresh_stock import FreshStock
@@ -31,7 +32,8 @@ class QuanSim:
         self._ramp_left = 0
 
         # Kho: --inventory HOẶC scenario.stock (cả hai -> cli đã báo mã 2)
-        stock = inventory if inventory is not None else scenario.get("stock", {})
+        # TICKET-03: ở v1.2 kho rỗng là mảng cá thể rỗng [], không phải object đếm {}
+        stock = inventory if inventory is not None else scenario.get("stock", [] if is_v12(tuning) else {})
         self.fresh_stock = (FreshStock(stock, tuning["freshness"], tuning["tick_hz"])
                             if isinstance(stock, list) else None)
         self.stock = {} if self.fresh_stock is not None else dict(stock)
@@ -387,6 +389,8 @@ class QuanSim:
 
         # Bàn nhận đúng order_id thì khách ăn với timer đầy
         if self.hand.get("order_id") == cust["id"]:
+            # TICKET-03: giá đã chốt lúc bắt đầu nấu nằm trên payload món; boa tính trên giá này
+            cust["base_price"] = self.hand["base_price"]
             cust["state"] = "eating"
             cust["order_status"] = "served"
             cust["eat_ticks_left"] = int(round(self.t["eat_s"] * TICK))
