@@ -2,7 +2,7 @@
 
 > Nguồn: PRD-0 (mục 2, 7 và Test Contract v1.0 mục A–G). Mã `AC-P1-xx`,
 > Test: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`. `smoke:` = `tests/test_smoke_p1.py`, `qa:` = `tests/test_qa_p1.py`.
-> Kết quả: ✅ đạt · ❌ chưa đạt · ⏳ chưa kiểm. ✅ kèm SHA = TV6 đã chạy đạt trên `main` ở SHA đó (100/100 test, [test-run.txt](../proof/phase-1/test-run.txt)). Khi có tag `phase-1`, TV6 chạy lại ở commit gắn tag và thay SHA.
+> Kết quả: ✅ đạt · ❌ chưa đạt · ⏳ chưa kiểm. ✅ kèm SHA = TV6 đã chạy đạt trên `main` ở SHA đó (100/100 test, [test-run.txt](../proof/phase-1/test-run.txt)). Tại tag `phase-1` (`0d867a1`), TV6 chạy lại toàn bộ test của tag: 53/53 OK, [test-run-tag-phase-1.txt](../proof/phase-1/test-run-tag-phase-1.txt).
 
 ## Contract & headless (mục A, B, C, D, E)
 
@@ -76,7 +76,7 @@
 
 ## Cập nhật sau tag (TV6, 2026-11-21 12:35)
 
-- Tại tag `phase-1` (`0d867a1`) quán **chưa có khách**: luật khách (lát 3, TV3) chưa vào `main`. Chạy quán có kho 200 tick → 0 `customer_arrived`. Bộ test lúc đó (100/100, [test-run.txt](../proof/phase-1/test-run.txt)) không có test nào cho lát 3 nên không phát hiện.
+- Tại tag `phase-1` (`0d867a1`) quán **chưa có khách**: luật khách (lát 3, TV3) chưa vào `main`. Chạy quán có kho 200 tick → 0 `customer_arrived`. Bộ test của tag (53/53 OK, [test-run-tag-phase-1.txt](../proof/phase-1/test-run-tag-phase-1.txt)) và bộ 100/100 trên nhánh QA ([test-run.txt](../proof/phase-1/test-run.txt)) đều không có test nào cho lát 3 nên không phát hiện.
 - Lát 3 vào `main` ở PR #9 (`8d9fb80`, 11:43). Khi QA viết test so nguyên data theo PRD-0 mục E thì phát hiện code lệch đề: `customer_arrived` dùng `customer_id` (đề: `order_id`), `no_dish` có `{table_id}` (đề: `{}`). Lỗi có từ commit `1f10afe` (10:12). Đã sửa code và test `test_quan_p2.py` theo đề ở `e3acdb9`.
 - Không dời tag `phase-1`: mọi commit trên `main` có khách đều đã là contract v1.1. Phần khách được chấm lại ở các tag sau (test ẩn có kiểm lại phase trước).
 - Rà độ phủ theo đề, viết thêm `tests/test_qa_spec.py` (CLI, inputs, scenario sai, output, chọn interact, cá/Cá Sấu/vòng ngày chi tiết). Phát hiện quán độc lập không kiểm mâu thuẫn fixture (PRD-0 mục D): đã cho `runner.py` gọi `check_evening_fixture` với đủ thực đơn và bổ sung kiểm khách `eating`. 4 fixture trong `tests/test_tv4_quan.py` thiếu `order_status` (đơn có món trên tay phải `assigned`, khách `eating` phải `served`) nên sửa dữ liệu fixture, giữ nguyên assert.

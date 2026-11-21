@@ -3,7 +3,7 @@
 > Nguồn: TICKET-03 "Mùa Nước Nổi", Test Contract v1.2 (lõi: kho cá thể, độ tươi). Test viết từ đề, hộp đen.
 > Lệnh: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`. Test P3: `tests/test_qa_p3.py` (39 test).
 > Kết quả: ✅ đạt · ❌ chưa đạt · 🖐 kiểm tay. Bằng chứng: [test-run-qa.txt](../proof/phase-3/test-run-qa.txt) (306/306 OK), [smoke-qa.txt](../proof/phase-3/smoke-qa.txt).
-> Chạy lại từ bản xuất tag `phase-3` (`a0e694f`): 306/306 test đạt, smoke bàn giao kho khớp, vòng `day` hoàn tất. Ca bổ sung với độ tươi lẻ sát ngưỡng được xử lý và kiểm lại ở [Phase 4](phase-4.md).
+> Chạy lại từ bản xuất tag `phase-3` (`a0e694f`): 306/306 test đạt ([test-run-tag-phase-3.txt](../proof/phase-3/test-run-tag-phase-3.txt)), smoke bàn giao kho khớp, vòng `day` hoàn tất. Ca bổ sung với độ tươi lẻ sát ngưỡng được xử lý và kiểm lại ở [Phase 4](phase-4.md).
 
 | AC | Yêu cầu (TICKET-03) | Test | Kết quả |
 |---|---|---|---|

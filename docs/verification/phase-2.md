@@ -11,7 +11,7 @@ Các kết quả dưới đây được chạy trên workspace nhánh `sang/tv1`
 
 Hồi quy trên nhánh đạt 62/62 test, gồm 9 test TV1 mới. V1.1 nhận mode `day` và nhận nút boolean `attack` dù mở rộng tắt. Vì vậy các test v1.0 từng yêu cầu từ chối hai đầu vào này đã đổi theo §4.1–4.2. Input lạ hoặc sai kiểu vẫn phải thoát mã 2.
 
-TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tích hợp lịch sinh khách trên nền hai bếp/bốn bàn và thực đơn theo ngày. TV5 còn nối HUD/menu, điều khiển trực tiếp và đo FPS. QA cần đo lại trên bản đủ các lát. Thời gian trong log là kết quả máy phát triển.
+TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tích hợp lịch sinh khách trên nền hai bếp/bốn bàn và thực đơn theo ngày. TV5 còn nối HUD/menu, điều khiển trực tiếp và đo FPS. Thời gian trong log là kết quả máy phát triển.
 
 ---
 
@@ -19,7 +19,7 @@ TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tí
 
 > Nguồn: TICKET-02 (mục 1–2) và Test Contract v1.1 (mục 4). Test viết từ đề, so nguyên `data` event.
 > Lệnh: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`. File QA: `test_qa_p2.py`, `test_qa_spec.py`, `test_qa_quan.py` (hồi quy P1 trên số chuẩn), `test_qa_p1.py`.
-> Kết quả: ✅ đạt · ❌ chưa đạt · 🖐 kiểm tay. Cột "Tại tag `phase-2`" là kết quả ở `ff3d6c9`; cột "Sau sửa" là commit QA mới nhất trên nhánh `thaoquyen` (xem [test-run-qa.txt](../proof/phase-2/test-run-qa.txt)).
+> Kết quả: ✅ đạt · ❌ chưa đạt · 🖐 kiểm tay. Cột "Tại tag `phase-2`" là kết quả ở vị trí tag cũ `ff3d6c9` (tag sau đó dời sang `566e121`, xem Ghi chú QA); cột "Sau sửa" là commit QA mới nhất trên nhánh `thaoquyen` (xem [test-run-qa.txt](../proof/phase-2/test-run-qa.txt)).
 
 | AC | Yêu cầu (TICKET-02) | Test | Bản thử `ff3d6c9` | Sau sửa |
 |---|---|---|---|---|
@@ -46,9 +46,9 @@ TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tí
 | AC-P2-21 | Sinh cá ở 360·k, điểm sinh chuẩn, cách đàn khác > 1 m, id nối tiếp, trần 12 | `test_ac_p2_21_*` | ✅ | ✅ |
 | AC-P2-22 | Tất định: `day` một Ngày cùng seed → giống từng byte | `test_ac_p2_22_*`, [smoke-qa.txt](../proof/phase-2/smoke-qa.txt) | ✅ | ✅ |
 | AC-P2-23 | Hồi quy P1 trên số chuẩn (gather, quán, contract) | `test_qa_p1`, `test_qa_quan`, `test_qa_spec`, smoke | ❌ 8 test quán (thiếu lát khách) | ✅ |
-| AC-P2-24 | Menu, DayIntro/EveningIntro/DayResult/Summary, pause có Tiếp tục/Về menu, HUD sáng/tối, chữ ≥ 18 px, ≥ 30 FPS | 🖐 chơi `python3 -m chonoi.live`, chụp ảnh | 🖐 chưa kiểm | 🖐 chưa kiểm |
+| AC-P2-24 | Menu, DayIntro/EveningIntro/DayResult/Summary, pause có Tiếp tục/Về menu, HUD sáng/tối, chữ ≥ 18 px, ≥ 30 FPS | 🖐 chơi `python3 -m chonoi.live`, chụp ảnh | — | [Kiểm giao diện Phase 4](../proof/phase-4/web-ui.md) |
 
-Bằng chứng trên commit lịch sử `ff3d6c9`: [test-run-qa-tag-phase-2.txt](../proof/phase-2/test-run-qa-tag-phase-2.txt).
+Bằng chứng trên commit lịch sử `ff3d6c9`: [test-run-qa-tag-phase-2.txt](../proof/phase-2/test-run-qa-tag-phase-2.txt). Tại tag `phase-2` hiện tại (`566e121`), TV6 chạy lại toàn bộ test của tag: 240/240 OK, [test-run-tag-phase-2-566e121.txt](../proof/phase-2/test-run-tag-phase-2-566e121.txt).
 
 ## Ghi chú QA
 

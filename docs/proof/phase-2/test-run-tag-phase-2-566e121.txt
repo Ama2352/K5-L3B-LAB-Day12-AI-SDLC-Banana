@@ -1,0 +1,261 @@
+# tag phase-2 = 566e121 · 2026-11-21 16:51 · TV6
+$ PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
+test_bat_ca_linh_yield_3_va_xoa_dan (test_gather_l2.Catch.test_bat_ca_linh_yield_3_va_xoa_dan) ... ok
+test_bat_o_mat_nuoc_khong_co_gi (test_gather_l2.Catch.test_bat_o_mat_nuoc_khong_co_gi) ... ok
+test_gio_thieu_cho_giu_dan_khong_thu_dan_khac (test_gather_l2.Catch.test_gio_thieu_cho_giu_dan_khong_thu_dan_khac) ... ok
+test_hoi_chieu_dung_lai_tu_t_cong_30 (test_gather_l2.Catch.test_hoi_chieu_dung_lai_tu_t_cong_30) ... ok
+test_khong_co_dan_trong_tam_khong_hoi_chieu (test_gather_l2.Catch.test_khong_co_dan_trong_tam_khong_hoi_chieu) ... ok
+test_hai_roi_cap_ben_ghi_kho (test_gather_l2.DockAfterGather.test_hai_roi_cap_ben_ghi_kho) ... ok
+test_gio_day_nut_giu_nguyen (test_gather_l2.Harvest.test_gio_day_nut_giu_nguyen) ... ok
+test_hai_duoi_nuoc_khong_co_gi (test_gather_l2.Harvest.test_hai_duoi_nuoc_khong_co_gi) ... ok
+test_hai_o_mep_ban_kinh (test_gather_l2.Harvest.test_hai_o_mep_ban_kinh) ... ok
+test_hoa_khoang_cach_chon_id_nho_va_bo_nut_chua_moc (test_gather_l2.Harvest.test_hoa_khoang_cach_chon_id_nho_va_bo_nut_chua_moc) ... ok
+test_moc_lai_roi_hai_duoc_ngay (test_gather_l2.Harvest.test_moc_lai_roi_hai_duoc_ngay) ... ok
+test_bat_ca_keo_yield_2 (test_gather_p2.CatchBeforeSwim.test_bat_ca_keo_yield_2) ... ok
+test_bat_theo_vi_tri_truoc_khi_ca_boi (test_gather_p2.CatchBeforeSwim.test_bat_theo_vi_tri_truoc_khi_ca_boi) ... ok
+test_hai_keo_neo_o_N5 (test_gather_p2.CatchBeforeSwim.test_hai_keo_neo_o_N5) ... ok
+test_8_dan_o_8_diem_sinh_khac_nhau (test_gather_p2.InitialSchools.test_8_dan_o_8_diem_sinh_khac_nhau) ... ok
+test_cung_seed_giong_tung_byte_khac_seed_khac (test_gather_p2.InitialSchools.test_cung_seed_giong_tung_byte_khac_seed_khac) ... ok
+test_nhieu_seed_khong_trung_diem (test_gather_p2.InitialSchools.test_nhieu_seed_khong_trung_diem) ... ok
+test_age_ticks_am_ma_2 (test_gather_p2.ScenarioValidation.test_age_ticks_am_ma_2) ... ok
+test_ca_boi_ngoai_mien_loai_ma_2 (test_gather_p2.ScenarioValidation.test_ca_boi_ngoai_mien_loai_ma_2) ... ok
+test_ca_dung_yen_ngoai_mien_loai_hop_le (test_gather_p2.ScenarioValidation.test_ca_dung_yen_ngoai_mien_loai_hop_le) ... ok
+test_ca_moi_tham_gia_tu_buoc_sau (test_gather_p2.Spawn.test_ca_moi_tham_gia_tu_buoc_sau) ... ok
+test_du_tran_12_dan_khong_sinh (test_gather_p2.Spawn.test_du_tran_12_dan_khong_sinh) ... ok
+test_het_gio_truoc_khi_sinh_thi_khong_sinh (test_gather_p2.Spawn.test_het_gio_truoc_khi_sinh_thi_khong_sinh) ... ok
+test_sinh_dung_tick_360_cach_moi_dan_hon_1m (test_gather_p2.Spawn.test_sinh_dung_tick_360_cach_moi_dan_hon_1m) ... ok
+test_age_ticks_fixture_119_doi_huong_ngay_buoc_dau (test_gather_p2.Swim.test_age_ticks_fixture_119_doi_huong_ngay_buoc_dau) ... ok
+test_ca_keo_o_dai_sau_khong_vuot_bien (test_gather_p2.Swim.test_ca_keo_o_dai_sau_khong_vuot_bien) ... ok
+test_doi_huong_o_buoc_boi_thu_120 (test_gather_p2.Swim.test_doi_huong_o_buoc_boi_thu_120) ... ok
+test_phan_xa_goc_dao_ca_hai (test_gather_p2.Swim.test_phan_xa_goc_dao_ca_hai) ... ok
+test_phan_xa_mep_x (test_gather_p2.Swim.test_phan_xa_mep_x) ... ok
+test_random_fish_false_ca_dung_yen_khong_sinh (test_gather_p2.Swim.test_random_fish_false_ca_dung_yen_khong_sinh) ... ok
+test_toc_do_1_5_m_s_va_age_ticks (test_gather_p2.Swim.test_toc_do_1_5_m_s_va_age_ticks) ... ok
+test_dive_at_surface_boundary (test_gather_survival.GatherSurvival.test_dive_at_surface_boundary) ... ok
+test_faint_precedes_docking_catching_and_timeout (test_gather_survival.GatherSurvival.test_faint_precedes_docking_catching_and_timeout) ... ok
+test_first_zero_tick_counts_and_choke_repeats (test_gather_survival.GatherSurvival.test_first_zero_tick_counts_and_choke_repeats) ... ok
+test_oxygen_caps_at_max_on_surface (test_gather_survival.GatherSurvival.test_oxygen_caps_at_max_on_surface) ... ok
+test_surface_on_choke_step_resets_timer_and_refills (test_gather_survival.GatherSurvival.test_surface_on_choke_step_resets_timer_and_refills) ... ok
+test_state_input_and_clean_stop (test_live.LiveServerTest.test_state_input_and_clean_stop) ... ok
+test_evening_validates_against_actual_handoff (test_phase2_tv1.Phase2TV1.test_evening_validates_against_actual_handoff) ... ok
+test_last_shop_tick_and_three_day_spawns (test_phase2_tv1.Phase2TV1.test_last_shop_tick_and_three_day_spawns) ... ok
+test_monster_faint_lifo_after_choke_opens_empty_quan (test_phase2_tv1.Phase2TV1.test_monster_faint_lifo_after_choke_opens_empty_quan) ... ok
+test_pause_freezes_standalone_modes_and_ignores_held_actions (test_phase2_tv1.Phase2TV1.test_pause_freezes_standalone_modes_and_ignores_held_actions) ... ok
+test_pause_shop_buy_then_close_and_activate_next_day (test_phase2_tv1.Phase2TV1.test_pause_shop_buy_then_close_and_activate_next_day) ... ok
+test_plan_override_and_invalid_fixtures (test_phase2_tv1.Phase2TV1.test_plan_override_and_invalid_fixtures) ... ok
+test_recoil_tie_break_and_invulnerability (test_phase2_tv1.Phase2TV1.test_recoil_tie_break_and_invulnerability) ... ok
+test_shop_failure_and_active_level_until_next_day (test_phase2_tv1.Phase2TV1.test_shop_failure_and_active_level_until_next_day) ... ok
+test_unsafe_depth_patrol_and_choke_during_invulnerability (test_phase2_tv1.Phase2TV1.test_unsafe_depth_patrol_and_choke_during_invulnerability) ... ok
+test_bad_frames_raise (test_python_starter_units.Units.test_bad_frames_raise) ... ok
+test_catch_and_attack_are_boolean_v11_buttons (test_python_starter_units.Units.test_catch_and_attack_are_boolean_v11_buttons) ... ok
+test_id_allocator_continues_after_max (test_python_starter_units.Units.test_id_allocator_continues_after_max) ... ok
+test_id_sorting (test_python_starter_units.Units.test_id_sorting) ... ok
+test_input_edges_and_inherit (test_python_starter_units.Units.test_input_edges_and_inherit) ... ok
+test_live_inputs_keep_fast_tap_edge (test_python_starter_units.Units.test_live_inputs_keep_fast_tap_edge) ... ok
+test_session_steps_gather_and_dock (test_python_starter_units.Units.test_session_steps_gather_and_dock) ... ok
+test_ac_p1_16_bat_ca_linh_du_yield (test_qa_p1.Catch.test_ac_p1_16_bat_ca_linh_du_yield) ... ok
+test_ac_p1_16_chon_dan_gan_nhat_hoa_theo_id (test_qa_p1.Catch.test_ac_p1_16_chon_dan_gan_nhat_hoa_theo_id) ... ok
+test_ac_p1_16_hoi_chieu_30_tick (test_qa_p1.Catch.test_ac_p1_16_hoi_chieu_30_tick) ... ok
+test_ac_p1_16_khong_co_dan_trong_tam_khong_su_kien (test_qa_p1.Catch.test_ac_p1_16_khong_co_dan_trong_tam_khong_su_kien) ... ok
+test_ac_p1_16_o_mat_nuoc_khong_bat (test_qa_p1.Catch.test_ac_p1_16_o_mat_nuoc_khong_bat) ... ok
+test_ac_p1_16_thieu_cho_hold_full_khong_thu_dan_khac_khong_hoi_chieu (test_qa_p1.Catch.test_ac_p1_16_thieu_cho_hold_full_khong_thu_dan_khac_khong_hoi_chieu) ... ok
+test_ac_p1_10_doi_chung_o_duoi_thi_ngat (test_qa_p1.Choke.test_ac_p1_10_doi_chung_o_duoi_thi_ngat) ... ok
+test_ac_p1_10_ngat_lan_dau_o_t_cong_59 (test_qa_p1.Choke.test_ac_p1_10_ngat_lan_dau_o_t_cong_59) ... ok
+test_ac_p1_10_ngat_lap_lai_moi_60_tick (test_qa_p1.Choke.test_ac_p1_10_ngat_lap_lai_moi_60_tick) ... ok
+test_ac_p1_10_noi_len_dung_buoc_ngat_thi_khong_ngat (test_qa_p1.Choke.test_ac_p1_10_noi_len_dung_buoc_ngat_thi_khong_ngat) ... ok
+test_ac_p1_09_dive_va_surface_moi_lan_doi_phia_mot_event (test_qa_p1.DiveSurface.test_ac_p1_09_dive_va_surface_moi_lan_doi_phia_mot_event) ... ok
+test_ac_p1_09_dung_yen_khong_co_dive_surface (test_qa_p1.DiveSurface.test_ac_p1_09_dung_yen_khong_co_dive_surface) ... ok
+test_ac_p1_13_ben_xet_truoc_hai (test_qa_p1.Dock.test_ac_p1_13_ben_xet_truoc_hai) ... ok
+test_ac_p1_13_dung_mep_ben_la_docked (test_qa_p1.Dock.test_ac_p1_13_dung_mep_ben_la_docked) ... ok
+test_ac_p1_13_ngoai_ben_khong_ket_thuc (test_qa_p1.Dock.test_ac_p1_13_ngoai_ben_khong_ket_thuc) ... ok
+test_ac_p1_11_ngat_xiu_bo_gio_lifo_va_ket_thuc (test_qa_p1.Faint.test_ac_p1_11_ngat_xiu_bo_gio_lifo_va_ket_thuc) ... ok
+test_ac_p1_04_giu_nut_khong_hai_lap (test_qa_p1.GatherNode.test_ac_p1_04_giu_nut_khong_hai_lap) ... ok
+test_ac_p1_12_ac_p1_14_gio_day_hold_full_nut_giu_nguyen (test_qa_p1.GatherNode.test_ac_p1_12_ac_p1_14_gio_day_hold_full_nut_giu_nguyen) ... ok
+test_ac_p1_14_bo_qua_nut_chua_ready (test_qa_p1.GatherNode.test_ac_p1_14_bo_qua_nut_chua_ready) ... ok
+test_ac_p1_14_chon_nut_gan_nhat (test_qa_p1.GatherNode.test_ac_p1_14_chon_nut_gan_nhat) ... ok
+test_ac_p1_14_duoi_nuoc_khong_hai (test_qa_p1.GatherNode.test_ac_p1_14_duoi_nuoc_khong_hai) ... ok
+test_ac_p1_14_hai_dung_mep_ban_kinh (test_qa_p1.GatherNode.test_ac_p1_14_hai_dung_mep_ban_kinh) ... ok
+test_ac_p1_14_hoa_khoang_cach_chon_id_nho (test_qa_p1.GatherNode.test_ac_p1_14_hoa_khoang_cach_chon_id_nho) ... ok
+test_ac_p1_14_ngoai_ban_kinh_khong_hai (test_qa_p1.GatherNode.test_ac_p1_14_ngoai_ban_kinh_khong_hai) ... ok
+test_ac_p1_03_cung_seed_giong_tung_byte_ca_file_kho (test_qa_p1.OutputFormat.test_ac_p1_03_cung_seed_giong_tung_byte_ca_file_kho) ... ok
+test_ac_p1_03_quan_cung_seed_giong_tung_byte (test_qa_p1.OutputFormat.test_ac_p1_03_quan_cung_seed_giong_tung_byte) ... ok
+test_ac_p1_06_sap_id_F2_truoc_F10 (test_qa_p1.OutputFormat.test_ac_p1_06_sap_id_F2_truoc_F10) ... ok
+test_ac_p1_06_score_moi_snapshot_va_end (test_qa_p1.OutputFormat.test_ac_p1_06_score_moi_snapshot_va_end) ... ok
+test_ac_p1_06_snapshot_tick_0_boi_so_va_tick_dung (test_qa_p1.OutputFormat.test_ac_p1_06_snapshot_tick_0_boi_so_va_tick_dung) ... ok
+test_ac_p1_08_noi_len_reset_dem_ngat (test_qa_p1.Oxygen.test_ac_p1_08_noi_len_reset_dem_ngat) ... ok
+test_ac_p1_08_oxy_giam_1_moi_tick_duoi_nuoc (test_qa_p1.Oxygen.test_ac_p1_08_oxy_giam_1_moi_tick_duoi_nuoc) ... ok
+test_ac_p1_08_oxy_hoi_kep_toi_da (test_qa_p1.Oxygen.test_ac_p1_08_oxy_hoi_kep_toi_da) ... ok
+test_ac_p1_08_oxy_hoi_o_mat_nuoc (test_qa_p1.Oxygen.test_ac_p1_08_oxy_hoi_o_mat_nuoc) ... ok
+test_ac_p1_08_oxygen_empty_khi_cham_0 (test_qa_p1.Oxygen.test_ac_p1_08_oxygen_empty_khi_cham_0) ... ok
+test_ac_p1_15_node_regrown_va_hai_ngay_cung_buoc (test_qa_p1.Regrow.test_ac_p1_15_node_regrown_va_hai_ngay_cung_buoc) ... ok
+test_ac_p1_17_ben_o_buoc_cuoi_uu_tien_docked (test_qa_p1.TimeEnd.test_ac_p1_17_ben_o_buoc_cuoi_uu_tien_docked) ... ok
+test_ac_p1_17_hai_o_buoc_cuoi_van_vao_kho (test_qa_p1.TimeEnd.test_ac_p1_17_hai_o_buoc_cuoi_van_vao_kho) ... ok
+test_ac_p1_17_het_gio_duoi_nuoc_giu_gio (test_qa_p1.TimeEnd.test_ac_p1_17_het_gio_duoi_nuoc_giu_gio) ... ok
+test_ac_p2_08_cach_hon_10m_khong_duoi (test_qa_p2.Crocodile.test_ac_p2_08_cach_hon_10m_khong_duoi) ... ok
+test_ac_p2_08_nguoi_choi_len_d_duoi_10_thi_bo_duoi (test_qa_p2.Crocodile.test_ac_p2_08_nguoi_choi_len_d_duoi_10_thi_bo_duoi) ... ok
+test_ac_p2_08_phat_hien_dung_10m_thi_duoi_3ms (test_qa_p2.Crocodile.test_ac_p2_08_phat_hien_dung_10m_thi_duoi_3ms) ... ok
+test_ac_p2_08_tuan_tra_1ms_den_waypoint (test_qa_p2.Crocodile.test_ac_p2_08_tuan_tra_1ms_den_waypoint) ... ok
+test_ac_p2_09_dang_bat_tu_khong_hit_khong_recoil (test_qa_p2.Crocodile.test_ac_p2_09_dang_bat_tu_khong_hit_khong_recoil) ... ok
+test_ac_p2_09_gio_1_mon_khong_mat_gi (test_qa_p2.Crocodile.test_ac_p2_09_gio_1_mon_khong_mat_gi) ... ok
+test_ac_p2_09_hit_mat_mau_bo_nua_gio_lifo_bat_tu_90 (test_qa_p2.Crocodile.test_ac_p2_09_hit_mat_mau_bo_nua_gio_lifo_bat_tu_90) ... ok
+test_ac_p2_10_ngat_xuyen_bat_tu_khong_roi_hang (test_qa_p2.Crocodile.test_ac_p2_10_ngat_xuyen_bat_tu_khong_roi_hang) ... ok
+test_ac_p2_11_cap_ben_uu_tien_khi_con_mau (test_qa_p2.Crocodile.test_ac_p2_11_cap_ben_uu_tien_khi_con_mau) ... ok
+test_ac_p2_11_ngat_do_ca_sau_gather_doc_lap (test_qa_p2.Crocodile.test_ac_p2_11_ngat_do_ca_sau_gather_doc_lap) ... ok
+test_ac_p2_15_ke_hoach_tung_ngay_D1_den_D5 (test_qa_p2.DayLoop.test_ac_p2_15_ke_hoach_tung_ngay_D1_den_D5) ... ok
+test_ac_p2_15_mot_ngay_khong_input_dung_22200_tick_va_duoi_20s (test_qa_p2.DayLoop.test_ac_p2_15_mot_ngay_khong_input_dung_22200_tick_va_duoi_20s) ... ok
+test_ac_p2_15_snapshot_day_co_truong_xuyen_ngay (test_qa_p2.DayLoop.test_ac_p2_15_snapshot_day_co_truong_xuyen_ngay) ... ok
+test_ac_p2_16_cap_ben_ban_giao_kho_vao_quan (test_qa_p2.DayLoop.test_ac_p2_16_cap_ben_ban_giao_kho_vao_quan) ... ok
+test_ac_p2_16_ngat_van_mo_quan_kho_rong_cung_tick (test_qa_p2.DayLoop.test_ac_p2_16_ngat_van_mo_quan_kho_rong_cung_tick) ... ok
+test_ac_p2_17_mua_tru_money_giu_earned_va_diem (test_qa_p2.DayLoop.test_ac_p2_17_mua_tru_money_giu_earned_va_diem) ... ok
+test_ac_p2_17_shop_tu_dong_sau_600_tick (test_qa_p2.DayLoop.test_ac_p2_17_shop_tu_dong_sau_600_tick) ... ok
+test_ac_p2_18_mau_va_oxy_day_lai_moi_ngay_theo_cap (test_qa_p2.DayLoop.test_ac_p2_18_mau_va_oxy_day_lai_moi_ngay_theo_cap) ... ok
+test_ac_p2_20_ca_boi_1_5_ms (test_qa_p2.FishSwimSpawn.test_ac_p2_20_ca_boi_1_5_ms) ... ok
+test_ac_p2_20_ca_o_trong_mien_va_dai_do_sau (test_qa_p2.FishSwimSpawn.test_ac_p2_20_ca_o_trong_mien_va_dai_do_sau) ... ok
+test_ac_p2_21_sinh_ca_o_phase_tick_360k_toi_da_12 (test_qa_p2.FishSwimSpawn.test_ac_p2_21_sinh_ca_o_phase_tick_360k_toi_da_12) ... ok
+test_ac_p2_22_tat_dinh_day_mot_ngay (test_qa_p2.FishSwimSpawn.test_ac_p2_22_tat_dinh_day_mot_ngay) ... ok
+test_ac_p2_02_hai_keo_neo (test_qa_p2.GatherStandard.test_ac_p2_02_hai_keo_neo) ... ok
+test_ac_p2_03_bat_ca_keo_yield_2 (test_qa_p2.GatherStandard.test_ac_p2_03_bat_ca_keo_yield_2) ... ok
+test_ac_p2_03_snapshot_dau_ca_8_dan_6_nut_M1 (test_qa_p2.GatherStandard.test_ac_p2_03_snapshot_dau_ca_8_dan_6_nut_M1) ... ok
+test_ac_p2_19_pause_dong_bang_oxy_va_dong_ho (test_qa_p2.Pause.test_ac_p2_19_pause_dong_bang_oxy_va_dong_ho) ... ok
+test_ac_p2_12_het_ban_bo_luot (test_qa_p2.Restaurant.test_ac_p2_12_het_ban_bo_luot) ... ok
+test_ac_p2_12_lich_khach_120_cong_900k_ban_id_nho_nhat (test_qa_p2.Restaurant.test_ac_p2_12_lich_khach_120_cong_900k_ban_id_nho_nhat) ... ok
+test_ac_p2_13_day_loc_menu_theo_ke_hoach (test_qa_p2.Restaurant.test_ac_p2_13_day_loc_menu_theo_ke_hoach) ... ok
+test_ac_p2_13_quan_doc_lap_dung_mon_moi (test_qa_p2.Restaurant.test_ac_p2_13_quan_doc_lap_dung_mon_moi) ... ok
+test_ac_p2_14_chon_tuong_tac_gan_nhat (test_qa_p2.Restaurant.test_ac_p2_14_chon_tuong_tac_gan_nhat) ... ok
+test_ac_p2_14_hai_bep_nau_song_song (test_qa_p2.Restaurant.test_ac_p2_14_hai_bep_nau_song_song) ... ok
+test_ac_p2_01_contract_version_va_ca_chung (test_qa_p2.StandardNumbers.test_ac_p2_01_contract_version_va_ca_chung) ... ok
+test_ac_p2_02_nut_hai_N1_den_N6 (test_qa_p2.StandardNumbers.test_ac_p2_02_nut_hai_N1_den_N6) ... ok
+test_ac_p2_03_fish_yield_va_8_dan_dau_ca (test_qa_p2.StandardNumbers.test_ac_p2_03_fish_yield_va_8_dan_dau_ca) ... ok
+test_ac_p2_03_khoa_ca_boi_va_sinh (test_qa_p2.StandardNumbers.test_ac_p2_03_khoa_ca_boi_va_sinh) ... ok
+test_ac_p2_04_ca_sau_dung_so (test_qa_p2.StandardNumbers.test_ac_p2_04_ca_sau_dung_so) ... ok
+test_ac_p2_05_quan_2_bep_4_ban_6_mon (test_qa_p2.StandardNumbers.test_ac_p2_05_quan_2_bep_4_ban_6_mon) ... ok
+test_ac_p2_06_day_plan_va_ingredients_bang_tong_cong_thuc (test_qa_p2.StandardNumbers.test_ac_p2_06_day_plan_va_ingredients_bang_tong_cong_thuc) ... ok
+test_ac_p2_07_shop_nang_cap (test_qa_p2.StandardNumbers.test_ac_p2_07_shop_nang_cap) ... ok
+test_ac_p1_20_chua_toi_tick_120_khong_co_khach (test_qa_quan.Arrival.test_ac_p1_20_chua_toi_tick_120_khong_co_khach) ... ok
+test_ac_p1_20_khach_dau_tien_tick_120_data_dung_de (test_qa_quan.Arrival.test_ac_p1_20_khach_dau_tien_tick_120_data_dung_de) ... ok
+test_ac_p1_20_no_dish_data_rong (test_qa_quan.Arrival.test_ac_p1_20_no_dish_data_rong) ... ok
+test_ac_p1_20_random_customers_false_khong_sinh_khach (test_qa_quan.Arrival.test_ac_p1_20_random_customers_false_khong_sinh_khach) ... ok
+test_ac_p1_21_chon_deu_theo_seed (test_qa_quan.Arrival.test_ac_p1_21_chon_deu_theo_seed) ... ok
+test_ac_p1_21_chon_mon_trong_cac_mon_du_nguyen_lieu (test_qa_quan.Arrival.test_ac_p1_21_chon_mon_trong_cac_mon_du_nguyen_lieu) ... ok
+test_ac_p1_21_cung_seed_cung_mon (test_qa_quan.Arrival.test_ac_p1_21_cung_seed_cung_mon) ... ok
+test_ac_p1_21_giu_cho_tru_khoi_kho_kha_dung (test_qa_quan.Arrival.test_ac_p1_21_giu_cho_tru_khoi_kho_kha_dung)
+Hai khách tranh phần cuối: C1 đã giữ 1 cá lóc duy nhất → khách mới không gọi được cá lóc. ... ok
+test_ac_p1_22_het_kien_nhan_roi_quan_tru_uy_tin (test_qa_quan.Arrival.test_ac_p1_22_het_kien_nhan_roi_quan_tru_uy_tin) ... ok
+test_ac_p1_22_khach_roi_nha_giu_cho_cho_khach_sau (test_qa_quan.Arrival.test_ac_p1_22_khach_roi_nha_giu_cho_cho_khach_sau) ... ok
+test_ac_p1_22_uy_tin_kep_toi_thieu_0 (test_qa_quan.Arrival.test_ac_p1_22_uy_tin_kep_toi_thieu_0) ... ok
+test_ac_p1_29_tron_vong_quan_co_khach_va_nhan_tien (test_qa_quan.FullFlow.test_ac_p1_29_tron_vong_quan_co_khach_va_nhan_tien)
+Người chơi đứng ở B1; khách đến tick 120; nấu; bưng; đi tới T1; phục vụ; ăn xong trả tiền. ... ok
+test_ac_p1_24_bep_idle_bat_dau_nau_dung_data (test_qa_quan.Kitchen.test_ac_p1_24_bep_idle_bat_dau_nau_dung_data) ... ok
+test_ac_p1_24_items_sap_theo_kind (test_qa_quan.Kitchen.test_ac_p1_24_items_sap_theo_kind) ... ok
+test_ac_p1_24_lay_don_reserved_cu_nhat (test_qa_quan.Kitchen.test_ac_p1_24_lay_don_reserved_cu_nhat) ... ok
+test_ac_p1_24_nau_xong_dung_cook_s (test_qa_quan.Kitchen.test_ac_p1_24_nau_xong_dung_cook_s) ... ok
+test_ac_p1_25_bung_mon_tu_bep_ready (test_qa_quan.Kitchen.test_ac_p1_25_bung_mon_tu_bep_ready) ... ok
+test_ac_p1_25_tay_day_khong_bung_them (test_qa_quan.Kitchen.test_ac_p1_25_tay_day_khong_bung_them) ... ok
+test_ac_p1_26_dung_moc_50_phan_tram_van_boa (test_qa_quan.Kitchen.test_ac_p1_26_dung_moc_50_phan_tram_van_boa) ... ok
+test_ac_p1_26_kien_nhan_duoi_50_phan_tram_boa_0 (test_qa_quan.Kitchen.test_ac_p1_26_kien_nhan_duoi_50_phan_tram_boa_0) ... ok
+test_ac_p1_26_phuc_vu_con_nhieu_kien_nhan_co_boa (test_qa_quan.Kitchen.test_ac_p1_26_phuc_vu_con_nhieu_kien_nhan_co_boa) ... ok
+test_ac_p1_27_an_xong_tra_tien_cong_uy_tin (test_qa_quan.Kitchen.test_ac_p1_27_an_xong_tra_tien_cong_uy_tin) ... ok
+test_ac_p1_27_uy_tin_kep_toi_da_5 (test_qa_quan.Kitchen.test_ac_p1_27_uy_tin_kep_toi_da_5) ... ok
+test_ac_p1_28_dong_ca (test_qa_quan.Kitchen.test_ac_p1_28_dong_ca) ... ok
+test_ac_p1_02_inventory_out_khong_ghi_khi_loi_dau_vao (test_qa_spec.Cli.test_ac_p1_02_inventory_out_khong_ghi_khi_loi_dau_vao) ... ok
+test_ac_p1_02_loi_ghi_dau_ra_ma_1 (test_qa_spec.Cli.test_ac_p1_02_loi_ghi_dau_ra_ma_1) ... ok
+test_ac_p1_02_seed_va_ticks_sai_kieu_ma_2 (test_qa_spec.Cli.test_ac_p1_02_seed_va_ticks_sai_kieu_ma_2) ... ok
+test_ac_p1_02_snapshot_every_mac_dinh_10 (test_qa_spec.Cli.test_ac_p1_02_snapshot_every_mac_dinh_10) ... ok
+test_ac_p1_02_snapshot_every_phai_duong (test_qa_spec.Cli.test_ac_p1_02_snapshot_every_phai_duong) ... ok
+test_ac_p1_02_thieu_co_bat_buoc_ma_2 (test_qa_spec.Cli.test_ac_p1_02_thieu_co_bat_buoc_ma_2) ... ok
+test_ac_p1_02_ticks_0_chi_dung_fixture (test_qa_spec.Cli.test_ac_p1_02_ticks_0_chi_dung_fixture) ... ok
+test_ac_p2_08_ca_sau_khong_len_tren_d10 (test_qa_spec.CrocDetail.test_ac_p2_08_ca_sau_khong_len_tren_d10) ... ok
+test_ac_p2_08_den_waypoint_thi_quay_dau (test_qa_spec.CrocDetail.test_ac_p2_08_den_waypoint_thi_quay_dau) ... ok
+test_ac_p2_08_xa_hon_16m_bo_duoi_trong_16m_van_duoi (test_qa_spec.CrocDetail.test_ac_p2_08_xa_hon_16m_bo_duoi_trong_16m_van_duoi) ... ok
+test_ac_p2_15_event_day_co_truong_day (test_qa_spec.DayDetail.test_ac_p2_15_event_day_co_truong_day) ... ok
+test_ac_p2_15_snapshot_shop_co_kho_du_va_dong_ho_600 (test_qa_spec.DayDetail.test_ac_p2_15_snapshot_shop_co_kho_du_va_dong_ho_600) ... ok
+test_ac_p2_17_buy_sai_pha_bo_qua (test_qa_spec.DayDetail.test_ac_p2_17_buy_sai_pha_bo_qua) ... ok
+test_ac_p2_17_buy_xu_ly_truoc_shop_done_cung_buoc (test_qa_spec.DayDetail.test_ac_p2_17_buy_xu_ly_truoc_shop_done_cung_buoc) ... ok
+test_ac_p2_17_dung_gia_van_mua_duoc (test_qa_spec.DayDetail.test_ac_p2_17_dung_gia_van_mua_duoc) ... ok
+test_ac_p2_18_kho_du_bo_sau_shop (test_qa_spec.DayDetail.test_ac_p2_18_kho_du_bo_sau_shop) ... ok
+test_ac_p2_18_mau_oxy_hoi_day_dau_ngay (test_qa_spec.DayDetail.test_ac_p2_18_mau_oxy_hoi_day_dau_ngay) ... ok
+test_ac_p2_19_pause_bo_qua_buy (test_qa_spec.DayDetail.test_ac_p2_19_pause_bo_qua_buy) ... ok
+test_ac_p1_28_shift_earned_chi_tinh_trong_ca (test_qa_spec.DayShift.test_ac_p1_28_shift_earned_chi_tinh_trong_ca) ... ok
+test_ac_p2_20_doi_huong_o_buoc_120 (test_qa_spec.FishDetail.test_ac_p2_20_doi_huong_o_buoc_120) ... ok
+test_ac_p2_20_phan_xa_mep_dao_huong (test_qa_spec.FishDetail.test_ac_p2_20_phan_xa_mep_dao_huong) ... ok
+test_ac_p2_20_random_fish_false_ca_dung_yen_khong_sinh (test_qa_spec.FishDetail.test_ac_p2_20_random_fish_false_ca_dung_yen_khong_sinh) ... ok
+test_ac_p2_21_ca_moi_id_noi_tiep_va_cach_dan_khac_hon_1m (test_qa_spec.FishDetail.test_ac_p2_21_ca_moi_id_noi_tiep_va_cach_dan_khac_hon_1m) ... ok
+test_ac_p1_04_frame_chi_cap_nhat_truong_co_mat (test_qa_spec.Inputs.test_ac_p1_04_frame_chi_cap_nhat_truong_co_mat) ... ok
+test_ac_p1_04_move_dai_hon_1_duoc_chuan_hoa (test_qa_spec.Inputs.test_ac_p1_04_move_dai_hon_1_duoc_chuan_hoa) ... ok
+test_ac_p1_04_move_ngoai_mien_hoac_sai_kieu_ma_2 (test_qa_spec.Inputs.test_ac_p1_04_move_ngoai_mien_hoac_sai_kieu_ma_2) ... ok
+test_ac_p1_04_nut_dung_kieu_sai_pha_bo_qua (test_qa_spec.Inputs.test_ac_p1_04_nut_dung_kieu_sai_pha_bo_qua) ... ok
+test_ac_p1_04_nut_sai_kieu_ma_2 (test_qa_spec.Inputs.test_ac_p1_04_nut_sai_kieu_ma_2) ... ok
+test_ac_p1_04_tick_am_giam_lap_ma_2 (test_qa_spec.Inputs.test_ac_p1_04_tick_am_giam_lap_ma_2) ... ok
+test_ac_p1_23_doi_tuong_gan_nhat_khong_tuong_tac_duoc_thi_bo_luot (test_qa_spec.InteractChoice.test_ac_p1_23_doi_tuong_gan_nhat_khong_tuong_tac_duoc_thi_bo_luot) ... ok
+test_ac_p1_23_hoa_hai_bep_chon_id_nho_dung_mep (test_qa_spec.InteractChoice.test_ac_p1_23_hoa_hai_bep_chon_id_nho_dung_mep) ... ok
+test_ac_p1_23_hoa_khoang_cach_bep_truoc_ban (test_qa_spec.InteractChoice.test_ac_p1_23_hoa_khoang_cach_bep_truoc_ban) ... ok
+test_ac_p1_26_phuc_vu_sai_don_khong_nhan (test_qa_spec.InteractChoice.test_ac_p1_26_phuc_vu_sai_don_khong_nhan) ... ok
+test_ac_p1_22_khach_roi_bo_mon_dang_nau (test_qa_spec.LeaveDropsDish.test_ac_p1_22_khach_roi_bo_mon_dang_nau) ... ok
+test_ac_p1_22_khach_roi_bo_mon_tren_tay (test_qa_spec.LeaveDropsDish.test_ac_p1_22_khach_roi_bo_mon_tren_tay) ... ok
+test_ac_p1_01_du_khoa_preset (test_qa_spec.Manifest.test_ac_p1_01_du_khoa_preset) ... ok
+test_ac_p1_01_gia_tri_quan_chuan (test_qa_spec.Manifest.test_ac_p1_01_gia_tri_quan_chuan) ... ok
+test_ac_p1_06_dong_end_va_event (test_qa_spec.Output.test_ac_p1_06_dong_end_va_event) ... ok
+test_ac_p1_06_event_truoc_snapshot_cung_tick_end_cuoi (test_qa_spec.Output.test_ac_p1_06_event_truoc_snapshot_cung_tick_end_cuoi) ... ok
+test_ac_p1_06_toa_do_3_chu_so (test_qa_spec.Output.test_ac_p1_06_toa_do_3_chu_so) ... ok
+test_ac_p1_06_truong_snapshot_gather (test_qa_spec.Output.test_ac_p1_06_truong_snapshot_gather) ... ok
+test_ac_p1_06_truong_snapshot_quan (test_qa_spec.Output.test_ac_p1_06_truong_snapshot_quan) ... ok
+test_ac_p1_05_gather_sai (test_qa_spec.ScenarioInvalid.test_ac_p1_05_gather_sai) ... ok
+test_ac_p1_05_quan_sai (test_qa_spec.ScenarioInvalid.test_ac_p1_05_quan_sai) ... ok
+test_day_count_does_not_cap_orders (test_quan_p2.Phase2Customers.test_day_count_does_not_cap_orders) ... ok
+test_day_excludes_dishes_outside_plan (test_quan_p2.Phase2Customers.test_day_excludes_dishes_outside_plan) ... ok
+test_day_handoff_filters_plan_and_applies_upgrade_next_day (test_quan_p2.Phase2Customers.test_day_handoff_filters_plan_and_applies_upgrade_next_day) ... ok
+test_quan_reads_new_ingredients_and_uses_full_menu (test_quan_p2.Phase2Customers.test_quan_reads_new_ingredients_and_uses_full_menu) ... ok
+test_two_open_tables_do_not_reserve_same_portion (test_quan_p2.Phase2Customers.test_two_open_tables_do_not_reserve_same_portion) ... ok
+test_fixture_rejects_shared_reservation (test_quan_p3.Phase3FreshStock.test_fixture_rejects_shared_reservation) ... ok
+test_implicit_reservation_uses_freshness_then_numeric_id (test_quan_p3.Phase3FreshStock.test_implicit_reservation_uses_freshness_then_numeric_id) ... ok
+test_reassignment_uses_order_tick_then_table (test_quan_p3.Phase3FreshStock.test_reassignment_uses_order_tick_then_table) ... ok
+test_spoiled_events_precede_reassignment_and_cooking (test_quan_p3.Phase3FreshStock.test_spoiled_events_precede_reassignment_and_cooking) ... ok
+test_con_01_ticks_zero_and_end_line (test_smoke_p1.Contract.test_con_01_ticks_zero_and_end_line) ... ok
+test_con_02_deterministic_bytes (test_smoke_p1.Contract.test_con_02_deterministic_bytes) ... ok
+test_con_03_bad_input_exit_2 (test_smoke_p1.Contract.test_con_03_bad_input_exit_2) ... ok
+test_con_03_unknown_modes_rejected (test_smoke_p1.Contract.test_con_03_unknown_modes_rejected) ... ok
+test_gather_snapshot_has_gather_fields (test_smoke_p1.Contract.test_gather_snapshot_has_gather_fields) ... ok
+test_scenario_out_of_domain_exit_2 (test_smoke_p1.Contract.test_scenario_out_of_domain_exit_2) ... ok
+test_inv_01_gather_writes_inventory_quan_reads_it (test_smoke_p1.Integration.test_inv_01_gather_writes_inventory_quan_reads_it)
+Ví dụ smoke test trong PRD-0 mục G: cập bến ở tick 0, quán đọc kho đúng nội dung. ... ok
+test_inv_01_not_written_when_tick_limit_first (test_smoke_p1.Integration.test_inv_01_not_written_when_tick_limit_first) ... ok
+test_inv_bad_schema_exit_2 (test_smoke_p1.Integration.test_inv_bad_schema_exit_2) ... ok
+test_inventory_and_scenario_stock_conflict (test_smoke_p1.Integration.test_inventory_and_scenario_stock_conflict) ... ok
+test_inventory_flags_mode_mismatch_exit_2 (test_smoke_p1.Integration.test_inventory_flags_mode_mismatch_exit_2) ... ok
+test_move_01_swim_speed_after_ramp (test_smoke_p1.Movement.test_move_01_swim_speed_after_ramp)
+Bỏ 6 tick tăng tốc rồi đo 60 tick: quãng ≈ swim_speed × 1 s (±0.1). Ngang, xuống, chéo (không nhanh hơn). ... ok
+test_move_02_heading_positive_is_down (test_smoke_p1.Movement.test_move_02_heading_positive_is_down) ... ok
+test_move_03_edge_clamp (test_smoke_p1.Movement.test_move_03_edge_clamp)
+Chặn từng mép của vùng nước, kể cả d không âm (không bay lên khỏi mặt nước) và đáy d = 30. ... ok
+test_move_mep_vel_ve_0 (test_smoke_p1.Movement.test_move_mep_vel_ve_0) ... ok
+test_move_ramp_doi_huong_trong_tran (test_smoke_p1.Movement.test_move_ramp_doi_huong_trong_tran)
+Đảo từ +speed sang -speed: vận tốc chạm mục tiêu sau tối đa ramp_max_ticks tick kể từ lúc đổi input. ... ok
+test_time_ends_gather_and_keeps_hold (test_smoke_p1.Movement.test_time_ends_gather_and_keeps_hold) ... ok
+test_khoi_sai_mode_exit_2 (test_smoke_p1.ScenarioModes.test_khoi_sai_mode_exit_2) ... ok
+test_quan_fixture_khong_hop_le_exit_2 (test_smoke_p1.ScenarioModes.test_quan_fixture_khong_hop_le_exit_2) ... ok
+test_quan_player_vel_hop_le (test_smoke_p1.ScenarioModes.test_quan_player_vel_hop_le) ... ok
+test_good (test_team_check.TeamCheck.test_good) ... ok
+test_template_is_rejected (test_team_check.TeamCheck.test_template_is_rejected) ... ok
+test_too_few_members (test_team_check.TeamCheck.test_too_few_members) ... ok
+test_wrong_size_duplicate_and_outsider (test_team_check.TeamCheck.test_wrong_size_duplicate_and_outsider) ... ok
+test_dish_burnt_when_ready_ticks_exceeds_timeout (test_tv4_phase2.TestDishBurnTV4.test_dish_burnt_when_ready_ticks_exceeds_timeout)
+Kiểm tra mở rộng cháy món: ready_ticks <= 1200 bưng được; > 1200 cháy, bếp rảnh, re-order. ... ok
+test_shop_buy_oxygen_and_hp_success_and_failures (test_tv4_phase2.TestShopTV4.test_shop_buy_oxygen_and_hp_success_and_failures)
+Kiểm tra mua oxy và hp: thành công, thiếu tiền (funds), vượt cấp (max_level), lệnh lạ (unknown). ... ok
+test_shop_exit_by_button_and_by_timeout (test_tv4_phase2.TestShopTV4.test_shop_exit_by_button_and_by_timeout)
+Kiểm tra đóng shop bằng nút shop_done và bằng timeout 600 tick. ... ok
+test_closing_immediate_payment_for_eating_customers (test_tv4_quan.TestQuanTV4.test_closing_immediate_payment_for_eating_customers)
+Kiểm tra khi hết ca: khách đang ăn trả tiền ngay với reason 'closing'. ... ok
+test_cook_and_pick_dish_at_stove (test_tv4_quan.TestQuanTV4.test_cook_and_pick_dish_at_stove)
+Kiểm tra Bếp: đứng gần B1, bấm interact bắt đầu nấu -> chín món -> nhặt lên tay. ... ok
+test_serve_at_closing_tick_pays_immediately_once (test_tv4_quan.TestQuanTV4.test_serve_at_closing_tick_pays_immediately_once)
+Ca biên: Nếu giao đúng tick đóng ca, khách trả ngay đúng một lần với reason closing. ... ok
+test_serve_at_exact_zero_patience_tick_is_valid (test_tv4_quan.TestQuanTV4.test_serve_at_exact_zero_patience_tick_is_valid)
+Ca biên: Giao đúng món ở tick kiên nhẫn về 0 vẫn hợp lệ, không bị customer_left. ... ok
+test_serve_eat_and_payment_with_tip (test_tv4_quan.TestQuanTV4.test_serve_eat_and_payment_with_tip)
+Kiểm tra Phục vụ & Thanh toán: tay có món, đứng tại bàn T1 bấm interact -> phục vụ -> ăn xong trả tiền + tip. ... ok
+
+----------------------------------------------------------------------
+Ran 240 tests in 27.452s
+
+OK
