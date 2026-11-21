@@ -1,5 +1,6 @@
 """Test bộ phận Bếp, Phục vụ, Tiền boa và Thanh toán (TV4 - AnhQuanHANU)."""
 
+import json
 import os
 import unittest
 
@@ -7,6 +8,10 @@ try:
     from helpers import Workdir, events, frames, read_jsonl, run_headless, write_json
 except ImportError:
     from tests.helpers import Workdir, events, frames, read_jsonl, run_headless, write_json
+try:
+    import v12_adapter as v12  # TICKET-03: kho cá thể v1.2 (tests/v12_adapter.py)
+except ImportError:
+    from tests import v12_adapter as v12
 
 
 class TestQuanTV4(unittest.TestCase):
@@ -24,6 +29,8 @@ class TestQuanTV4(unittest.TestCase):
                     ]
                 }
             })
+            if v12.V12:  # TICKET-03: kho quán là mảng cá thể
+                sc = write_json(w.path("sc.json"), v12.scenario(json.load(open(sc, encoding="utf-8"))))
             # Tick 0: interact bắt đầu nấu
             # Tick 361: interact nhặt món (sau khi chín ở tick 360)
             inp = write_json(w.path("inp.json"), frames(
@@ -39,7 +46,7 @@ class TestQuanTV4(unittest.TestCase):
                 "--scenario", sc, "--inputs", inp, "--out", out
             )
             self.assertEqual(code, 0, err)
-            rows = read_jsonl(out)
+            rows = v12.view(read_jsonl(out))
 
             # 1. Kiểm tra sự kiện cook_started ở tick 1
             cook_ev = events(rows, "cook_started")
@@ -47,7 +54,8 @@ class TestQuanTV4(unittest.TestCase):
             self.assertEqual(cook_ev[0]["data"]["stove_id"], "B1")
             self.assertEqual(cook_ev[0]["data"]["order_id"], "C1")
             self.assertEqual(cook_ev[0]["data"]["dish_id"], "ca_loc_nuong_trui")
-            self.assertEqual(cook_ev[0]["data"]["base_price"], 60)
+            # TICKET-03: giá chốt theo fresh — cá lóc 100 hao 1 tick quán → floor(60×99.9958/100) = 59
+            self.assertEqual(cook_ev[0]["data"]["base_price"], 59 if v12.V12 else 60)
             self.assertEqual(cook_ev[0]["data"]["items"], ["ca_loc"])
 
             # 2. Kiểm tra sự kiện dish_ready sau 360 tick nấu (bước k ghi tại k+1 => tick 361)
