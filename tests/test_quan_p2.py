@@ -26,7 +26,7 @@ class Phase2Customers(unittest.TestCase):
         self.assertEqual(sim.customers[0]["order_tick"], first)
         for _ in range(interval):
             next_arrival = sim.step(self.no_input)
-        self.assertEqual(next_arrival, [("no_dish", {"table_id": "T2"})])
+        self.assertEqual(next_arrival, [("no_dish", {})])  # PRD-0 mục E: no_dish data {}
         self.assertEqual(len(sim.customers), 1)
 
     def test_day_excludes_dishes_outside_plan(self):
@@ -35,7 +35,7 @@ class Phase2Customers(unittest.TestCase):
                       planned_dishes=planned)
         for _ in range(self.quan["first_customer_tick"]):
             arrival = sim.step(self.no_input)
-        self.assertEqual(arrival, [("no_dish", {"table_id": "T1"})])
+        self.assertEqual(arrival, [("no_dish", {})])  # PRD-0 mục E: no_dish data {}
 
     def test_day_count_does_not_cap_orders(self):
         dish = "ca_loc_nuong_trui"
