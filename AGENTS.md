@@ -4,6 +4,8 @@
 
 ## Lệnh
 - Test: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`
+- Smoke vòng ngày P2: `python3 -m chonoi.headless --mode day --days 1 --seed 42 --ticks 22200 --out day.jsonl`. Dòng cuối cần có `days_completed: 1` và `reason: "days_complete"`.
+- Tích hợp TV1 theo TICKET-02: `runner.Session` dùng chung cho live và headless, quản lý pause, ba đồng hồ và đổi pha. `scenario` kiểm trạng thái đầu ngày; đơn món được đối chiếu với kho thực lúc mở quán. `inputs` xử lý cạnh nút và lệnh mua theo frame. Đây là các thay đổi ở khung để hỗ trợ contract v1.1.
 - Headless: `python3 -m chonoi.headless --mode gather|quan --seed 1 --ticks 600 --out out.jsonl`
 - Chơi thử trên trình duyệt: `python3 -m chonoi.live --mode gather|quan` (mở địa chỉ in ra; WASD, E, Space, R)
 

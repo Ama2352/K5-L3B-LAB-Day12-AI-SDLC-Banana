@@ -6,8 +6,8 @@ Mặt cắt dòng sông nhìn NGANG: vị trí `[x, d]` (x sang phải, `d` đ�
 Đã làm sẵn để smoke test chạy được: bơi + tăng/giảm tốc, chặn mép (d không âm), đồng hồ và hết giờ,
 cập bến (`interact` trong vùng bến -> `gather_end` reason `docked`), xuất kho, snapshot đầy đủ trường gather.
 
-Nhóm viết tiếp (đúng thứ tự một bước trong PRD mục 13.8, "Gather"):
-  TODO(nhóm, lát 1): bơi + oxy + biên + giỏ
+Thứ tự một bước theo PRD-0 mục F, Gather:
+  Lát 1: bơi + oxy + biên + giỏ
       - oxy: dưới nước (d > surface_depth) trừ 1 tick/tick, mặt nước hồi oxygen_refill_per_tick, kẹp [0, max]
       - ngạt: oxy = 0 và đang dưới nước -> đếm zero_oxy_ticks, đủ choke_interval_ticks thì -1 Máu (choke)
       - Máu về 0 -> ngất (faint, gather_end reason `fainted`, mất toàn bộ giỏ, kho rỗng)
@@ -27,6 +27,7 @@ import math
 from ..ids import sort_by_id
 from ..inventory import hold_to_items
 from .ramp import ramp_velocity
+from .monsters import make_monsters, move_and_choose_hit
 
 TICK = 60.0
 AXES = ("x", "d")
@@ -36,11 +37,13 @@ class GatherSim:
     mode = "gather"
     phase = "gather"
 
-    def __init__(self, tuning, scenario, streams, ids):
+    def __init__(self, tuning, scenario, streams, ids, day=1):
         t = tuning["gather"]
         self.t = t
         self.rng = streams
         self.ids = ids
+        self.monsters = make_monsters(t["monsters"], scenario, day)
+        self.tick_hz = tuning["tick_hz"]
         p = scenario.get("player", {})
         self.pos = [float(c) for c in p.get("pos", t["start_pos"])]
         self.vel = [float(c) for c in p.get("vel", [0.0, 0.0])]
@@ -91,6 +94,7 @@ class GatherSim:
                        "at_surface": self._at_surface()},
             "hold": self.hold, "hold_count": len(self.hold),
             "hold_capacity": self.t["hold_capacity"],
+            "monsters": self.monsters,
             "nodes": [{"id": n["id"], "pos": n["pos"], "kind": n["kind"],
                        "ready": n["regrow_ticks"] == 0, "regrow_ticks": n["regrow_ticks"]}
                       for n in sort_by_id(self.nodes)],
@@ -112,19 +116,36 @@ class GatherSim:
                 if n["regrow_ticks"] == 0:
                     events.append(("node_regrown", {"node_id": n["id"]}))
         # 2. bơi + chặn mép
+        was_at_surface = self._at_surface()
         self._move(inp)
-        # TODO(nhóm, lát 1): so phân vùng đầu/cuối bước -> dive / surface (data: pos).
-        # TODO(nhóm, lát 1): oxy theo d CUỐI bước (mặt nước hồi, dưới nước trừ), oxygen_empty khi từ dương
-        #   xuống 0, đếm ngạt, choke (-1 Máu). Máu 0 -> faint + gather_end("fainted") với giỏ rỗng, return.
+        at_surface = self._at_surface()
+        if was_at_surface != at_surface:
+            events.append(("surface" if at_surface else "dive", {"pos": self.pos.copy()}))
+        self._update_oxygen(at_surface, events)
+        if self.hp == 0:
+            self._faint("choke", events)
+            return events
+        config = self.t["monsters"]
+        hit = move_and_choose_hit(self.monsters, self.pos, config, self.t["bounds"],
+                                  self.tick_hz, self.invuln_ticks > 0)
+        if hit is not None:
+            self.hp -= 1
+            lost = [self.hold.pop() for _ in range(math.floor(len(self.hold) * config["loss_ratio"]))]
+            self.invuln_ticks = config["invuln_ticks"]
+            events.append(("monster_hit", {"monster_id": hit["id"], "hp": self.hp,
+                                           "lost": lost, "pos": self.pos.copy()}))
+            if self.hp == 0:
+                self._faint("monster", events)
+                return events
         # 3. interact: bến trước, rồi hái
         if inp.pressed("interact"):
             if self._in_dock():
                 self._finish("docked", events)
                 return events
-            if self._at_surface():
+            if at_surface:
                 self._harvest(events)
         # 4. bắt cá
-        if inp.pressed("catch") and self.catch_cd_ticks == 0 and not self._at_surface():
+        if inp.pressed("catch") and self.catch_cd_ticks == 0 and not at_surface:
             self._catch(events)
         # 5. hết giờ
         if self.time_left_ticks <= 0:
@@ -191,6 +212,25 @@ class GatherSim:
     def _at_surface(self) -> bool:
         return self.pos[1] <= self.t["surface_depth"]
 
+    def _update_oxygen(self, at_surface, events):
+        if at_surface:
+            self.oxygen_ticks = min(self.oxygen_max, self.oxygen_ticks + self.t["oxygen_refill_per_tick"])
+            self.zero_oxy_ticks = 0
+            return
+
+        if self.oxygen_ticks > 0:
+            self.oxygen_ticks -= 1
+            if self.oxygen_ticks > 0:
+                return
+            events.append(("oxygen_empty", {"oxygen_ticks": 0}))
+
+        # Bước vừa chạm 0 là bước đầu tiên của chu kỳ ngạt.
+        self.zero_oxy_ticks += 1
+        if self.zero_oxy_ticks >= self.t["choke_interval_ticks"]:
+            self.zero_oxy_ticks = 0
+            self.hp -= 1
+            events.append(("choke", {"hp": self.hp}))
+
     def _in_dock(self) -> bool:
         return math.dist(self.pos, self.t["dock_pos"]) <= self.t["dock_radius"]
 
@@ -228,6 +268,12 @@ class GatherSim:
         self.fish.remove(f)
         self.catch_cd_ticks = int(round(self.t["catch_cooldown_s"] * TICK))
         events.append(("fish_caught", {"fish_id": f["id"], "kind": f["kind"], "yield": y}))
+
+    def _faint(self, cause, events):
+        lost = list(reversed(self.hold))
+        self.hold.clear()
+        events.append(("faint", {"cause": cause, "lost": lost, "hp": 0}))
+        self._finish("fainted", events)
 
     def _finish(self, reason, events):
         self.done = True
