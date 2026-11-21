@@ -23,5 +23,15 @@ jobs:
       # Nhóm đổi ngôn ngữ: sửa `build_cmd` trong game.contract.json và cài runtime ở bước riêng (xem README).
       - name: Build (build_cmd trong game.contract.json)
         run: bash -c "$(python3 -c 'import json;print(json.load(open("game.contract.json"))["build_cmd"])')"
+      - name: Smoke giao diện từ checkout sạch theo README
+        run: |
+          python3 -m chonoi.live --mode day --days 1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          curl -fsS --retry 8 --retry-connrefused --retry-delay 1 \
+            http://127.0.0.1:8000/ -o "$RUNNER_TEMP/chonoi.html"
+          grep -q '<canvas' "$RUNNER_TEMP/chonoi.html"
+          curl -fsS http://127.0.0.1:8000/state | python3 -c \
+            'import json, sys; s = json.load(sys.stdin); assert (s["mode"], s["phase"], s["screen"], s["sim_tick"]) == ("day", "gather", "menu", 0)'
       - name: Test (hộp đen qua headless_cmd + unit của nhóm)
         run: PYTHONPATH=tests:. python3 -m unittest discover -s tests -v

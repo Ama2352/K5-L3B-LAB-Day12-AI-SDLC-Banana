@@ -46,9 +46,9 @@
 - **Tôi đã làm:**
   - Bổ sung cờ cảnh báo khách sắp giận (`is_angry: true` và `warning: "patience_low"`) khi kiên nhẫn của khách dưới 25% (900 tick) trong snapshot của Quán, giúp TV5 dễ dàng render cảnh báo trực quan trên HUD UI.
   - Tự động xóa cảnh báo khi khách được phục vụ chuyển sang trạng thái ăn (`eating`).
-  - Kiểm chứng độ bền vững của Quán và Shop qua nhiều ngày liên tiếp (đảm bảo không rò rỉ bộ nhớ, dọn dẹp kết ca đúng luật, bảo toàn `money`, `earned`, `reputation`, và `upgrades`) sẵn sàng cho bài soak test 10 ngày.
+  - Kiểm chứng trạng thái Quán và Shop qua nhiều ngày liên tiếp, gồm dọn dẹp kết ca và duy trì `money`, `earned`, `reputation` và `upgrades` qua các ca.
   - Viết bộ unit test `tests/test_tv4_phase4.py` kiểm chứng 100% các tính năng trên (3/3 test PASS).
-  - Phối hợp với nhóm rà soát hoàn thiện `docs/retro.md` và kiểm thử toàn hệ thống (141/141 test PASS).
+  - Phối hợp với nhóm rà soát `docs/retro.md`. Kết quả bản bàn giao nằm ở [ma trận Phase 4](../verification/phase-4.md).
 - **Tôi đã review:**
   - Đọc chéo mã nguồn tích hợp soak test của TV1 và kiểm tra giao diện kết nối cảnh báo khách sắp giận với HUD của TV5.
 - **AI sai ở đâu và tôi phát hiện thế nào:**

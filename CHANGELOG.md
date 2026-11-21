@@ -7,7 +7,9 @@ Ghi theo từng phase (tag `phase-1` … `phase-4`). Phiên bản Test Contract 
 - Thêm `bench_cmd` = `python3 -m chonoi.bench`: benchmark có render cảnh lặn lõi (seed, độ tươi, cá bơi, Cá Sấu, Út Sen đứng yên ở bến) bằng giao diện Canvas của game ở 1280×720, làm nóng 3 s, ghi `bench.json {avg_fps, p1_low_fps, frames, measured_s, load_ms}`. Giao diện chỉ bật bộ đo khi URL có `?bench=1`.
 - Thêm `soak_cmd` = `python3 -m chonoi.soak`: 10 Ngày trong một tiến trình bằng bot tất định, ghi `soak.json {days, days_completed, crashes, results, duration_s}`.
 - Khai mở rộng `extensions: ["burn"]`, `quan.burn_s: 20` (Cháy món). Trình kiểm contract chỉ nhận `burn_s` khác `null` khi khai `burn`.
-- Cảnh báo bằng chữ + biểu tượng (Thủy quái!, Hết hơi!, Khách sắp giận!) và chế độ tương phản cao (phím C).
+- Cảnh báo bằng chữ và biểu tượng (Thủy quái!, Hết hơi!, Khách sắp giận!), chế độ tương phản cao (phím C) và phụ đề SFX hiện cả khi tắt âm.
+- Hoàn thiện Menu, DayIntro, EveningIntro, DayResult, Summary và menu tạm dừng. Lưu thiết lập âm lượng Master, Nhạc và Hiệu ứng trong trình duyệt.
+- Giữ chính xác độ tươi quanh ngưỡng 30 khi dữ liệu fixture không nằm trên lưới 1/240.
 - Thêm `LICENSE` (MIT), README ghi đủ lệnh chạy/test/headless/bench/soak, release notes `docs/release-notes-v1.0.0.md`.
 - Test: `tests/test_qa_p4.py` (manifest v1.3, soak, bench, tài liệu phát hành, leaderboard nếu khai), `tests/test_qa_ext.py` (burn).
 

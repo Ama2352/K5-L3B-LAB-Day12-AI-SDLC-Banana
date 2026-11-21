@@ -21,7 +21,7 @@ TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tí
 > Lệnh: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`. File QA: `test_qa_p2.py`, `test_qa_spec.py`, `test_qa_quan.py` (hồi quy P1 trên số chuẩn), `test_qa_p1.py`.
 > Kết quả: ✅ đạt · ❌ chưa đạt · 🖐 kiểm tay. Cột "Tại tag `phase-2`" là kết quả ở `ff3d6c9`; cột "Sau sửa" là commit QA mới nhất trên nhánh `thaoquyen` (xem [test-run-qa.txt](../proof/phase-2/test-run-qa.txt)).
 
-| AC | Yêu cầu (TICKET-02) | Test | Tại tag `phase-2` | Sau sửa |
+| AC | Yêu cầu (TICKET-02) | Test | Bản thử `ff3d6c9` | Sau sửa |
 |---|---|---|---|---|
 | AC-P2-01 | `contract_version` 1.1, hằng số chung (180 s, 4 m/s, oxy 30 s, 3 Máu, giỏ 12, bán kính 2 m, mọc lại 20 s) | `StandardNumbers.test_ac_p2_01_*`, `test_qa_spec.Manifest` | ✅ | ✅ |
 | AC-P2-02 | Nút N1–N6 đúng loại/vị trí, hái kèo nèo | `test_ac_p2_02_*` | ✅ | ✅ |
@@ -48,12 +48,13 @@ TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tí
 | AC-P2-23 | Hồi quy P1 trên số chuẩn (gather, quán, contract) | `test_qa_p1`, `test_qa_quan`, `test_qa_spec`, smoke | ❌ 8 test quán (thiếu lát khách) | ✅ |
 | AC-P2-24 | Menu, DayIntro/EveningIntro/DayResult/Summary, pause có Tiếp tục/Về menu, HUD sáng/tối, chữ ≥ 18 px, ≥ 30 FPS | 🖐 chơi `python3 -m chonoi.live`, chụp ảnh | 🖐 chưa kiểm | 🖐 chưa kiểm |
 
-Bằng chứng chạy tại tag: [test-run-qa-tag-phase-2.txt](../proof/phase-2/test-run-qa-tag-phase-2.txt).
+Bằng chứng trên commit lịch sử `ff3d6c9`: [test-run-qa-tag-phase-2.txt](../proof/phase-2/test-run-qa-tag-phase-2.txt).
 
 ## Ghi chú QA
 
-- Tag `phase-2` (`ff3d6c9`, 11:29) gắn trước khi PR #9 (lát khách TV3) vào main lúc 11:43, nên các AC quán chưa đạt tại tag.
+- Bản tag Phase 2 lúc kiểm (`ff3d6c9`, 11:29) gắn trước khi PR #9 (lát khách TV3) vào main lúc 11:43, nên các AC quán chưa đạt tại tag.
 - Khi viết test theo đề, QA phát hiện và sửa (đã ghi lý do trong commit):
   1. `customer_arrived` dùng `customer_id` thay vì `order_id`; `no_dish` có `{table_id}` thay vì `{}` (PRD-0 mục E, `docs/contracts/README.md`). Lỗi có từ `1f10afe`. Test `test_quan_p2.py` của TV3 viết theo code nên không phát hiện; đã đổi kỳ vọng theo đề.
   2. Quán độc lập không kiểm mâu thuẫn fixture (PRD-0 mục D). Đã cho `runner.py` gọi `check_evening_fixture` và bổ sung kiểm khách `eating`. 4 fixture trong `test_tv4_quan.py` thiếu `order_status`, sửa dữ liệu fixture theo đề, giữ nguyên assert.
-- Nhóm cần dời tag `phase-2` (hoặc gắn tag kế tiếp) sang commit merge chứa các sửa trên. Hạn linh động theo giảng viên; ghi giờ dời tại đây khi làm.
+- Tag `phase-2` trên GitHub hiện trỏ tới `566e121` (đã có giao diện từ PR #8). Smoke live trên commit đó trả HTTP 200 cho `gather`, `quan` và `day`.
+- Lượt kiểm AC-P2-24 với giao diện hoàn thiện nằm trong [bằng chứng Phase 4](../proof/phase-4/web-ui.md).

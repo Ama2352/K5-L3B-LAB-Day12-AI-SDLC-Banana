@@ -1,35 +1,50 @@
 # Quán Ăn Chợ Nổi v1.0.0 — nhóm Banana
 
-Bản phát hành cuối của Lab Day 12 (AI SDLC). Contract v1.3. Tag `phase-4` và Release `v1.0.0` cùng trỏ một commit trên `main`.
+Bản phát hành của Lab Day 12 (AI SDLC) dùng Test Contract v1.3.
 
 ## Điểm mới
-- **Trọn vòng ngày** (5 Ngày): Lặn & Hái → Mở Quán → Shop nâng cấp oxy/Máu, kế hoạch món D1–D5, pause, HUD sáng/tối.
-- **Mùa Nước Nổi**: kho cá thể có id và độ tươi; hàng hao tươi, ươn dưới 30; giữ chỗ theo cá thể tươi nhất; giá món theo độ tươi.
-- **Cá Sấu Năm Chèo**, đàn cá bơi và sinh theo lịch, 2 bếp / 4 bàn, 6 món.
-- **Cảnh báo dễ nhận biết**: Thủy quái!, Hết hơi!, Khách sắp giận! (chữ + biểu tượng) và chế độ tương phản cao (phím C).
-- **Mở rộng**: Cháy món (`burn`, khai trong `extensions`) và thiết lập âm lượng Master/Music/SFX lưu giữa các lần mở.
-- **Benchmark có render** (`python3 -m chonoi.bench`) và **soak 10 Ngày** (`python3 -m chonoi.soak`).
 
-## Cách chạy (macOS / Linux, Python 3.10+, trình duyệt)
+- Lặn & Hái → Mở Quán → Shop nâng cấp oxy/Máu trong tối đa 5 ngày. Menu chính có **Chơi**, **Âm thanh** và **Thoát**. Đầu ngày xem kế hoạch của Má Tư, đầu ca tối xem tổng nhập kho và món nấu được. Sau ca tối xem kết quả ngày, sau ngày cuối xem bảng tổng kết.
+- Kho cá thể có ID và độ tươi. Hàng ươn dưới 30, quán giữ nguyên liệu tươi nhất và chốt giá theo độ tươi lúc nấu.
+- Cá Sấu Năm Chèo và đàn cá di chuyển. Quán có 2 bếp, 4 bàn và 6 món.
+- Cảnh báo thủy quái, cạn oxy và khách sắp giận có chữ kèm biểu tượng. Nhấn **C** để bật tương phản cao.
+- Hai mở rộng của lab gồm **Cháy món** và **Phụ đề SFX**. Phụ đề hiện cả khi tắt âm. Âm lượng Master, Nhạc và Hiệu ứng lưu giữa các phiên.
+
+## Cách chạy
+
+Cần Python 3.10 trở lên và trình duyệt có JavaScript trên macOS hoặc Linux. Giải nén `chonoi-v1.0.0.zip` từ mục Assets của Release rồi chạy lệnh thứ ba trong thư mục đã giải nén. Nếu dùng Git, chạy đủ ba lệnh sau.
+
 ```bash
-git clone https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana.git
+git clone --branch v1.0.0 https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana.git
 cd K5-L3B-LAB-Day12-AI-SDLC-Banana
 python3 -m chonoi.live --mode day --days 1
 ```
-Mở địa chỉ in ra (mặc định `http://127.0.0.1:8000/`). Bản đóng gói đính kèm (`chonoi-v1.0.0.zip`) giải nén rồi chạy lệnh thứ ba trong thư mục đó.
 
-Test: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v` · Headless: `python3 -m chonoi.headless …` · Bench: `python3 -m chonoi.bench --seed 42 --duration 30 --out bench.json` (cần Chrome/Chromium) · Soak: `python3 -m chonoi.soak --seed 7 --days 10 --out soak.json`.
+Mở địa chỉ in trong terminal, mặc định là `http://127.0.0.1:8000/`. Để chơi đủ 5 ngày, đổi thành `--days 5`. Xem [điều khiển](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/blob/v1.0.0/README.md#chạy-từ-clone-sạch-trên-macos-hoặc-linux).
 
-## Số đo của bản phát hành
-Xem `docs/proof/phase-4/`: `bench.json` (seed 42, 30 s, 1280×720), `soak.json` (seed 7, 10 Ngày), `test-run-qa.txt`.
+```bash
+PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
+python3 -m chonoi.headless --mode day --days 1 --seed 42 --ticks 22200 --out day.jsonl
+python3 -m chonoi.bench --seed 42 --duration 30 --out bench.json
+python3 -m chonoi.soak --seed 7 --days 10 --out soak.json
+```
+
+## Kiểm chứng
+
+- Cảnh lặn lõi 1280×720, seed 42, làm nóng 3 giây rồi đo trong 30 giây. [Kết quả benchmark](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/blob/v1.0.0/docs/proof/phase-4/bench.json)
+- Soak 10 ngày qua đủ ba ca trong một tiến trình. [Kết quả soak](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/blob/v1.0.0/docs/proof/phase-4/soak.json)
+- Chơi thử ba cảnh báo ở chế độ tương phản cao, các màn chuyển pha và phụ đề khi tắt âm. [Kiểm giao diện](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/blob/v1.0.0/docs/proof/phase-4/web-ui.md)
+- Regression P1–P3 và kiểm phát hành. [Ma trận Phase 4](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/blob/v1.0.0/docs/verification/phase-4.md)
 
 ## Giới hạn đã biết
-- Benchmark cần Google Chrome/Chromium; không có thì mở trình duyệt mặc định và cần giữ cửa sổ ở 1280×720. Trình duyệt thường khóa 60 FPS theo tần số màn hình nên `avg_fps` không vượt quá tần số quét.
-- Bot soak không nấu/bưng nên `earned` trong `soak.json` bằng 0; soak kiểm độ bền và tính lặp, không đo kinh tế.
-- Đồ họa là hình khối Canvas 2D tự vẽ; âm thanh tổng hợp bằng Web Audio, không dùng tài sản ngoài.
-- Chưa làm các mở rộng: dòng nước lũ, khách đặt trước, bảng xếp hạng, phụ đề SFX.
+
+- Benchmark tự tìm Chrome/Chromium. Nếu dùng trình duyệt mặc định, cần giữ khu vực vẽ ở 1280×720. FPS phụ thuộc trình duyệt, màn hình và tải máy.
+- Bot soak di chuyển qua đủ các pha và bàn giao hàng thật. Kịch bản bot hiện bỏ qua nấu và phục vụ nên tổng thu trong kết quả soak bằng 0.
+- Nút **Thoát** dừng lượt và mở màn rời game. Đóng tab trình duyệt để rời trang.
+- Các mở rộng còn lại gồm dòng nước lũ, khách đặt trước và bảng xếp hạng.
 
 ## Tạo bản đóng gói
+
 ```bash
-git archive --format=zip --prefix=chonoi-v1.0.0/ -o chonoi-v1.0.0.zip phase-4
+git archive --format=zip --prefix=chonoi-v1.0.0/ -o chonoi-v1.0.0.zip v1.0.0
 ```

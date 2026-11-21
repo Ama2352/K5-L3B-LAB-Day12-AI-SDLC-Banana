@@ -7,7 +7,7 @@
 - Smoke vòng ngày P2: `python3 -m chonoi.headless --mode day --days 1 --seed 42 --ticks 22200 --out day.jsonl`. Dòng cuối cần có `days_completed: 1` và `reason: "days_complete"`.
 - Tích hợp TV1 theo TICKET-02: `runner.Session` dùng chung cho live và headless, quản lý pause, ba đồng hồ và đổi pha. `scenario` kiểm trạng thái đầu ngày; đơn món được đối chiếu với kho thực lúc mở quán. `inputs` xử lý cạnh nút và lệnh mua theo frame. Đây là các thay đổi ở khung để hỗ trợ contract v1.1.
 - Headless: `python3 -m chonoi.headless --mode gather|quan --seed 1 --ticks 600 --out out.jsonl`
-- Chơi thử trên trình duyệt: `python3 -m chonoi.live --mode gather|quan` (mở địa chỉ in ra; WASD, E, Space, R)
+- Chơi thử trên trình duyệt: `python3 -m chonoi.live --mode day --days 1` (mở địa chỉ in ra, chọn Chơi; WASD, E, Space, Esc)
 
 ## Cấu trúc & quy ước
 - (Starter Python là TÙY CHỌN; nhóm có thể dùng ngôn ngữ khác nếu giữ Test Contract.) Khung do giảng viên cấp: `chonoi/{headless,inputs,scenario,contract,rng,ids,jsonl,inventory,runner,live}.py` và `chonoi/web/`. Hạn chế sửa; nếu phải sửa thì báo cả nhóm và ghi lại lý do.
@@ -28,5 +28,5 @@
 - Sáng tạo thêm được khuyến khích nhưng phải tắt ở headless (xem README, mục "Tự do sáng tạo").
 
 ## Skills / hooks của nhóm
-- (Ghi tên và khi nào dùng; tối thiểu 2 skill/hook/command nhóm tự viết, đặt ở `.agents/skills/` hoặc tương đương.)
 - `check-handoff` (`.agents/skills/check-handoff/SKILL.md`): kiểm file kho gather → quan. Lệnh: `python3 tools/check_handoff.py <gather.jsonl> <kho.json>` (0 khớp / 1 lệch). Chạy trước khi gửi kho cho quán/QA và trước khi gắn tag. Phase 2: đọc 6 loại nguyên liệu từ `game.contract.json`; bằng chứng smoke kho ở `docs/proof/phase-2/integration.txt`. Phase 3: tự chọn schema theo `contract_version` (v1.2 so từng cá thể id/kind/fresh); chạy thử v1.2 bằng `CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json`.
+- Lệnh QA soak (TV2): `python3 -m chonoi.soak --seed 7 --days 10 --out soak.json`. Trước phát hành, kiểm `days_completed: 10`, `crashes: 0` và kết quả hai lần chạy khớp khi bỏ `duration_s`. Sau đó chạy benchmark render 30 giây theo README.
