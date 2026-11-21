@@ -3,6 +3,9 @@
 import json
 import os
 
+# Phiên bản dùng kho cá thể + độ tươi: v1.3 (TICKET-04) giữ gameplay, tuning, kho và JSONL theo v1.2
+INSTANCE_VERSIONS = ("1.2", "1.3")
+
 from .errors import BadInput
 from .inventory import FISH_KINDS, FRESH_UNIT, NODE_KINDS
 
@@ -33,16 +36,16 @@ def load_contract(path=DEFAULT_PATH) -> dict:
 
 
 def is_v12(tuning) -> bool:
-    """Kho cá thể + độ tươi chỉ bật khi contract_version là 1.2 (có tuning.freshness ở 1.1 vẫn chạy kho đếm)."""
-    return tuning.get("contract_version") == "1.2"
+    """Kho cá thể + độ tươi bật khi contract_version là 1.2 hoặc 1.3 (có tuning.freshness ở 1.1 vẫn chạy kho đếm)."""
+    return tuning.get("contract_version") in INSTANCE_VERSIONS
 
 
 def _validate_freshness(c):
     """tuning.freshness bắt buộc ở contract_version 1.2; khai sẵn ở 1.1 được (chưa dùng) nhưng phải hợp lệ."""
     fr = c["tuning"].get("freshness")
     if fr is None:
-        if c.get("contract_version") == "1.2":
-            raise BadInput("tuning.freshness bắt buộc với contract_version 1.2")
+        if c.get("contract_version") in INSTANCE_VERSIONS:
+            raise BadInput(f"tuning.freshness bắt buộc với contract_version {c['contract_version']}")
         return
     if not isinstance(fr, dict) or set(fr) != {"initial", "gather_decay_per_s", "quan_decay_per_s", "spoiled_below"}:
         raise BadInput("tuning.freshness phải có đúng initial, gather_decay_per_s, quan_decay_per_s, spoiled_below")

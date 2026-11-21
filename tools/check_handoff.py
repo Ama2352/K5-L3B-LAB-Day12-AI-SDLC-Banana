@@ -28,7 +28,7 @@ def load_contract():
     # loại nguyên liệu lấy từ dữ liệu: cá (fish_yield), nút hái, công thức món
     kinds = set(t["gather"]["fish_yield"]) | {n["kind"] for n in t["gather"]["nodes"]}
     kinds |= {k for d in t["menu"].values() for k in d["recipe"]}
-    return shlex.split(c["headless_cmd"]), tuple(sorted(kinds)), c.get("contract_version") == "1.2"
+    return shlex.split(c["headless_cmd"]), tuple(sorted(kinds)), c.get("contract_version") in ("1.2", "1.3")
 
 
 def schema_ok(items, kinds, v12):
