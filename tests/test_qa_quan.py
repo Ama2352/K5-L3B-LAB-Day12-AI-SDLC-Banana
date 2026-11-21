@@ -7,6 +7,7 @@ Chạy: PYTHONPATH=tests:. python3 -m unittest tests.test_qa_quan -v
 import unittest
 
 from helpers import Workdir, events, frames, read_jsonl, run_headless, snapshots, write_json
+import v12_adapter as v12  # chuyển fixture/output P1–P2 sang kho cá thể v1.2 (xem tests/v12_adapter.py)
 
 PATIENCE = 3600   # 60 s
 EAT = 600         # 10 s
@@ -17,7 +18,7 @@ B1, T1 = [2, 8], [9, 2]
 
 def run_quan(w, quan, inputs=None, ticks=1, seed=1, every=None):
     args = ["--mode", "quan", "--seed", str(seed), "--ticks", str(ticks), "--out", w.path("q.jsonl"),
-            "--scenario", write_json(w.path("sc.json"), {"quan": quan})]
+            "--scenario", write_json(w.path("sc.json"), v12.scenario({"quan": quan}))]
     if inputs is not None:
         args += ["--inputs", write_json(w.path("in.json"), frames(*inputs))]
     if every:
@@ -25,7 +26,7 @@ def run_quan(w, quan, inputs=None, ticks=1, seed=1, every=None):
     code, err = run_headless(*args)
     if code != 0:
         raise AssertionError(f"headless thoát mã {code}: {err}")
-    return read_jsonl(w.path("q.jsonl"))
+    return v12.view(read_jsonl(w.path("q.jsonl")))
 
 
 def press(t):
@@ -141,7 +142,9 @@ class Kitchen(unittest.TestCase):
             e = one(self, rows, "cook_started")
             self.assertEqual(e["tick"], 1)
             self.assertEqual(e["data"], {"stove_id": "B1", "order_id": "C1", "dish_id": "ca_loc_nuong_trui",
-                                         "items": ["ca_loc"], "base_price": 60})
+                                         "items": ["ca_loc"],
+                                         # TICKET-03: giá chốt theo fresh; 100 hao 1 tick quán → floor(60×99.9958/100)
+                                         "base_price": (59 if v12.V12 else 60)})
             s = snapshots(rows)[-1]
             self.assertEqual(s["stock"], {}, "tiêu đúng nguyên liệu đã giữ")
             self.assertEqual(s["customers"][0]["order_status"], "assigned")
@@ -275,7 +278,8 @@ class FullFlow(unittest.TestCase):
             for name in ("customer_arrived", "cook_started", "dish_ready", "dish_picked", "served", "paid"):
                 self.assertIn(name, got, f"thiếu {name} trong vòng chơi: {got}")
             self.assertEqual(one(self, rows, "paid")["data"]["reason"], "finished_eating")
-            self.assertEqual(snapshots(rows)[-1]["money"], 72)
+            # TICKET-03: nấu ở tick 126 → fresh 99.475 → giá floor(59.685)=59, boa floor(59×0.2)=11 → 70 (v1.1: 60+12)
+            self.assertEqual(snapshots(rows)[-1]["money"], 70 if v12.V12 else 72)
 
 
 if __name__ == "__main__":

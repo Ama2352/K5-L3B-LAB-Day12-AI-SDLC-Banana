@@ -5,6 +5,7 @@ import tempfile
 import unittest
 
 from helpers import events, frames, read_jsonl, run_headless, snapshots, write_json
+import v12_adapter as v12  # TICKET-03: fixture/output kho chuyển sang cá thể v1.2, luật giữ nguyên (tests/v12_adapter.py)
 
 
 class Phase2TV1(unittest.TestCase):
@@ -14,7 +15,7 @@ class Phase2TV1(unittest.TestCase):
         self.work = Path(temp.name)
 
     def simulate(self, mode, ticks, scenario, inputs=(), *extra, ok=True):
-        sc = write_json(self.work / "fixture.json", scenario)
+        sc = write_json(self.work / "fixture.json", v12.scenario(scenario))
         inp = write_json(self.work / "inputs.json", frames(*inputs))
         out = self.work / "out.jsonl"
         if out.exists():
@@ -23,7 +24,7 @@ class Phase2TV1(unittest.TestCase):
                                  "--inputs", inp, "--snapshot-every", "1", "--out", out, *extra)
         if ok:
             self.assertEqual(code, 0, err)
-            return read_jsonl(out)
+            return v12.view(read_jsonl(out))
         self.assertEqual(code, 2, err)
 
     def test_monster_faint_lifo_after_choke_opens_empty_quan(self):

@@ -12,6 +12,7 @@ import math
 import unittest
 
 from helpers import Workdir, events, frames, read_jsonl, run_headless, snapshots, write_json
+import v12_adapter as v12  # chuyển fixture/output P1–P2 sang kho cá thể v1.2 (xem tests/v12_adapter.py)
 
 with open("game.contract.json", encoding="utf-8") as _f:
     TUNING = json.load(_f)["tuning"]
@@ -27,7 +28,7 @@ CAP = G["hold_capacity"]                              # 12
 def run_gather(w, scenario, inputs=None, ticks=1, seed=1, inv_out=None, snapshot_every=None):
     """Chạy gather với khối scenario `gather`; trả list dòng JSONL. Fail ngay nếu mã thoát khác 0."""
     args = ["--mode", "gather", "--seed", str(seed), "--ticks", str(ticks), "--out", w.path("g.jsonl"),
-            "--scenario", write_json(w.path("sc.json"), {"gather": scenario})]
+            "--scenario", write_json(w.path("sc.json"), v12.scenario({"gather": scenario}))]
     if inputs is not None:
         args += ["--inputs", write_json(w.path("in.json"), frames(*inputs))]
     if inv_out:
@@ -37,7 +38,7 @@ def run_gather(w, scenario, inputs=None, ticks=1, seed=1, inv_out=None, snapshot
     code, err = run_headless(*args)
     if code != 0:
         raise AssertionError(f"headless thoát mã {code}: {err}")
-    return read_jsonl(w.path("g.jsonl"))
+    return v12.view(read_jsonl(w.path("g.jsonl")))
 
 
 def last_snap(rows):
@@ -169,7 +170,7 @@ class Faint(unittest.TestCase):
             self.assertEqual(rows[-1]["reason"], "fainted")
             self.assertEqual(rows[-1]["sim_tick"], 1, "dừng sớm khi gameplay kết thúc")
             with open(inv, encoding="utf-8") as f:
-                self.assertEqual(json.load(f), {"items": {}})
+                self.assertEqual(v12.inventory_view(json.load(f)), {"items": {}})
 
 
 # ---------------------------------------------------------------- Lát 2: hái, bắt cá, cập bến, kho (TV2)
@@ -349,7 +350,7 @@ class TimeEnd(unittest.TestCase):
             self.assertEqual(events(rows, "gather_end")[0]["data"],
                              {"reason": "time", "inventory": {"items": {"bong_sung": 1}}})
             with open(inv, encoding="utf-8") as f:
-                self.assertEqual(json.load(f), {"items": {"bong_sung": 1}})
+                self.assertEqual(v12.inventory_view(json.load(f)), {"items": {"bong_sung": 1}})
 
     def test_ac_p1_17_ben_o_buoc_cuoi_uu_tien_docked(self):
         with Workdir() as w:
@@ -402,8 +403,8 @@ class OutputFormat(unittest.TestCase):
         outs = []
         for _ in range(2):
             with Workdir() as w:
-                st = write_json(w.path("sc.json"), {"quan": {"stock": {"ca_loc": 2, "bong_sung": 4,
-                                                                       "ca_linh": 3, "bong_dien_dien": 1}}})
+                st = write_json(w.path("sc.json"), v12.scenario({"quan": {"stock": {"ca_loc": 2, "bong_sung": 4,
+                                                                       "ca_linh": 3, "bong_dien_dien": 1}}}))
                 code, err = run_headless("--mode", "quan", "--seed", "5", "--ticks", "3000", "--scenario", st,
                                          "--out", w.path("q.jsonl"))
                 self.assertEqual(code, 0, err)

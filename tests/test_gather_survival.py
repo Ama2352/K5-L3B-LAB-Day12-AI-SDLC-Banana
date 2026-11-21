@@ -6,6 +6,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from helpers import ROOT, events, frames, read_jsonl, run_headless, snapshots, write_json
+import v12_adapter as v12  # TICKET-03: fixture/output kho chuyển sang cá thể v1.2, luật giữ nguyên (tests/v12_adapter.py)
 
 
 class GatherSurvival(unittest.TestCase):
@@ -15,7 +16,7 @@ class GatherSurvival(unittest.TestCase):
         self.work = Path(temp.name)
 
     def gather(self, player, ticks, commands=(), **scenario):
-        fixture = write_json(self.work / "scenario.json", {"gather": {"player": player, **scenario}})
+        fixture = write_json(self.work / "scenario.json", v12.scenario({"gather": {"player": player, **scenario}}))
         inputs = write_json(self.work / "inputs.json", frames(*commands))
         output = self.work / "gather.jsonl"
         self.inventory = self.work / "inventory.json"
@@ -23,7 +24,7 @@ class GatherSurvival(unittest.TestCase):
                                  "--inputs", inputs, "--ticks", str(ticks), "--snapshot-every", "1",
                                  "--out", output, "--inventory-out", str(self.inventory))
         self.assertEqual(code, 0, err)
-        return read_jsonl(output)
+        return v12.view(read_jsonl(output))
 
     def test_dive_at_surface_boundary(self):
         rows = self.gather({"pos": [20, 0.5], "oxygen_ticks": 1}, 2,
@@ -72,4 +73,4 @@ class GatherSurvival(unittest.TestCase):
             (1, "gather_end", {"reason": "fainted", "inventory": {"items": {}}})])
         self.assertEqual(snapshots(rows)[-1]["hold"], [])
         self.assertEqual((rows[-1]["reason"], rows[-1]["ticks"]), ("fainted", 1))
-        self.assertEqual(json.loads(self.inventory.read_text(encoding="utf-8")), {"items": {}})
+        self.assertEqual(v12.inventory_view(json.loads(self.inventory.read_text(encoding="utf-8"))), {"items": {}})
