@@ -1,0 +1,16 @@
+commit: 14c5ccb  ngày: 2026-11-21 11:12  (TV6 chạy lại trên main)
+$ python3 -m chonoi.headless --mode gather --seed 1 --ticks 3000 --inputs docs/proof/phase-1/inputs-thu.json --inventory-out kho.json --out gather.jsonl
+exit=0
+$ python3 tools/check_handoff.py gather.jsonl kho.json
+gather_end reason: docked
+kind              kho.json  gather_end  quan.stock
+bong_dien_dien           2           2           2
+bong_sung                0           0           0
+ca_linh                  3           3           3
+ca_loc                   1           1           1
+tổng: 6 món
+KẾT QUẢ: KHỚP
+exit=0
+cmp với kho.json đã lưu:
+giống từng byte
+gather.jsonl docs/proof/phase-1/gather.jsonl differ: char 423, line 1

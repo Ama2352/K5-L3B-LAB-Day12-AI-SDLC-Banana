@@ -1,0 +1,4 @@
+commit: 14c5ccb  ngày: 2026-11-21 11:12
+$ python3 tools/check_team.py
+OK: 6 thành viên: Ama2352, qavu2407-lang, cuakicuc4444, AnhQuanHANU, NMCcg, 100678carwyn
+exit=0
