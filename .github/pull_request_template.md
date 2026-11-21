@@ -1,3 +1,4 @@
+<!-- Mẫu PR TÙY CHỌN: dùng, sửa hay xóa đều được. -->
 ## Liên kết
 Closes #<số issue>  · Phase: <1|2|3|4> · Module: <gather|quan|ui|qa|content|contracts>
 

@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 jobs:
-  # Tên check bắt buộc của ruleset: "ci / test". Đừng đổi tên job hoặc workflow.
+  # CI là TÙY CHỌN: nhóm dùng, sửa hay xóa file này đều được.
   test:
     name: ci / test
     runs-on: ubuntu-latest
@@ -15,9 +15,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      # Mỗi PR / commit lên main của repo nhóm phải có danh sách thành viên hợp lệ (TEAM.md).
-      # Bỏ qua ở chính repo gốc của giảng viên (TEAM.md ở đó là bản mẫu).
-      - name: Kiểm danh sách thành viên
+      # Nhắc điền TEAM.md (cảnh báo, không chặn). Bỏ qua ở repo gốc của giảng viên (TEAM.md ở đó là bản mẫu).
+      - name: Kiểm danh sách thành viên (cảnh báo)
+        continue-on-error: true
         if: github.repository != 'VinUni-AI20k/K5-L3B-LAB-Day12-AI-SDLC'
         run: python3 tools/check_team.py
       # Nhóm đổi ngôn ngữ: sửa `build_cmd` trong game.contract.json và cài runtime ở bước riêng (xem README).

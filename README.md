@@ -3,22 +3,21 @@
 > **Nhóm 4–6 người** · Áp dụng SDLC cùng AI để xây game **2D** *Quán Ăn Chợ Nổi* qua **4 phase** trong **3 giờ**: Út Sen lặn bắt cá và hái rau cỏ trên mặt nước buổi sáng, tối mở quán phục vụ khách.
 > Yêu cầu từng phase được phát tại **lab board** (đúng mốc giờ). Repo này chỉ chứa **khung kỹ thuật** và **mẫu quy trình** của nhóm.
 
-## Cách vào lab (trưởng nhóm làm, ~5 phút)
+## Cách làm việc: tự do, miễn là làm nhóm thật
 
-1. **Fork** repo này về tài khoản của trưởng nhóm. Đặt tên fork: `Day12-ChoNoi-<ten-nhom>`.
-2. **Thêm thành viên:** *Settings → Collaborators → Add people* (quyền **Write**) cho tất cả thành viên **và giảng viên** (handle do giảng viên thông báo).
-3. **Bật Actions** cho fork: tab *Actions → I understand my workflows, enable them*.
-4. **Bảo vệ `main`:** *Settings → Rules → Rulesets → New ruleset → Import a ruleset* → chọn file [`.github/ruleset-main.json`](.github/ruleset-main.json). Không thêm bypass cho ai (kể cả trưởng nhóm).
-5. **Điền danh sách thành viên** trong [`TEAM.md`](TEAM.md) và `team_size` trong [`game.contract.json`](game.contract.json) — làm bằng một PR đầu tiên (xem dưới).
+**Quy trình kỹ thuật là TỰ DO.** CI/CD, Pull Request, review, branch protection, issue/board… **không bắt buộc**: nhóm tự chọn cách làm (push thẳng, nhánh + PR, pair/mob, review trực tiếp, có hay không CI…). **Bắt buộc chỉ có:**
 
-## Danh sách thành viên là điều kiện để commit được nhận
+1. **Một repo chung của nhóm.** Trưởng nhóm **fork** repo này về tài khoản của mình, đặt tên `Day12-ChoNoi-<ten-nhom>`, rồi *Settings → Collaborators → Add people* (quyền **Write**) cho **tất cả thành viên và giảng viên** (handle do giảng viên thông báo).
+2. **Mọi thành viên commit vào repo chung bằng tài khoản GitHub của chính mình** (làm cặp thì ghi `Co-authored-by:`). Cần tối thiểu **3 commit có nội dung mỗi người** trong cả buổi.
+3. **Điền [`TEAM.md`](TEAM.md)**: danh sách thành viên (tên, GitHub handle, module chính, vai) và thỏa thuận làm việc nhóm ngắn; sửa `team_size` trong [`game.contract.json`](game.contract.json) cho khớp. Commit của người **không có trong `TEAM.md`** không được tính.
+4. **Gắn tag `phase-1` … `phase-4`** đúng hạn; chạy được tại từng tag.
+5. **Ghi chép tối thiểu:** `docs/verification/phase-n.md`, `docs/clarify.md`, `docs/ai-usage-log.md`, `docs/retro.md`, `docs/members/<github-handle>.md`.
 
-Check `ci / test` chạy [`tools/check_team.py`](tools/check_team.py) trên **mọi PR và mọi commit lên `main`**. Check đỏ (không gộp được) nếu:
-- `TEAM.md` chưa có bảng thành viên đủ **4–6 người** với GitHub handle thật, tên và module chính;
-- `team_size` trong `game.contract.json` khác số thành viên;
-- người mở PR **không có trong danh sách**.
+Gợi ý thực hành tốt (**không bắt buộc**, làm tốt được cộng): backlog và chia lát rõ, review code của nhau (PR hoặc trực tiếp), CI chạy test, ghi lại quyết định thiết kế quan trọng, chốt sớm hợp đồng file kho giữa `gather` và `quan`. `.github/` có sẵn `ci.yml`, mẫu PR/issue, `ruleset-main.json`: **dùng, sửa hay xóa đều được**. Script `python3 tools/check_team.py` kiểm bảng thành viên trong `TEAM.md`.
 
-Ghi `Co-authored-by: Tên <email>` trong commit khi làm cặp. Thành viên mới vào nhóm: sửa `TEAM.md` bằng PR.
+## Tự do sáng tạo
+
+Ngoài những gì PRD và Contract yêu cầu, nhóm được **tự do thêm**: nhân vật, loài cá/cây, thủy quái, món, bản đồ, cơ chế, sự kiện, câu chuyện, đồ họa, âm nhạc, giao diện… Ba điều kiện: (a) **không phá phần cố định** (luật lõi, số chuẩn, Test Contract; phần thêm tắt ở headless hoặc không đổi đầu ra theo contract), (b) **ghi mục "Sáng tạo của nhóm" trong README** kèm bằng chứng ngắn rằng phần lõi vẫn đúng, (c) **làm lõi đúng trước, sáng tạo sau**.
 
 ## 3 lệnh để bắt đầu
 
@@ -53,21 +52,21 @@ Nhóm được dùng **bất kỳ ngôn ngữ/engine nào**. Thứ duy nhất b�
 | JSONL tất định, làm tròn 3 chữ số, sắp id | Hiển thị / HUD thật (khung chỉ có cửa sổ thử `chonoi.live` bằng hình khối tạm) |
 | Cửa sổ thử trên trình duyệt (`python3 -m chonoi.live`) | Đồ họa, âm thanh, menu, HUD hoàn chỉnh theo PRD |
 
-### Nếu nhóm đổi sang ngôn ngữ khác (một PR, Integrator duyệt)
+### Nếu nhóm đổi sang ngôn ngữ khác
 1. Sửa `build_cmd`, `run_cmd` (hiện là `python3 -m chonoi.live --mode gather`), `headless_cmd` trong `game.contract.json` cho ngôn ngữ của nhóm.
-2. Sửa bước **Build** và **Test** trong `.github/workflows/ci.yml` (cài runtime cần thiết). **Giữ tên job `ci / test`** và giữ bước kiểm danh sách thành viên.
+2. Nếu nhóm dùng CI: sửa bước **Build** và **Test** trong `.github/workflows/ci.yml` (cài runtime cần thiết); không dùng CI thì xóa file đó.
 3. **Giữ** `tests/test_smoke_p1.py`: đây là test **hộp đen**, chỉ chạy `headless_cmd` rồi đọc JSONL/file kho, nên dùng nguyên cho mọi ngôn ngữ. **Xóa** `chonoi/`, `tests/test_python_starter_units.py` và `tests/test_live.py` nếu không dùng; viết unit test bằng ngôn ngữ của nhóm.
 4. Vẫn phải qua cùng Test Contract: cùng seed → output giống từng byte.
 
-Lưu ý: `tools/check_team.py` (kiểm danh sách thành viên) là script Python chạy **chỉ trong CI**, không liên quan tới ngôn ngữ của game; giữ nguyên.
+Lưu ý: `tools/check_team.py` (kiểm danh sách thành viên) là script Python độc lập, không liên quan tới ngôn ngữ của game.
 
 ## Quy tắc vàng
 
 - Số liệu chỉ nằm trong `game.contract.json`; luật chỉ đọc từ đó.
 - Ngẫu nhiên chỉ qua `Streams`; không dùng đồng hồ hệ thống. Cùng seed → output giống từng byte.
-- **Không push thẳng `main`.** Mọi thay đổi qua PR (mẫu: `.github/pull_request_template.md`), cần ≥ 1 người khác duyệt và `ci / test` xanh.
-- Mỗi PR một việc, có issue, có bằng chứng.
+- Nhánh chính luôn **chạy được** (nhất là lúc gắn tag). Cách đạt điều đó do nhóm chọn.
+- Cùng commit vào một repo chung; mỗi người có dấu vết của mình.
 
 ## Tài liệu trong repo
 
-[`TEAM.md`](TEAM.md) (vai + thỏa thuận nhóm) · [`AGENTS.md`](AGENTS.md) · `docs/contracts/` (PR hợp đồng đầu tiên) · `docs/{plan,verification,proof,adr,members}/` · `docs/{clarify,standup,retro,ai-usage-log}.md`.
+[`TEAM.md`](TEAM.md) (vai + thỏa thuận nhóm) · [`AGENTS.md`](AGENTS.md) · `docs/contracts/` (hợp đồng tích hợp: nên chốt sớm, hình thức tự chọn) · `docs/{plan,verification,proof,adr,members}/` (gợi ý) · `docs/{clarify,standup,retro,ai-usage-log}.md`.

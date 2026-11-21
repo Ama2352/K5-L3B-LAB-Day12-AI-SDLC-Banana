@@ -14,8 +14,8 @@
 ## Thỏa thuận làm việc nhóm (điền trong 15 phút kickoff, ≤ 10 dòng)
 
 - Kênh liên lạc: …
-- Khi bất đồng về thiết kế: … (ví dụ: nói 2 phút, không xong thì Integrator quyết, ghi ADR)
+- Khi bất đồng về thiết kế: … (ví dụ: nói 2 phút, không xong thì Integrator quyết và ghi lại lý do)
 - Khi ai đó trễ hoặc vướng quá 10 phút: … (ví dụ: nói ngay trong kênh, người dự phòng nhận việc)
 - Giờ standup giữa phase: …
-- Quy ước review: mỗi người là người review chính của lát của … (xoay vòng)
-- Quy ước commit/PR: conventional commits, PR ≤ ~400 dòng, 1 việc / 1 PR
+- Cách đọc code của nhau (tùy chọn): … (ví dụ: mỗi người đọc lát kế bên; PR hoặc xem trực tiếp)
+- Cách làm việc với Git: … (ví dụ: push thẳng nhánh chính / nhánh ngắn rồi gộp; thống nhất ai gắn tag)
