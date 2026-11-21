@@ -47,6 +47,18 @@ Game cần chế độ **headless** theo Test Contract (`python3 -m chonoi.headl
 
 Ngoài phần đề yêu cầu, nhóm được **thêm** nhân vật, loài cá/cây, sinh vật, món, bản đồ, cơ chế, câu chuyện, đồ họa, âm nhạc… với ba điều kiện: **không phá phần cố định** (tắt ở headless), ghi mục **"Sáng tạo của nhóm"** trong README của nhóm, và **làm lõi đúng trước**.
 
+## Mở rộng đã chọn của nhóm Banana (Extensions)
+
+Nhóm 6 người hoàn thành 2 mở rộng theo yêu cầu của lab:
+1. **Cháy món (`burn`)** (TV4 - Quân phụ trách):
+   - Món chín ở bếp nếu để quá 20s (`burn_s: 20` tương đương 1.200 tick) sẽ bị cháy.
+   - Khi `ready_ticks > 1200`: phát sự kiện `dish_burnt`, giải phóng bếp về `idle`.
+   - Hệ thống tự động kiểm tra kho để giữ lại nguyên liệu (`reserved`) hoặc chuyển đơn sang `unfulfillable` nếu thiếu nguyên liệu tươi.
+   - Kiểm chứng đầy đủ qua test suite `tests/test_tv4_phase2.py`, `tests/test_tv4_phase3.py`.
+2. **Thiết lập âm thanh (`settings/audio`)** (TV5 - Cường phụ trách):
+   - Cho phép người chơi tùy chỉnh riêng âm lượng Master, Music và SFX trên giao diện.
+   - Thiết lập được lưu bền vững qua các phiên chơi.
+
 ## Lịch 3 giờ
 
 | Mốc | Phase | Hạn tag |
