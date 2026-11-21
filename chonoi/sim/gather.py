@@ -25,6 +25,7 @@ import math
 from ..ids import sort_by_id
 from ..inventory import hold_to_items
 from .ramp import ramp_velocity
+from .monsters import make_monsters, move_and_choose_hit
 
 TICK = 60.0
 AXES = ("x", "d")
@@ -34,11 +35,13 @@ class GatherSim:
     mode = "gather"
     phase = "gather"
 
-    def __init__(self, tuning, scenario, streams, ids):
+    def __init__(self, tuning, scenario, streams, ids, day=1):
         t = tuning["gather"]
         self.t = t
         self.rng = streams
         self.ids = ids
+        self.monsters = make_monsters(t["monsters"], scenario, day)
+        self.tick_hz = tuning["tick_hz"]
         p = scenario.get("player", {})
         self.pos = [float(c) for c in p.get("pos", t["start_pos"])]
         self.vel = [float(c) for c in p.get("vel", [0.0, 0.0])]
@@ -88,6 +91,7 @@ class GatherSim:
                        "at_surface": self._at_surface()},
             "hold": self.hold, "hold_count": len(self.hold),
             "hold_capacity": self.t["hold_capacity"],
+            "monsters": self.monsters,
             "nodes": [{"id": n["id"], "pos": n["pos"], "kind": n["kind"],
                        "ready": n["regrow_ticks"] == 0, "regrow_ticks": n["regrow_ticks"]}
                       for n in sort_by_id(self.nodes)],
@@ -115,11 +119,20 @@ class GatherSim:
             events.append(("surface" if at_surface else "dive", {"pos": self.pos.copy()}))
         self._update_oxygen(at_surface, events)
         if self.hp == 0:
-            lost = list(reversed(self.hold))
-            self.hold.clear()
-            events.append(("faint", {"cause": "choke", "lost": lost, "hp": self.hp}))
-            self._finish("fainted", events)
+            self._faint("choke", events)
             return events
+        config = self.t["monsters"]
+        hit = move_and_choose_hit(self.monsters, self.pos, config, self.t["bounds"],
+                                  self.tick_hz, self.invuln_ticks > 0)
+        if hit is not None:
+            self.hp -= 1
+            lost = [self.hold.pop() for _ in range(math.floor(len(self.hold) * config["loss_ratio"]))]
+            self.invuln_ticks = config["invuln_ticks"]
+            events.append(("monster_hit", {"monster_id": hit["id"], "hp": self.hp,
+                                           "lost": lost, "pos": self.pos.copy()}))
+            if self.hp == 0:
+                self._faint("monster", events)
+                return events
         # 3. interact: bến trước, rồi hái
         if inp.pressed("interact"):
             if self._in_dock():
@@ -195,6 +208,12 @@ class GatherSim:
         self.fish.remove(f)
         self.catch_cd_ticks = int(round(self.t["catch_cooldown_s"] * TICK))
         events.append(("fish_caught", {"fish_id": f["id"], "kind": f["kind"], "yield": y}))
+
+    def _faint(self, cause, events):
+        lost = list(reversed(self.hold))
+        self.hold.clear()
+        events.append(("faint", {"cause": cause, "lost": lost, "hp": 0}))
+        self._finish("fainted", events)
 
     def _finish(self, reason, events):
         self.done = True
