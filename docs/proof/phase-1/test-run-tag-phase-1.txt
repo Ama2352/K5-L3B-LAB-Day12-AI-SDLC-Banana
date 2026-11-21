@@ -1,0 +1,69 @@
+# tag phase-1 = 0d867a1 · 2026-11-21 16:51 · TV6
+$ PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
+test_bat_ca_linh_yield_3_va_xoa_dan (test_gather_l2.Catch.test_bat_ca_linh_yield_3_va_xoa_dan) ... ok
+test_bat_o_mat_nuoc_khong_co_gi (test_gather_l2.Catch.test_bat_o_mat_nuoc_khong_co_gi) ... ok
+test_gio_thieu_cho_giu_dan_khong_thu_dan_khac (test_gather_l2.Catch.test_gio_thieu_cho_giu_dan_khong_thu_dan_khac) ... ok
+test_hoi_chieu_dung_lai_tu_t_cong_30 (test_gather_l2.Catch.test_hoi_chieu_dung_lai_tu_t_cong_30) ... ok
+test_khong_co_dan_trong_tam_khong_hoi_chieu (test_gather_l2.Catch.test_khong_co_dan_trong_tam_khong_hoi_chieu) ... ok
+test_hai_roi_cap_ben_ghi_kho (test_gather_l2.DockAfterGather.test_hai_roi_cap_ben_ghi_kho) ... ok
+test_gio_day_nut_giu_nguyen (test_gather_l2.Harvest.test_gio_day_nut_giu_nguyen) ... ok
+test_hai_duoi_nuoc_khong_co_gi (test_gather_l2.Harvest.test_hai_duoi_nuoc_khong_co_gi) ... ok
+test_hai_o_mep_ban_kinh (test_gather_l2.Harvest.test_hai_o_mep_ban_kinh) ... ok
+test_hoa_khoang_cach_chon_id_nho_va_bo_nut_chua_moc (test_gather_l2.Harvest.test_hoa_khoang_cach_chon_id_nho_va_bo_nut_chua_moc) ... ok
+test_moc_lai_roi_hai_duoc_ngay (test_gather_l2.Harvest.test_moc_lai_roi_hai_duoc_ngay) ... ok
+test_dive_at_surface_boundary (test_gather_survival.GatherSurvival.test_dive_at_surface_boundary) ... ok
+test_faint_precedes_docking_catching_and_timeout (test_gather_survival.GatherSurvival.test_faint_precedes_docking_catching_and_timeout) ... ok
+test_first_zero_tick_counts_and_choke_repeats (test_gather_survival.GatherSurvival.test_first_zero_tick_counts_and_choke_repeats) ... ok
+test_oxygen_caps_at_max_on_surface (test_gather_survival.GatherSurvival.test_oxygen_caps_at_max_on_surface) ... ok
+test_surface_on_choke_step_resets_timer_and_refills (test_gather_survival.GatherSurvival.test_surface_on_choke_step_resets_timer_and_refills) ... ok
+test_state_input_and_clean_stop (test_live.LiveServerTest.test_state_input_and_clean_stop) ... ok
+test_bad_frames_raise (test_python_starter_units.Units.test_bad_frames_raise) ... ok
+test_catch_is_a_v10_button_and_attack_is_not (test_python_starter_units.Units.test_catch_is_a_v10_button_and_attack_is_not) ... ok
+test_id_allocator_continues_after_max (test_python_starter_units.Units.test_id_allocator_continues_after_max) ... ok
+test_id_sorting (test_python_starter_units.Units.test_id_sorting) ... ok
+test_input_edges_and_inherit (test_python_starter_units.Units.test_input_edges_and_inherit) ... ok
+test_live_inputs_keep_fast_tap_edge (test_python_starter_units.Units.test_live_inputs_keep_fast_tap_edge) ... ok
+test_session_steps_gather_and_dock (test_python_starter_units.Units.test_session_steps_gather_and_dock) ... ok
+test_con_01_ticks_zero_and_end_line (test_smoke_p1.Contract.test_con_01_ticks_zero_and_end_line) ... ok
+test_con_02_deterministic_bytes (test_smoke_p1.Contract.test_con_02_deterministic_bytes) ... ok
+test_con_03_bad_input_exit_2 (test_smoke_p1.Contract.test_con_03_bad_input_exit_2) ... ok
+test_con_03_old_and_future_modes_rejected (test_smoke_p1.Contract.test_con_03_old_and_future_modes_rejected) ... ok
+test_gather_snapshot_has_gather_fields (test_smoke_p1.Contract.test_gather_snapshot_has_gather_fields) ... ok
+test_scenario_out_of_domain_exit_2 (test_smoke_p1.Contract.test_scenario_out_of_domain_exit_2) ... ok
+test_inv_01_gather_writes_inventory_quan_reads_it (test_smoke_p1.Integration.test_inv_01_gather_writes_inventory_quan_reads_it)
+Ví dụ smoke test trong PRD-0 mục G: cập bến ở tick 0, quán đọc kho đúng nội dung. ... ok
+test_inv_01_not_written_when_tick_limit_first (test_smoke_p1.Integration.test_inv_01_not_written_when_tick_limit_first) ... ok
+test_inv_bad_schema_exit_2 (test_smoke_p1.Integration.test_inv_bad_schema_exit_2) ... ok
+test_inventory_and_scenario_stock_conflict (test_smoke_p1.Integration.test_inventory_and_scenario_stock_conflict) ... ok
+test_inventory_flags_mode_mismatch_exit_2 (test_smoke_p1.Integration.test_inventory_flags_mode_mismatch_exit_2) ... ok
+test_move_01_swim_speed_after_ramp (test_smoke_p1.Movement.test_move_01_swim_speed_after_ramp)
+Bỏ 6 tick tăng tốc rồi đo 60 tick: quãng ≈ swim_speed × 1 s (±0.1). Ngang, xuống, chéo (không nhanh hơn). ... ok
+test_move_02_heading_positive_is_down (test_smoke_p1.Movement.test_move_02_heading_positive_is_down) ... ok
+test_move_03_edge_clamp (test_smoke_p1.Movement.test_move_03_edge_clamp)
+Chặn từng mép của vùng nước, kể cả d không âm (không bay lên khỏi mặt nước) và đáy d = 30. ... ok
+test_move_mep_vel_ve_0 (test_smoke_p1.Movement.test_move_mep_vel_ve_0) ... ok
+test_move_ramp_doi_huong_trong_tran (test_smoke_p1.Movement.test_move_ramp_doi_huong_trong_tran)
+Đảo từ +speed sang -speed: vận tốc chạm mục tiêu sau tối đa ramp_max_ticks tick kể từ lúc đổi input. ... ok
+test_time_ends_gather_and_keeps_hold (test_smoke_p1.Movement.test_time_ends_gather_and_keeps_hold) ... ok
+test_khoi_sai_mode_exit_2 (test_smoke_p1.ScenarioModes.test_khoi_sai_mode_exit_2) ... ok
+test_quan_fixture_khong_hop_le_exit_2 (test_smoke_p1.ScenarioModes.test_quan_fixture_khong_hop_le_exit_2) ... ok
+test_quan_player_vel_hop_le (test_smoke_p1.ScenarioModes.test_quan_player_vel_hop_le) ... ok
+test_good (test_team_check.TeamCheck.test_good) ... ok
+test_template_is_rejected (test_team_check.TeamCheck.test_template_is_rejected) ... ok
+test_too_few_members (test_team_check.TeamCheck.test_too_few_members) ... ok
+test_wrong_size_duplicate_and_outsider (test_team_check.TeamCheck.test_wrong_size_duplicate_and_outsider) ... ok
+test_closing_immediate_payment_for_eating_customers (test_tv4_quan.TestQuanTV4.test_closing_immediate_payment_for_eating_customers)
+Kiểm tra khi hết ca: khách đang ăn trả tiền ngay với reason 'closing'. ... ok
+test_cook_and_pick_dish_at_stove (test_tv4_quan.TestQuanTV4.test_cook_and_pick_dish_at_stove)
+Kiểm tra Bếp: đứng gần B1, bấm interact bắt đầu nấu -> chín món -> nhặt lên tay. ... ok
+test_serve_at_closing_tick_pays_immediately_once (test_tv4_quan.TestQuanTV4.test_serve_at_closing_tick_pays_immediately_once)
+Ca biên: Nếu giao đúng tick đóng ca, khách trả ngay đúng một lần với reason closing. ... ok
+test_serve_at_exact_zero_patience_tick_is_valid (test_tv4_quan.TestQuanTV4.test_serve_at_exact_zero_patience_tick_is_valid)
+Ca biên: Giao đúng món ở tick kiên nhẫn về 0 vẫn hợp lệ, không bị customer_left. ... ok
+test_serve_eat_and_payment_with_tip (test_tv4_quan.TestQuanTV4.test_serve_eat_and_payment_with_tip)
+Kiểm tra Phục vụ & Thanh toán: tay có món, đứng tại bàn T1 bấm interact -> phục vụ -> ăn xong trả tiền + tip. ... ok
+
+----------------------------------------------------------------------
+Ran 53 tests in 5.003s
+
+OK
