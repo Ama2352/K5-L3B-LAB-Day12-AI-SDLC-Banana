@@ -19,7 +19,7 @@ TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tí
 
 > Nguồn: TICKET-02 (mục 1–2) và Test Contract v1.1 (mục 4). Test viết từ đề, so nguyên `data` event.
 > Lệnh: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`. File QA: `test_qa_p2.py`, `test_qa_spec.py`, `test_qa_quan.py` (hồi quy P1 trên số chuẩn), `test_qa_p1.py`.
-> Kết quả: ✅ đạt · ❌ chưa đạt · 🖐 kiểm tay. Cột "Tại tag `phase-2`" là kết quả ở `ff3d6c9`; cột "Sau sửa" là commit QA mới nhất trên nhánh `thaoquyen` (xem [test-run-qa.txt](../proof/phase-2/test-run-qa.txt)).
+> Kết quả: ✅ đạt · ❌ chưa đạt · 🖐 kiểm tay. Cột "Tại tag `phase-2`" là kết quả ở vị trí tag cũ `ff3d6c9` (tag sau đó dời sang `566e121`, xem Ghi chú QA); cột "Sau sửa" là commit QA mới nhất trên nhánh `thaoquyen` (xem [test-run-qa.txt](../proof/phase-2/test-run-qa.txt)).
 
 | AC | Yêu cầu (TICKET-02) | Test | Bản thử `ff3d6c9` | Sau sửa |
 |---|---|---|---|---|
@@ -48,7 +48,7 @@ TV2 còn tích hợp preset 8 đàn, chuyển động và sinh cá. TV3 còn tí
 | AC-P2-23 | Hồi quy P1 trên số chuẩn (gather, quán, contract) | `test_qa_p1`, `test_qa_quan`, `test_qa_spec`, smoke | ❌ 8 test quán (thiếu lát khách) | ✅ |
 | AC-P2-24 | Menu, DayIntro/EveningIntro/DayResult/Summary, pause có Tiếp tục/Về menu, HUD sáng/tối, chữ ≥ 18 px, ≥ 30 FPS | 🖐 chơi `python3 -m chonoi.live`, chụp ảnh | 🖐 chưa kiểm | 🖐 chưa kiểm |
 
-Bằng chứng trên commit lịch sử `ff3d6c9`: [test-run-qa-tag-phase-2.txt](../proof/phase-2/test-run-qa-tag-phase-2.txt).
+Bằng chứng trên commit lịch sử `ff3d6c9`: [test-run-qa-tag-phase-2.txt](../proof/phase-2/test-run-qa-tag-phase-2.txt). Tại tag `phase-2` hiện tại (`566e121`), TV6 chạy lại toàn bộ test của tag: 240/240 OK, [test-run-tag-phase-2-566e121.txt](../proof/phase-2/test-run-tag-phase-2-566e121.txt).
 
 ## Ghi chú QA
 
