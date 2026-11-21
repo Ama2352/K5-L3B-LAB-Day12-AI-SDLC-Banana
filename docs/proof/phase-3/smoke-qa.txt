@@ -1,0 +1,24 @@
+Smoke QA phase 3 (TV6) — contract_version 1.2  ngày: 2026-11-21 14:48
+
+== 1. Mẫu ngưỡng trong đề: fresh 30, gather 1 bước không input
+mã thoát 0
+{"type":"event","tick":1,"phase":"gather","name":"spoiled","data":{"item_id":"I1","kind":"ca_linh","location":"hold"}}
+
+== 2. Smoke bàn giao file theo đề: fresh 100, interact frame 0 → quan --inventory --ticks 0
+gather mã thoát 0
+file kho: {"items":[{"id":"I1","kind":"ca_linh","fresh":99.99166666666666}]}
+quan mã thoát 0
+quán tick 0 stock: [{"id": "I1", "kind": "ca_linh", "fresh": 99.992}]
+
+== 3. Kho đếm v1.1 bị từ chối
+đầu vào sai: items phải là mảng cá thể {id, kind, fresh} (contract v1.2)
+mã thoát 2 (cần 2)
+
+== 4. day 1 Ngày, cập bến có hàng, chạy 2 lần
+GIỐNG TỪNG BYTE
+2 lần chạy: 1.1s
+gather_end.inventory: {"items": [{"id": "I1", "kind": "ca_loc", "fresh": 99.992}, {"id": "I2", "kind": "bong_sung", "fresh": 99.992}, {"id": "I3", "kind": "bong_sung", "fresh": 99.992}]}
+quán phase_tick 0 stock: [{"id": "I1", "kind": "ca_loc", "fresh": 99.992}, {"id": "I2", "kind": "bong_sung", "fresh": 99.992}, {"id": "I3", "kind": "bong_sung", "fresh": 99.992}]
+bàn giao cùng tick, khớp: True
+event quán: ['customer_arrived', 'customer_left', 'no_dish', 'phase_start', 'quan_end']
+end: {"mode": "day", "state": "finished", "sim_tick": 11401, "money": 0, "earned": 0, "reputation": 1.0, "score": 100, "type": "end", "ticks": 11401, "reason": "days_complete", "days_completed": 1}
