@@ -17,7 +17,7 @@ Gợi ý thực hành tốt (**không bắt buộc**, làm tốt được cộng
 
 ## Tự do sáng tạo
 
-Ngoài những gì PRD và Contract yêu cầu, nhóm được **tự do thêm**: nhân vật, loài cá/cây, thủy quái, món, bản đồ, cơ chế, sự kiện, câu chuyện, đồ họa, âm nhạc, giao diện… Ba điều kiện: (a) **không phá phần cố định** (luật lõi, số chuẩn, Test Contract; phần thêm tắt ở headless hoặc không đổi đầu ra theo contract), (b) **ghi mục "Sáng tạo của nhóm" trong README** kèm bằng chứng ngắn rằng phần lõi vẫn đúng, (c) **làm lõi đúng trước, sáng tạo sau**.
+Ngoài những gì PRD và Contract yêu cầu, nhóm được **tự do thêm**: nhân vật, loài cá/cây, sinh vật mới, món, bản đồ, cơ chế, sự kiện, câu chuyện, đồ họa, âm nhạc, giao diện… Ba điều kiện: (a) **không phá phần cố định** (luật lõi, số chuẩn, Test Contract; phần thêm tắt ở headless hoặc không đổi đầu ra theo contract), (b) **ghi mục "Sáng tạo của nhóm" trong README** kèm bằng chứng ngắn rằng phần lõi vẫn đúng, (c) **làm lõi đúng trước, sáng tạo sau**.
 
 ## 3 lệnh để bắt đầu
 
