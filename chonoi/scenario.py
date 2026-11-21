@@ -9,14 +9,12 @@ import json
 import math
 
 from .errors import BadInput
-from .inventory import KINDS, validate_items
+from .inventory import FISH_KINDS, KINDS, NODE_KINDS, validate_items
 from .sim.day import gather_tuning, validate_day
 
 GATHER_KEYS = {"player", "hold", "nodes", "fish", "monsters", "random_fish", "time_left_ticks"}
 GATHER_PLAYER_KEYS = {"pos", "vel", "heading_deg", "hp", "oxygen_ticks", "zero_oxy_ticks",
                       "invuln_ticks", "catch_cd_ticks"}
-NODE_KINDS = ("bong_dien_dien", "bong_sung", "keo_neo")
-FISH_KINDS = ("ca_linh", "ca_loc", "ca_keo")
 QUAN_PLAYER_KEYS = {"pos", "vel"}
 QUAN_KEYS = {"player", "stock", "hand", "stoves", "tables", "customers", "random_customers",
              "reputation", "time_left_ticks"}
@@ -157,6 +155,15 @@ def _validate_gather(b, tuning):
             raise BadInput(f"fish.{f['id']}: đàn cá phải ở dưới nước")
         if "heading_deg" in f and not _num(f["heading_deg"]):
             raise BadInput(f"fish.{f['id']}.heading_deg phải là số")
+        extra = set(f) - {"id", "kind", "pos", "heading_deg", "age_ticks"}
+        if extra:
+            raise BadInput(f"trường lạ/chưa hỗ trợ trong fish.{f['id']}: {sorted(extra)}")
+        if "age_ticks" in f:
+            _nonneg_int(f"fish.{f['id']}.age_ticks", f["age_ticks"])
+        if b.get("random_fish", True):  # cá có bơi: phải nằm trong miền bơi của loài
+            (xlo, xhi), (dlo, dhi) = g["fish_x"], g["fish_depths"][f["kind"]]
+            if not (xlo <= f["pos"][0] <= xhi and dlo <= f["pos"][1] <= dhi):
+                raise BadInput(f"fish.{f['id']}: ngoài miền bơi của {f['kind']} (x ∈ {g['fish_x']}, d ∈ [{dlo}, {dhi}])")
 
 
 def _validate_monster(m, gather):
