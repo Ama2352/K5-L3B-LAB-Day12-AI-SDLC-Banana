@@ -27,7 +27,13 @@ mã 1 khi chuyển pha gather -> quan:
   TypeError: unhashable type: 'dict'
 (không có input thì giỏ rỗng nên không lộ lỗi; có hàng thì vỡ)
 
+## 5. Ngưỡng phía quán với giá trị gather ghi ra (fresh = 30 + 1/240 = 30.004166666666666)
+$ CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json python3 -m chonoi.headless --mode quan --seed 1 --ticks 3 --inventory docs/proof/phase-3/edge-kho.json --out docs/proof/phase-3/edge-quan.jsonl
+{"type":"event","tick":1,"phase":"quan","name":"spoiled","data":{"item_id":"I1","kind":"ca_loc","location":"stock"}}
+Kỳ vọng: spoiled ở tick 2 (sau 1 tick còn đúng 30.0, chưa < 30). Thực tế tick 1.
+
 ## Kết luận
 - Phía gather v1.2: ĐẠT — spoiled đúng tick 1; file kho cá thể đúng id/kind, fresh = 100 - 0.5/60 đủ chính xác; gather_end khớp file.
 - Bàn giao qua file gather -> quan v1.2: ĐẠT — quan.stock ở tick 0 khớp id, kind, fresh.
 - Bàn giao trong day v1.2: CHƯA ĐẠT — `check_evening_fixture` (day.py, TV1) còn đếm kho theo kind. Việc của TV1; chạy lại mục 4 khi xong.
+- Ngưỡng phía quán: CHƯA ĐẠT — spoiled sớm 1 tick do FreshStock (TV3) dùng Fraction(str(fresh)); cần báo TV3, đề xuất Fraction(round(fresh*240), 240). Xem mục 5.
