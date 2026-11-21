@@ -23,7 +23,7 @@ cd K5-L3B-LAB-Day12-AI-SDLC-Banana
 python3 -m chonoi.live --mode day --days 1
 ```
 
-Mở địa chỉ in trong terminal, mặc định là `http://127.0.0.1:8000/`, rồi chọn **Chơi** trong menu chính. Menu cũng có **Âm thanh** và **Thoát**. Để chơi đủ 5 ngày, đổi `--days 1` thành `--days 5`. Nhấn `Ctrl+C` trong terminal để dừng máy chủ. Xem [ghi chú phát hành](docs/release-notes-v1.0.0.md).
+Mở địa chỉ in trong terminal, mặc định là `http://127.0.0.1:8000/`, rồi chọn **Chơi** trong menu chính. Menu cũng có **Âm thanh** và **Thoát**. Để chơi đủ 5 ngày, đổi `--days 1` thành `--days 5`. Nhấn `Ctrl+C` trong terminal để dừng máy chủ. Xem [ghi chú phát hành](docs/release-notes-v1.0.0.md) và [video demo có thuyết minh](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/releases/download/v1.0.0/Quan_An_Cho_Noi_demo_thuyet_minh.mp4) (2 phút 48 giây, đính kèm Release v1.0.0).
 
 | Phím hoặc nút | Thao tác |
 |---|---|

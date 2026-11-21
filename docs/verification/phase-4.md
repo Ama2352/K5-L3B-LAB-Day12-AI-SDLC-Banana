@@ -16,5 +16,6 @@ Yêu cầu lấy từ TICKET-04 và Test Contract v1.3. Các bằng chứng dư�
 | AC-P4-09 | Rà hành động retro P2, ghi lỗi AI đã kiểm và phản tư của mỗi người | [Retro](../retro.md), [đóng góp theo handle](../members/), [nhật ký AI](../ai-usage-log.md), [làm rõ](../clarify.md), [standup](../standup.md) | ✅ Retro mở đầu bằng rà hành động P2, có điều làm tốt, điều cần sửa, hành động tiếp theo và một lỗi AI kèm cách xác minh (giá món 90 → 89, TV4 đối chiếu TICKET-03). Có đủ 6 file `docs/members/<handle>.md` khớp handle trong `TEAM.md`. Mỗi file nêu phần đã làm, hỗ trợ hoặc review, lỗi AI và bài học, kèm link commit. Cả sáu file đều dưới 200 từ, không tính link (đếm lại ngày cập nhật này) |
 | Mở rộng | Cháy món (`burn`), phụ đề SFX | `test_qa_ext.Burn` và [phụ đề lúc tắt âm](../proof/phase-4/web-ui.md) | Đạt |
 | Sáng tạo | Master, Nhạc và Hiệu ứng có thanh riêng và lưu qua tải lại trang | [Kiểm âm lượng](../proof/phase-4/web-ui.md) | Đạt |
+| Demo | Demo trực tiếp hoặc video `.mp4` dưới 5 phút sau giờ build | [Video demo](https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana/releases/download/v1.0.0/Quan_An_Cho_Noi_demo_thuyet_minh.mp4) trong Assets của Release v1.0.0 | Đã nộp video 2 phút 48 giây (đo bằng `afinfo`) |
 
 Lệnh hồi quy là `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`. Năm test bảng xếp hạng bỏ qua vì manifest chọn `burn` và phụ đề SFX.
