@@ -2043,6 +2043,7 @@
       const patMax = (meta.patience_s || 60) * 60;
       const eatMax = (meta.eat_s || 10) * 60;
       const byTable = {};
+      const tableLabels = [];
       (snap.customers || []).forEach((c) => (byTable[c.table_id] = c));
       (snap.tables || []).forEach((tb) => {
         const tx = sx(tb.pos[0]), ty = sy(tb.pos[1]);
@@ -2077,26 +2078,30 @@
             ctx.fillStyle = "#ffb74d";
             ctx.beginPath(); ctx.arc(tx, ty - 0.38 * s, 0.16 * s, 0, Math.PI * 2); ctx.fill();
             if (c.eat_ticks_left !== undefined) {
-              bar(cx - 0.75 * s, cy - 0.85 * s, 1.5 * s, 6, 1 - Math.min(1, c.eat_ticks_left / eatMax), "#81c784");
-              text("Đang ăn", cx, cy - 1.05 * s, { size: 18, bold: true, align: "center", color: "#aed581", stroke: "#1b3314" });
+              tableLabels.push(() => {
+                bar(cx - 0.75 * s, cy - 0.85 * s, 1.5 * s, 6, 1 - Math.min(1, c.eat_ticks_left / eatMax), "#81c784");
+                text("Đang ăn", cx, cy - 1.05 * s, { size: 18, bold: true, align: "center", color: "#aed581", stroke: "#1b3314" });
+              });
             }
           } else {
-            const angry = c.is_angry || c.warning === "patience_low" ||
-              (c.patience_ticks_left !== undefined && (c.patience_ticks_left / patMax) < 0.25);
-            const dishLabel = DISH_NAME[c.dish_id] || c.dish_id || "Chưa gọi món";
-            ctx.font = "800 18px 'Segoe UI', system-ui, sans-serif";
-            const bw = Math.max(136, ctx.measureText(dishLabel).width + 20), bh = 50;
-            const bx = Math.max(4, Math.min(w - bw - 4, cx - bw / 2)), by = cy - 0.64 * s - bh;
-            roundRect(bx, by, bw, bh, 7, highContrast ? "#000" : "#fffaf0", angry ? "#ff1744" : (highContrast ? "#ff0" : "#5c3b1e"), angry ? 2.5 : 2);
-            text(dishLabel, bx + bw / 2, by + 20, { size: 18, bold: true, align: "center", color: highContrast ? "#fff" : "#2b1b0e" });
-            if (c.patience_ticks_left !== undefined) {
-              const frac = c.patience_ticks_left / patMax;
-              const pCol = frac >= 0.5 ? "#3d712f" : frac >= 0.25 ? "#805002" : highContrast ? "#ff9b94" : "#ad251e";
-              text(`${angry ? "⚠ " : ""}${Math.ceil(c.patience_ticks_left / 60)}s chờ`, bx + bw / 2, by + 40, {
-                size: 18, bold: true, align: "center", color: highContrast && !angry ? "#fff" : pCol
-              });
-              bar(bx + 8, by + 43, bw - 16, 4, frac, pCol);
-            }
+            tableLabels.push(() => {
+              const angry = c.is_angry || c.warning === "patience_low" ||
+                (c.patience_ticks_left !== undefined && (c.patience_ticks_left / patMax) < 0.25);
+              const dishLabel = DISH_NAME[c.dish_id] || c.dish_id || "Chưa gọi món";
+              ctx.font = "800 18px 'Segoe UI', system-ui, sans-serif";
+              const bw = Math.max(136, ctx.measureText(dishLabel).width + 20), bh = 50;
+              const bx = Math.max(4, Math.min(w - bw - 4, cx - bw / 2)), by = cy - 0.64 * s - bh;
+              roundRect(bx, by, bw, bh, 7, highContrast ? "#000" : "#fffaf0", angry ? "#ff1744" : (highContrast ? "#ff0" : "#5c3b1e"), angry ? 2.5 : 2);
+              text(dishLabel, bx + bw / 2, by + 20, { size: 18, bold: true, align: "center", color: highContrast ? "#fff" : "#2b1b0e" });
+              if (c.patience_ticks_left !== undefined) {
+                const frac = c.patience_ticks_left / patMax;
+                const pCol = frac >= 0.5 ? "#3d712f" : frac >= 0.25 ? "#805002" : highContrast ? "#ff9b94" : "#ad251e";
+                text(`${angry ? "⚠ " : ""}${Math.ceil(c.patience_ticks_left / 60)}s chờ`, bx + bw / 2, by + 40, {
+                  size: 18, bold: true, align: "center", color: highContrast && !angry ? "#fff" : pCol
+                });
+                bar(bx + 8, by + 43, bw - 16, 4, frac, pCol);
+              }
+            });
           }
         }
       });
@@ -2127,6 +2132,8 @@
           text(lbl, px, py - 1.45 * s + 19, { size: 18, bold: true, align: "center", color: highContrast ? "#fff" : "#2b1b0e" });
         }
       }
+      // Tên món và thời gian chờ phải nằm trên cả bàn ghế của hàng phía sau.
+      tableLabels.forEach((draw) => draw());
       drawPopups(sx, sy);
     }
 
