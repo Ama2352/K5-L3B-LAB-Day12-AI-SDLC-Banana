@@ -13,35 +13,43 @@ Cách làm việc kỹ thuật là **tự do** (push thẳng, nhánh + PR, pair,
 4. **Gắn tag** `phase-1` … `phase-4` đúng hạn; chạy được tại từng tag.
 5. **Ghi chép tối thiểu:** `docs/verification/phase-n.md`, `docs/clarify.md`, `docs/ai-usage-log.md`, `docs/retro.md`, `docs/members/<handle>.md`.
 
-## Bắt đầu nhanh (macOS / Linux, ≤ 3 lệnh)
+## Chạy từ clone sạch trên macOS hoặc Linux
+
+Cần Git, Python 3.10 trở lên và trình duyệt có JavaScript. Game dùng thư viện chuẩn Python.
 
 ```bash
-git clone <fork-của-nhóm> && cd <fork-của-nhóm>
-PYTHONPATH=tests:. python3 -m unittest discover -s tests -v        # 1 lệnh chạy test
-python3 -m chonoi.live --mode gather                                # chơi thử trên trình duyệt
+git clone https://github.com/Ama2352/K5-L3B-LAB-Day12-AI-SDLC-Banana.git
+cd K5-L3B-LAB-Day12-AI-SDLC-Banana
+python3 -m chonoi.live --mode day --days 1
 ```
 
-### Demo trọn vòng (Buổi sáng → Cập bến xuất kho → Buổi tối)
+Mở địa chỉ in trong terminal, mặc định là `http://127.0.0.1:8000/`. Nhấn `Ctrl+C` để dừng máy chủ.
+
+| Phím hoặc nút | Thao tác |
+|---|---|
+| WASD hoặc phím mũi tên | Bơi và đi bộ |
+| E | Cập bến, hái rau hoặc tương tác với bếp và bàn |
+| Space | Bắt cá dưới nước |
+| P hoặc Esc | Tạm dừng hoặc tiếp tục |
+| R | Chơi lại |
+| Nút trên màn hình Shop | Mua nâng cấp hoặc đóng Shop để hoàn thành ngày |
+
+Điểm là `earned + 100 × floor(reputation)`. `earned` gồm tiền món và tiền boa, tính theo nghìn đồng.
+
+### Test, headless và benchmark
+
+Chạy các lệnh sau từ thư mục gốc của repo.
 
 ```bash
-python3 -m chonoi.live --mode gather --inventory-out kho.json       # Lặn & hái, nhấn E tại bến để xuất kho
-python3 -m chonoi.live --mode quan --inventory kho.json             # Mở quán tối với kho vừa thu hoạch
+PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
+python3 -m chonoi.headless --mode day --days 1 --seed 42 --ticks 22200 --out day.jsonl
 ```
 
-### Phím điều khiển
-- `WASD` / `Phím mũi tên`: Bơi (buổi sáng) / Đi lại (buổi tối)
-- `E`: Cập bến hoặc hái rau (buổi sáng) · Nấu / Lấy món / Phục vụ (buổi tối)
-- `Space`: Bắt cá (khi đang lặn dưới nước)
-- `P` / `Esc`: Tạm dừng
-- `R`: Chơi lại từ đầu
+Để benchmark có render, dùng `bench_cmd` trong [game.contract.json](game.contract.json) của bản tích hợp Phase 4. Lệnh dưới lấy cấu hình từ manifest và chạy với seed 42 trong 30 giây để ghi `bench.json`.
 
-### Công thức tính điểm
-```text
-score = earned + 100 × floor(reputation)
+```bash
+python3 -c 'import json, shlex, subprocess; cmd = json.load(open("game.contract.json", encoding="utf-8")).get("bench_cmd"); assert cmd, "bench_cmd is missing from game.contract.json"; subprocess.run([*shlex.split(cmd), "--seed", "42", "--duration", "30", "--out", "bench.json"], check=True)'
 ```
-Trong đó `earned` là tổng tiền thu được (tiền món + tiền boa, đơn vị nghìn đồng) và `reputation` là điểm uy tín của quán.
-
-Game cần chế độ **headless** theo Test Contract (`python3 -m chonoi.headless --mode gather|quan …`) để được chạy và chấm tự động. **Công nghệ không ràng buộc**: khung Python trong `chonoi/` chỉ là gợi ý, chi tiết ở [`docs/STARTER.md`](docs/STARTER.md).
 
 ## Tự do sáng tạo
 

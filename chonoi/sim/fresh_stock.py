@@ -22,7 +22,11 @@ class FreshStock:
                     or kind not in KINDS or type(fresh) not in (int, float)
                     or not 0 <= fresh <= 100 or not math.isfinite(fresh)):
                 raise BadInput("invalid or duplicate inventory item")
-            self.items[ident] = dict(item, fresh=Fraction(str(fresh)))
+            exact = Fraction(str(fresh))
+            units = self.decay.denominator
+            on_grid = Fraction(round(exact * units), units)
+            # Recover values serialized from the shared tick grid without rounding fixtures.
+            self.items[ident] = dict(item, fresh=on_grid if float(on_grid) == fresh else exact)
 
     @staticmethod
     def _output(item):
