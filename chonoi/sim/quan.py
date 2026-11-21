@@ -4,6 +4,7 @@
 import math
 
 from ..ids import id_key, sort_by_id
+from ..errors import BadInput
 from .ramp import ramp_velocity
 
 TICK = 60.0
@@ -61,6 +62,12 @@ class QuanSim:
             for s in self._merge(t["stoves"], scenario.get("stoves", []))
         ]
         self.tables = self._merge(t["tables"], scenario.get("tables", []))
+        for stove in self.stoves:
+            payload = stove["dish"]
+            if isinstance(payload, dict):
+                if set(payload) != {"dish_id", "order_id", "base_price"}:
+                    raise BadInput("payload món ở bếp thiếu hoặc thừa trường")
+                stove.update(dish=payload["dish_id"], order_id=payload["order_id"], base_price=payload["base_price"])
 
         # Khách (customers)
         self.tick = 0

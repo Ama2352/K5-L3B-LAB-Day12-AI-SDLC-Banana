@@ -15,15 +15,25 @@ import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KINDS = ("bong_dien_dien", "bong_sung", "ca_linh", "ca_loc", "ca_keo", "keo_neo")
+
+
+def load_contract():
+    with open(os.path.join(ROOT, "game.contract.json"), encoding="utf-8") as f:
+        c = json.load(f)
+    t = c["tuning"]
+    # loại nguyên liệu lấy từ dữ liệu: cá (fish_yield), nút hái, công thức món
+    kinds = set(t["gather"]["fish_yield"]) | {n["kind"] for n in t["gather"]["nodes"]}
+    kinds |= {k for d in t["menu"].values() for k in d["recipe"]}
+    return shlex.split(c["headless_cmd"]), tuple(sorted(kinds))
 
 
 def main(gather_jsonl, inv_path):
     errs = []
+    cmd, kinds = load_contract()
     with open(inv_path, encoding="utf-8") as f:
         inv = json.load(f)
     items = inv.get("items") if isinstance(inv, dict) and set(inv) == {"items"} else None
-    if not isinstance(items, dict) or any(k not in KINDS or type(v) is not int or v <= 0 for k, v in items.items()):
+    if not isinstance(items, dict) or any(k not in kinds or type(v) is not int or v <= 0 for k, v in items.items()):
         errs.append(f"schema kho sai: {inv}")
         items = {}
 
@@ -35,8 +45,6 @@ def main(gather_jsonl, inv_path):
         errs.append(f"cần đúng 1 gather_end, thấy {len(ends)}")
     reason = ends[0]["data"]["reason"] if ends else "-"
 
-    with open(os.path.join(ROOT, "game.contract.json"), encoding="utf-8") as f:
-        cmd = shlex.split(json.load(f)["headless_cmd"])
     with tempfile.TemporaryDirectory() as d:
         out = os.path.join(d, "quan.jsonl")
         p = subprocess.run([*cmd, "--mode", "quan", "--seed", "1", "--ticks", "0",
@@ -51,7 +59,7 @@ def main(gather_jsonl, inv_path):
 
     print(f"gather_end reason: {reason}")
     print(f"{'kind':<16}{'kho.json':>10}{'gather_end':>12}{'quan.stock':>12}")
-    for k in KINDS:
+    for k in kinds:
         a = items.get(k, 0)
         b = "?" if end_inv is None else end_inv.get(k, 0)
         c = "?" if stock is None else stock.get(k, 0)

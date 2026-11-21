@@ -9,7 +9,7 @@ import sys
 
 from .contract import load_contract
 from .errors import BadInput
-from .inputs import BUTTONS_DAY, load_frames
+from .inputs import load_frames
 from .inventory import read_inventory
 from .runner import run
 from .scenario import load_scenario
@@ -36,17 +36,17 @@ def main(argv=None) -> int:
     p.add_argument("--mode", required=True, choices=["gather", "quan", "day"])  # `day` có từ v1.1
     p.add_argument("--seed", required=True, type=_int("seed"))
     p.add_argument("--ticks", required=True, type=_int("ticks"))
+    p.add_argument("--days", type=_int("days"))
     p.add_argument("--out", required=True)
     p.add_argument("--scenario")
     p.add_argument("--inputs")
     p.add_argument("--inventory")
     p.add_argument("--inventory-out", dest="inventory_out")
     p.add_argument("--snapshot-every", dest="snapshot_every", type=_int("snapshot-every"), default=10)
-    p.add_argument("--days", type=_int("days"))
     a = p.parse_args(argv)
     try:
         if a.days is not None and (a.mode != "day" or not 1 <= a.days <= 5):
-            raise BadInput("--days must be 1..5 and is only supported in day mode")
+            raise BadInput("--days chỉ dùng với day, từ 1 đến 5")
         if a.ticks < 0:
             raise BadInput("--ticks phải >= 0")
         if a.snapshot_every <= 0:
@@ -63,8 +63,7 @@ def main(argv=None) -> int:
         contract = load_contract()
         tuning = contract["tuning"]
         scenario = load_scenario(a.scenario, a.mode, tuning)
-        frames = (load_frames(a.inputs, BUTTONS_DAY, allow_buy=True)
-                  if a.mode == "day" else load_frames(a.inputs))
+        frames = load_frames(a.inputs)
         inventory = read_inventory(a.inventory) if a.inventory else None
         if inventory is not None and "stock" in scenario:
             raise BadInput("vừa có quan.stock vừa có --inventory")

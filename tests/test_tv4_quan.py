@@ -149,5 +149,56 @@ class TestQuanTV4(unittest.TestCase):
             self.assertEqual(quan_end_ev[0]["data"]["money"], 72)
 
 
+    def test_serve_at_exact_zero_patience_tick_is_valid(self):
+        """Ca biên: Giao đúng món ở tick kiên nhẫn về 0 vẫn hợp lệ, không bị customer_left."""
+        with Workdir() as w:
+            sc = write_json(w.path("sc.json"), {
+                "quan": {
+                    "player": {"pos": [9.0, 2.0]},
+                    "hand": {"order_id": "C1", "dish_id": "ca_loc_nuong_trui", "base_price": 60},
+                    "customers": [{
+                        "id": "C1", "table_id": "T1", "dish_id": "ca_loc_nuong_trui",
+                        "patience_ticks_left": 1, "base_price": 60
+                    }]
+                }
+            })
+            inp = write_json(w.path("inp.json"), frames({"tick": 0, "interact": True}))
+            out = w.path("out.jsonl")
+            code, err = run_headless("--mode", "quan", "--seed", "42", "--ticks", "2",
+                                     "--scenario", sc, "--inputs", inp, "--out", out)
+            self.assertEqual(code, 0, err)
+            rows = read_jsonl(out)
+            served_ev = events(rows, "served")
+            left_ev = events(rows, "customer_left")
+            self.assertEqual(len(served_ev), 1)
+            self.assertEqual(len(left_ev), 0)
+
+    def test_serve_at_closing_tick_pays_immediately_once(self):
+        """Ca biên: Nếu giao đúng tick đóng ca, khách trả ngay đúng một lần với reason closing."""
+        with Workdir() as w:
+            sc = write_json(w.path("sc.json"), {
+                "quan": {
+                    "player": {"pos": [9.0, 2.0]},
+                    "time_left_ticks": 1,
+                    "hand": {"order_id": "C1", "dish_id": "ca_loc_nuong_trui", "base_price": 60},
+                    "customers": [{
+                        "id": "C1", "table_id": "T1", "dish_id": "ca_loc_nuong_trui",
+                        "patience_ticks_left": 100, "base_price": 60
+                    }]
+                }
+            })
+            inp = write_json(w.path("inp.json"), frames({"tick": 0, "interact": True}))
+            out = w.path("out.jsonl")
+            code, err = run_headless("--mode", "quan", "--seed", "42", "--ticks", "2",
+                                     "--scenario", sc, "--inputs", inp, "--out", out)
+            self.assertEqual(code, 0, err)
+            rows = read_jsonl(out)
+            self.assertEqual(len(events(rows, "served")), 1)
+            paid_ev = events(rows, "paid")
+            self.assertEqual(len(paid_ev), 1)
+            self.assertEqual(paid_ev[0]["data"]["reason"], "closing")
+            self.assertEqual(len(events(rows, "quan_end")), 1)
+
+
 if __name__ == "__main__":
     unittest.main()
