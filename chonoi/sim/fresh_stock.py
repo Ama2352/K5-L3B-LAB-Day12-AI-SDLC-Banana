@@ -6,7 +6,7 @@ import math
 
 from ..errors import BadInput
 from ..ids import id_key, sort_by_id
-from ..inventory import KINDS
+from ..inventory import KINDS, to_units
 
 
 class FreshStock:
@@ -14,6 +14,7 @@ class FreshStock:
         self.items = {}
         self.threshold = Fraction(str(config["spoiled_below"]))
         self.decay = Fraction(str(config["quan_decay_per_s"])) / tick_hz
+        units = self.decay.denominator
         for item in items:
             if not isinstance(item, dict) or set(item) != {"id", "kind", "fresh"}:
                 raise BadInput("invalid inventory item")
@@ -22,11 +23,7 @@ class FreshStock:
                     or kind not in KINDS or type(fresh) not in (int, float)
                     or not 0 <= fresh <= 100 or not math.isfinite(fresh)):
                 raise BadInput("invalid or duplicate inventory item")
-            exact = Fraction(str(fresh))
-            units = self.decay.denominator
-            on_grid = Fraction(round(exact * units), units)
-            # Recover values serialized from the shared tick grid without rounding fixtures.
-            self.items[ident] = dict(item, fresh=on_grid if float(on_grid) == fresh else exact)
+            self.items[ident] = dict(item, fresh=Fraction(to_units(fresh, units), units))
 
     @staticmethod
     def _output(item):

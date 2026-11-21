@@ -7,14 +7,15 @@ v1.2      — kho cá thể:  {"items": [{"id": "I1", "kind": "ca_linh", "fresh"
      v1.2 gặp file kho đếm (hoặc ngược lại) cũng là sai schema.
 Ghi: kho đếm bỏ mục bằng 0; kho cá thể sắp theo id. Qua file tạm cùng thư mục rồi thay thế, byte-ổn-định.
 
-Độ tươi bên trong sim là số nguyên `u` = fresh × FRESH_UNIT để so ngưỡng 30 chính xác
-(gather trừ 2 đơn vị/tick, quán 1 đơn vị/tick với số chuẩn). Ra ngoài (JSONL, file) mới đổi về fresh.
+Giỏ dùng `u` = fresh × FRESH_UNIT để so ngưỡng chính xác. Giá trị ngoài lưới giữ dưới dạng
+phân số, giá trị trên lưới giữ dưới dạng số nguyên. Ra ngoài (JSONL, file) mới đổi về fresh.
 """
 
 import json
 import math
 import os
 import tempfile
+from fractions import Fraction
 
 from .errors import BadInput
 from .ids import sort_by_id
@@ -26,12 +27,15 @@ KINDS = FISH_KINDS + NODE_KINDS
 FRESH_UNIT = 240  # đơn vị nội bộ mỗi điểm tươi
 
 
-def to_units(fresh) -> int:
-    return round(fresh * FRESH_UNIT)
+def to_units(fresh, units=FRESH_UNIT) -> int | Fraction:
+    """Đổi số đo sang đơn vị tươi và khôi phục điểm lưới đã xuất dạng float."""
+    exact = Fraction(str(fresh)) * units
+    nearest = round(exact)
+    return nearest if float(Fraction(nearest, units)) == fresh else exact
 
 
-def from_units(u: int) -> float:
-    return u / FRESH_UNIT
+def from_units(u: int | Fraction) -> float:
+    return float(u / FRESH_UNIT)
 
 
 def item_out(it: dict) -> dict:
