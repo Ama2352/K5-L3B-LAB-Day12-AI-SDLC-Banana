@@ -17,7 +17,9 @@ Nhóm viết tiếp (đúng thứ tự một bước trong PRD mục 13.8, "Gath
       - hái nút ở mặt nước (gather, hold_full), nút mọc lại (node_regrown đã có phần đếm ngược)
       - bắt đàn cá bằng `catch` (fish_caught, hold_full, hồi chiêu catch_cd_ticks, chỉ khi dưới nước)
       - cập bến xét TRƯỚC hái (đã có); ghi kho đúng một lần do runner lo
-Các tính năng của phase sau chưa nằm trong khung này.
+Phase 2 (v1.1, đã làm): cá kèo, kèo nèo (N5/N6), 8 đàn đầu ca theo điểm sinh, cá bơi 1.5 m/s,
+đổi hướng theo seed ở bước bơi thứ 120·k, phản xạ ở mép miền bơi của loài, sinh cá tại phase_tick 360·k (trần 12).
+Thứ tự: bắt theo vị trí cá TRƯỚC khi bơi; hết giờ thì không bơi/sinh.
 """
 
 import math
@@ -57,18 +59,19 @@ class GatherSim:
         src_nodes = scenario["nodes"] if "nodes" in scenario else t["nodes"]
         self.nodes = [{"id": n["id"], "kind": n["kind"], "pos": [float(c) for c in n["pos"]],
                        "regrow_ticks": n.get("regrow_ticks", 0)} for n in src_nodes]
-        if "fish" in scenario:
-            src_fish = scenario["fish"]
-        elif scenario.get("random_fish", True):
-            src_fish = t["fish_initial"]
-        else:
-            src_fish = []
-        # Đàn cá đứng yên ở phase này. Cá bơi / sinh thêm là việc của phase sau.
+        # random_fish=false: tắt cá mặc định, bơi và sinh; cá fixture đứng yên (v1.1 mục 4.3)
+        self.fish_live = scenario.get("random_fish", True)
+        self.phase_tick = 0
+        src_fish = scenario.get("fish", [])
         self.fish = [{"id": f["id"], "kind": f["kind"], "pos": [float(c) for c in f["pos"]],
-                      "heading_deg": f.get("heading_deg", 0)} for f in src_fish]
+                      "heading_deg": float(f.get("heading_deg", 0)), "age_ticks": f.get("age_ticks", 0)}
+                     for f in src_fish]
         for coll in (self.nodes, self.fish):
             for e in coll:
                 ids.reserve(e["id"])
+        if self.fish_live and "fish" not in scenario:
+            for _ in range(t["fish_initial"]):  # đầu ca: fish_initial đàn ở các điểm sinh khác nhau
+                self._spawn_fish()
         self.money = 0
         self.earned = 0
         self.reputation = tuning["quan"]["reputation_initial"]
@@ -91,14 +94,15 @@ class GatherSim:
             "nodes": [{"id": n["id"], "pos": n["pos"], "kind": n["kind"],
                        "ready": n["regrow_ticks"] == 0, "regrow_ticks": n["regrow_ticks"]}
                       for n in sort_by_id(self.nodes)],
-            "fish": [{"id": f["id"], "pos": f["pos"], "kind": f["kind"], "heading_deg": f["heading_deg"]}
-                     for f in sort_by_id(self.fish)],
+            "fish": [{"id": f["id"], "pos": f["pos"], "kind": f["kind"], "heading_deg": f["heading_deg"],
+                      "age_ticks": f["age_ticks"]} for f in sort_by_id(self.fish)],
         }
 
     # --- một bước ---------------------------------------------------------------
     def step(self, inp):
         events = []
         # 1. đồng hồ và hàng có sẵn: giảm bộ đếm, nút mọc lại
+        self.phase_tick += 1
         self.time_left_ticks = max(0, self.time_left_ticks - 1)
         self.invuln_ticks = max(0, self.invuln_ticks - 1)
         self.catch_cd_ticks = max(0, self.catch_cd_ticks - 1)
@@ -125,7 +129,63 @@ class GatherSim:
         # 5. hết giờ
         if self.time_left_ticks <= 0:
             self._finish("time", events)
+            return events
+        # 6. còn giờ: cá bơi (sau khi bắt theo vị trí cũ), rồi sinh theo lịch; cá mới tham gia từ bước sau
+        if self.fish_live:
+            self._swim_fish()
+            if self.phase_tick % self.t["fish_spawn_ticks"] == 0:
+                f = self._spawn_fish()
+                if f:
+                    events.append(("fish_spawned", {"id": f["id"], "kind": f["kind"], "pos": f["pos"]}))
         return events
+
+    # --- cá (v1.1 mục 1.1) --------------------------------------------------------
+    def _swim_fish(self):
+        t = self.t
+        step = t["fish_speed"] / TICK
+        turn = self.rng.get("fish_turn")
+        for f in sort_by_id(self.fish):
+            if (f["age_ticks"] + 1) % t["fish_turn_ticks"] == 0:  # bước bơi thứ 120, 240…: đổi hướng trước
+                f["heading_deg"] = turn.uniform(0, 360)
+            h = math.radians(f["heading_deg"])
+            v = [math.cos(h) * step, math.sin(h) * step]
+            flipped = False
+            for i, (lo, hi) in enumerate((t["fish_x"], t["fish_depths"][f["kind"]])):
+                n = f["pos"][i] + v[i]
+                if n >= hi or n <= lo:  # tới mép: phản xạ phần quãng đường còn lại, đảo thành phần vuông góc
+                    edge = hi if n >= hi else lo
+                    n = 2 * edge - n
+                    v[i] = -v[i]
+                    flipped = True
+                f["pos"][i] = n
+            if flipped:
+                f["heading_deg"] = math.degrees(math.atan2(v[1], v[0])) % 360
+            f["age_ticks"] += 1
+
+    def _spawn_fish(self):
+        """Sinh tối đa một đàn: loài theo trọng số (chuẩn hóa trên loài còn điểm), rồi điểm đều, hướng theo seed."""
+        t = self.t
+        if len(self.fish) >= t["fish_max"]:
+            return None
+        clear = t["fish_spawn_clearance"]
+        pts = {}
+        for kind in sorted(t["fish_spawn_depths"]):
+            ok = [[float(x), float(d)] for x in t["fish_spawn_x"] for d in t["fish_spawn_depths"][kind]
+                  if all(math.dist((x, d), f["pos"]) > clear for f in self.fish)]
+            if ok:
+                pts[kind] = ok
+        if not pts:
+            return None  # hết điểm hợp lệ: bỏ lượt
+        rng = self.rng.get("fish_spawn")
+        r = rng.random() * sum(t["fish_weights"][k] for k in pts)
+        for kind in pts:
+            r -= t["fish_weights"][kind]
+            if r < 0:
+                break
+        f = {"id": self.ids.new("F"), "kind": kind, "pos": pts[kind][rng.randrange(len(pts[kind]))],
+             "heading_deg": rng.uniform(0, 360), "age_ticks": 0}
+        self.fish.append(f)
+        return f
 
     # --- tiện ích ---------------------------------------------------------------
     def _at_surface(self) -> bool:
