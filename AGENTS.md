@@ -29,4 +29,4 @@
 
 ## Skills / hooks của nhóm
 - (Ghi tên và khi nào dùng; tối thiểu 2 skill/hook/command nhóm tự viết, đặt ở `.agents/skills/` hoặc tương đương.)
-- `check-handoff` (`.agents/skills/check-handoff/SKILL.md`): kiểm file kho gather → quan. Lệnh: `python3 tools/check_handoff.py <gather.jsonl> <kho.json>` (0 khớp / 1 lệch). Chạy trước khi gửi kho cho quán/QA và trước khi gắn tag. Phase 2: đọc 6 loại nguyên liệu từ `game.contract.json`; bằng chứng smoke kho ở `docs/proof/phase-2/integration.txt`.
+- `check-handoff` (`.agents/skills/check-handoff/SKILL.md`): kiểm file kho gather → quan. Lệnh: `python3 tools/check_handoff.py <gather.jsonl> <kho.json>` (0 khớp / 1 lệch). Chạy trước khi gửi kho cho quán/QA và trước khi gắn tag. Phase 2: đọc 6 loại nguyên liệu từ `game.contract.json`; bằng chứng smoke kho ở `docs/proof/phase-2/integration.txt`. Phase 3: tự chọn schema theo `contract_version` (v1.2 so từng cá thể id/kind/fresh); chạy thử v1.2 bằng `CHONOI_CONTRACT=docs/proof/phase-3/contract-v1.2.json`.
