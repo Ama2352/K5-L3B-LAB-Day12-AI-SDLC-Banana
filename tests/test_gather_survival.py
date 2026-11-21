@@ -64,7 +64,7 @@ class GatherSurvival(unittest.TestCase):
         hold = ["bong_sung", "ca_loc", "ca_linh"]
         rows = self.gather({"pos": [2, 1], "hp": 1, "oxygen_ticks": 0, "zero_oxy_ticks": 59},
                            8, commands=[{"tick": 0, "interact": True, "catch": True}],
-                           time_left_ticks=1, hold=hold,
+                           time_left_ticks=1, hold=hold, random_fish=False,
                            fish=[{"id": "F1", "kind": "ca_loc", "pos": [2, 1]}])
         self.assertEqual([(e["tick"], e["name"], e["data"]) for e in events(rows)], [
             (1, "choke", {"hp": 0}),
