@@ -49,6 +49,9 @@ class QuanSim:
         else:
             self.hand = None
 
+        self.burn_s = self.t.get("burn_s")
+        self.burn_ticks = int(round(self.burn_s * TICK)) if self.burn_s is not None else None
+
         self.time_left_ticks = scenario.get("time_left_ticks", int(round(t["duration_s"] * 60)))
         self.reputation = float(scenario.get("reputation", t["reputation_initial"]))
 
@@ -179,6 +182,7 @@ class QuanSim:
             self._age_fresh_stock(events)
 
         # 2. Xét bếp theo id. Món nấu xong chuyển ready với ready_ticks = 0.
+        #    Nếu bật mở rộng cháy món (burn_s): kiểm tra món cháy khi ready_ticks > burn_ticks.
         for s in sort_by_id(self.stoves):
             if s["state"] == "cooking" and s["cook_ticks_left"] <= 0:
                 s["state"] = "ready"
@@ -188,6 +192,8 @@ class QuanSim:
                     "dish_ready",
                     {"stove_id": s["id"], "order_id": s["order_id"], "dish_id": s["dish"]}
                 ))
+            elif s["state"] == "ready" and self.burn_ticks is not None and s["ready_ticks"] > self.burn_ticks:
+                self._handle_dish_burnt(s, events)
 
         # 3. Di chuyển người chơi
         self._move(inp)
@@ -310,6 +316,57 @@ class QuanSim:
                 stove["base_price"] = None
                 stove["cook_ticks_left"] = 0
                 stove["ready_ticks"] = 0
+
+    def _handle_dish_burnt(self, stove, events):
+        """Mở rộng Cháy món (burn): khi ready_ticks > burn_ticks, bỏ món, bếp rảnh ngay, thử giữ lại nguyên liệu."""
+        dish_id = stove["dish"]
+        order_id = stove["order_id"]
+        new_status = "unfulfillable"
+
+        # Tìm khách tương ứng với đơn bị cháy
+        cust = next((c for c in self.customers if c["id"] == order_id), None)
+        if cust and dish_id in self.menu and self.fresh_stock is not None:
+            reserved = self.fresh_stock.reserve(self.menu[dish_id]["recipe"], self._held_ids())
+            if reserved is not None:
+                new_status = "reserved"
+            cust["order_status"] = new_status
+            cust["reserved"] = reserved or []
+        elif cust and dish_id in self.menu:
+            recipe = self.menu[dish_id]["recipe"]
+            # Tính tồn kho khả dụng (tồn kho vật lý trừ phần giữ của các khách khác)
+            available_stock = dict(self.stock)
+            for other in self.customers:
+                if other["id"] != cust["id"] and other.get("reserved"):
+                    for rk, rq in other["reserved"].items():
+                        available_stock[rk] = available_stock.get(rk, 0) - rq
+
+            can_reserve = all(available_stock.get(k, 0) >= qty for k, qty in recipe.items())
+            if can_reserve:
+                cust["order_status"] = "reserved"
+                cust["reserved"] = dict(recipe)
+                new_status = "reserved"
+            else:
+                cust["order_status"] = "unfulfillable"
+                cust["reserved"] = {}
+                new_status = "unfulfillable"
+
+        # Bếp rảnh ngay, nguyên liệu đã nấu bị mất
+        stove["state"] = "idle"
+        stove["dish"] = None
+        stove["order_id"] = None
+        stove["base_price"] = None
+        stove["cook_ticks_left"] = 0
+        stove["ready_ticks"] = 0
+
+        events.append((
+            "dish_burnt",
+            {
+                "stove_id": stove["id"],
+                "order_id": order_id,
+                "dish_id": dish_id,
+                "order_status": new_status
+            }
+        ))
 
     def _interact_table(self, table, events):
         """Tương tác với bàn: Giao món đúng order_id, chốt boa và khách bắt đầu ăn."""
