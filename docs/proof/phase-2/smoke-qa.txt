@@ -1,0 +1,11 @@
+commit: b2d0401
+day --days 1 seed 42 chạy 2 lần:
+c649fd881bfff16e075d36c3d3f7b4d2385c3b95bc8762dcbed6cf34234e3370  day1.jsonl
+c649fd881bfff16e075d36c3d3f7b4d2385c3b95bc8762dcbed6cf34234e3370  day2.jsonl
+GIỐNG TỪNG BYTE
+dòng end:
+{"mode":"day","state":"finished","sim_tick":22200,"money":0,"earned":0,"reputation":3.0,"score":300,"type":"end","ticks":22200,"reason":"days_complete","days_completed":1}
+
+quán có kho, 3000 tick, seed 1 — đếm event:
+   4 "name":"customer_arrived"
+{"type":"event","tick":120,"phase":"quan","name":"customer_arrived","data":{"order_id":"C1","table_id":"T1","dish_id":"ca_loc_nuong_trui"}}

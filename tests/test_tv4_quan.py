@@ -73,7 +73,8 @@ class TestQuanTV4(unittest.TestCase):
                     "customers": [
                         {
                             "id": "C1", "table_id": "T1", "dish_id": "ca_loc_nuong_trui",
-                            "patience_ticks_left": 3000, "base_price": 60
+                            "patience_ticks_left": 3000, "base_price": 60,
+                            "order_status": "assigned"  # PRD-0 mục D: món trên tay thuộc đơn assigned
                         }
                     ]
                 }
@@ -125,7 +126,8 @@ class TestQuanTV4(unittest.TestCase):
                     "customers": [
                         {
                             "id": "C1", "table_id": "T1", "dish_id": "ca_loc_nuong_trui",
-                            "state": "eating", "eat_ticks_left": 500, "base_price": 60, "tip": 12
+                            "state": "eating", "eat_ticks_left": 500, "base_price": 60, "tip": 12,
+                            "order_status": "served"  # PRD-0 mục D: khách eating phải là served
                         }
                     ]
                 }
@@ -158,7 +160,7 @@ class TestQuanTV4(unittest.TestCase):
                     "hand": {"order_id": "C1", "dish_id": "ca_loc_nuong_trui", "base_price": 60},
                     "customers": [{
                         "id": "C1", "table_id": "T1", "dish_id": "ca_loc_nuong_trui",
-                        "patience_ticks_left": 1, "base_price": 60
+                        "patience_ticks_left": 1, "base_price": 60, "order_status": "assigned"  # PRD-0 mục D
                     }]
                 }
             })
@@ -183,7 +185,7 @@ class TestQuanTV4(unittest.TestCase):
                     "hand": {"order_id": "C1", "dish_id": "ca_loc_nuong_trui", "base_price": 60},
                     "customers": [{
                         "id": "C1", "table_id": "T1", "dish_id": "ca_loc_nuong_trui",
-                        "patience_ticks_left": 100, "base_price": 60
+                        "patience_ticks_left": 100, "base_price": 60, "order_status": "assigned"  # PRD-0 mục D
                     }]
                 }
             })

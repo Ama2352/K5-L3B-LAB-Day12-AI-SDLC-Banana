@@ -625,7 +625,7 @@ class QuanSim:
 
         candidates = self._available_orders()
         if not candidates:
-            events.append(("no_dish", {"table_id": table["id"]}))
+            events.append(("no_dish", {}))  # PRD-0 mục E: data {} khi có bàn mà thiếu món
             return
         dish_id = self.rng.get("customer_order").choice(sorted(candidates))
         customer = {
@@ -642,7 +642,8 @@ class QuanSim:
             "tip": 0,
         }
         self.customers.append(customer)
-        events.append(("customer_arrived", {"customer_id": customer["id"],
+        # PRD-0 mục E: order_id,table_id,dish_id (order_id = id khách)
+        events.append(("customer_arrived", {"order_id": customer["id"],
                                             "table_id": table["id"], "dish_id": dish_id}))
 
     def _move(self, inp):
