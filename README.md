@@ -13,13 +13,33 @@ Cách làm việc kỹ thuật là **tự do** (push thẳng, nhánh + PR, pair,
 4. **Gắn tag** `phase-1` … `phase-4` đúng hạn; chạy được tại từng tag.
 5. **Ghi chép tối thiểu:** `docs/verification/phase-n.md`, `docs/clarify.md`, `docs/ai-usage-log.md`, `docs/retro.md`, `docs/members/<handle>.md`.
 
-## Bắt đầu nhanh
+## Bắt đầu nhanh (macOS / Linux, ≤ 3 lệnh)
 
 ```bash
 git clone <fork-của-nhóm> && cd <fork-của-nhóm>
-PYTHONPATH=tests:. python3 -m unittest discover -s tests -v        # smoke test
-python3 -m chonoi.live --mode gather                                # chơi thử trên trình duyệt (tùy chọn)
+PYTHONPATH=tests:. python3 -m unittest discover -s tests -v        # 1 lệnh chạy test
+python3 -m chonoi.live --mode gather                                # chơi thử trên trình duyệt
 ```
+
+### Demo trọn vòng (Buổi sáng → Cập bến xuất kho → Buổi tối)
+
+```bash
+python3 -m chonoi.live --mode gather --inventory-out kho.json       # Lặn & hái, nhấn E tại bến để xuất kho
+python3 -m chonoi.live --mode quan --inventory kho.json             # Mở quán tối với kho vừa thu hoạch
+```
+
+### Phím điều khiển
+- `WASD` / `Phím mũi tên`: Bơi (buổi sáng) / Đi lại (buổi tối)
+- `E`: Cập bến hoặc hái rau (buổi sáng) · Nấu / Lấy món / Phục vụ (buổi tối)
+- `Space`: Bắt cá (khi đang lặn dưới nước)
+- `P` / `Esc`: Tạm dừng
+- `R`: Chơi lại từ đầu
+
+### Công thức tính điểm
+```text
+score = earned + 100 × floor(reputation)
+```
+Trong đó `earned` là tổng tiền thu được (tiền món + tiền boa, đơn vị nghìn đồng) và `reputation` là điểm uy tín của quán.
 
 Game cần chế độ **headless** theo Test Contract (`python3 -m chonoi.headless --mode gather|quan …`) để được chạy và chấm tự động. **Công nghệ không ràng buộc**: khung Python trong `chonoi/` chỉ là gợi ý, chi tiết ở [`docs/STARTER.md`](docs/STARTER.md).
 
