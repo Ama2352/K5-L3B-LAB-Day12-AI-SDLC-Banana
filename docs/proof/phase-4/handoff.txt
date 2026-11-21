@@ -1,0 +1,14 @@
+Bàn giao và chơi một Ngày headless trên contract v1.3
+
+python3 -m chonoi.headless --mode gather --seed 1 --ticks 3000 --inputs docs/proof/phase-1/inputs-thu.json --inventory-out kho.json --out gather.jsonl
+python3 tools/check_handoff.py gather.jsonl kho.json
+
+contract 1.2 (kho cá thể) · gather_end reason: docked
+id    kind                fresh (kho.json)  gather_end  quan.stock
+I1    bong_dien_dien     91.33333333333333      91.333      91.333
+I2    bong_dien_dien                 96.75       96.75       96.75
+tổng: 2 cá thể, ươn (< 30): 0
+KẾT QUẢ: KHỚP
+
+python3 -m chonoi.headless --mode day --days 1 --seed 42 --ticks 22200 --out day.jsonl
+{"mode":"day","state":"finished","sim_tick":22200,"money":0,"earned":0,"reputation":3.0,"score":300,"type":"end","ticks":22200,"reason":"days_complete","days_completed":1}

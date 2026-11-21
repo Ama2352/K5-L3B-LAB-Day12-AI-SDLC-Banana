@@ -1,0 +1,12 @@
+# Smoke bản đóng gói v1.0.0
+
+Tạo từ cây Git bằng `git archive --format=zip --prefix=chonoi-v1.0.0/ -o chonoi-v1.0.0.zip <commit>`.
+Giải nén vào thư mục sạch, kiểm tra ZIP, README, LICENSE, CREDITS, manifest và mã web.
+
+Windows, Python 3.13, chạy `python3 -m chonoi.live --mode day --days 1 --port 0` từ thư mục giải nén. Cờ cổng động phục vụ kiểm tự động.
+
+- GET `/` trả 200 và có Canvas. GET `/state` trả 200.
+- Khởi đầu `day / gather / menu`, `sim_tick: 0`.
+- Chọn Chơi và tiếp tục qua DayIntro chuyển sang `day / gather / playing`. Đồng hồ mô phỏng bắt đầu chạy.
+
+Workflow CI kiểm lệnh chạy ba bước của README từ một checkout sạch trên Ubuntu. Xem `.github/workflows/ci.yml`.
