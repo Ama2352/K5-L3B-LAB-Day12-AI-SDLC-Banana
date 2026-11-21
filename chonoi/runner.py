@@ -53,6 +53,9 @@ class Session:
         elif mode == "gather":
             self.sim = GatherSim(tuning, scenario, self.streams, self.ids)
         else:
+            # PRD-0 mục D: fixture quán mâu thuẫn → mã 2, kể cả khi chạy quán độc lập (dùng đủ thực đơn)
+            stock = inventory if inventory is not None else scenario.get("stock", {})
+            check_evening_fixture(scenario, stock, tuning["menu"])
             self.sim = QuanSim(tuning, scenario, self.streams, self.ids, inventory)
 
     def _events(self, pairs):
