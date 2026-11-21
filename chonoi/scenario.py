@@ -8,7 +8,7 @@ phải có đúng một món, khách eating thiếu giá/tip...) — xem PRD-0 m
 import json
 
 from .errors import BadInput
-from .inventory import KINDS_P1, validate_items
+from .inventory import KINDS_P2, validate_items
 
 GATHER_KEYS = {"player", "hold", "nodes", "fish", "random_fish", "time_left_ticks"}
 GATHER_PLAYER_KEYS = {"pos", "vel", "heading_deg", "hp", "oxygen_ticks", "zero_oxy_ticks",
@@ -40,11 +40,43 @@ def load_scenario(path, mode: str, tuning: dict) -> dict:
             data = json.load(f)
     except (OSError, ValueError) as e:
         raise BadInput(f"không đọc được scenario {path}: {e}")
+    if mode == "day":
+        return _validate_day(data, tuning)
     if not isinstance(data, dict) or not set(data) <= {"gather", "quan"}:
         raise BadInput("scenario chỉ được có khối 'gather' hoặc 'quan'")
     if set(data) - {mode}:
         raise BadInput(f"khối sai mode: chạy --mode {mode} chỉ nhận khối '{mode}'")
-    block = data.get(mode, {})
+    return _validate_phase(data.get(mode, {}), mode, tuning)
+
+
+def _validate_day(data, tuning):
+    if not isinstance(data, dict) or set(data) - {"gather", "quan", "day"}:
+        raise BadInput("day scenario accepts gather, quan and day blocks")
+    day = data.get("day", {})
+    if not isinstance(day, dict) or set(day) - {"money", "earned", "reputation", "upgrades", "day_plan"}:
+        raise BadInput("invalid day scenario fields")
+    money, earned = day.get("money", 0), day.get("earned", 0)
+    _nonneg_int("money", money)
+    _nonneg_int("earned", earned)
+    if money > earned or ({"money", "earned"} & day.keys() and not {"money", "earned"} <= day.keys()):
+        raise BadInput("day scenario requires both money and earned, with money <= earned")
+    reputation = day.get("reputation", tuning["quan"]["reputation_initial"])
+    if not _num(reputation) or not tuning["quan"]["reputation_min"] <= reputation <= tuning["quan"]["reputation_max"]:
+        raise BadInput("day reputation is out of bounds")
+    upgrades = day.get("upgrades", {})
+    tiers = tuning["shop"]["upgrades"]
+    if not isinstance(upgrades, dict) or any(key not in tiers or type(level) is not int
+                                            or not 0 <= level <= len(tiers[key])
+                                            for key, level in upgrades.items()):
+        raise BadInput("invalid day upgrades")
+    gather = _validate_phase(data.get("gather", {}), "gather", tuning)
+    quan = _validate_phase(data.get("quan", {}), "quan", tuning)
+    if {"stock", "reputation"} & quan.keys():
+        raise BadInput("day scenarios cannot set quan.stock or quan.reputation")
+    return {"gather": gather, "quan": quan, "day": day}
+
+
+def _validate_phase(block, mode, tuning):
     if not isinstance(block, dict):
         raise BadInput(f"khối {mode} phải là object")
     allowed = GATHER_KEYS if mode == "gather" else QUAN_KEYS
@@ -91,7 +123,7 @@ def _validate_gather(b, tuning):
         raise BadInput("random_fish phải là boolean")
     if "hold" in b:
         h = b["hold"]
-        if not isinstance(h, list) or any(k not in KINDS_P1 for k in h):
+        if not isinstance(h, list) or any(k not in KINDS_P2 for k in h):
             raise BadInput("hold phải là mảng id nguyên liệu hợp lệ")
         if len(h) > g["hold_capacity"]:
             raise BadInput("hold vượt sức chứa")

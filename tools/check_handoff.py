@@ -15,7 +15,7 @@ import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-KINDS = ("bong_dien_dien", "bong_sung", "ca_linh", "ca_loc")
+KINDS = ("bong_dien_dien", "bong_sung", "ca_linh", "ca_loc", "ca_keo", "keo_neo")
 
 
 def main(gather_jsonl, inv_path):

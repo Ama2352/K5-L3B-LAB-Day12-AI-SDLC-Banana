@@ -13,10 +13,12 @@ class QuanSim:
     mode = "quan"
     phase = "quan"
 
-    def __init__(self, tuning, scenario, streams, ids, inventory=None):
+    def __init__(self, tuning, scenario, streams, ids, inventory=None, *, planned_dishes=None):
         t = tuning["quan"]
         self.t = t
         self.menu = tuning["menu"]
+        # The plan supplies eligible IDs. Its serving counts are gathering targets.
+        self.planned_dishes = None if planned_dishes is None else frozenset(planned_dishes)
         self.rng = streams
         self.ids = ids
 
@@ -480,7 +482,8 @@ class QuanSim:
                 available[item] = available.get(item, 0) - count
         dishes = [
             dish_id for dish_id, dish in sorted(self.menu.items())
-            if all(available.get(item, 0) >= count for item, count in dish["recipe"].items())
+            if (self.planned_dishes is None or dish_id in self.planned_dishes)
+            and all(available.get(item, 0) >= count for item, count in dish["recipe"].items())
         ]
         if not dishes:
             events.append(("no_dish", {"table_id": table["id"]}))

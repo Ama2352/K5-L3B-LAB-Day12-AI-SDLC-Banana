@@ -9,8 +9,9 @@ cả hai chạy CÙNG một lớp sim, không nhân đôi logic.
 
 import math
 
+from .day import DaySession
 from .ids import IdAllocator
-from .inputs import InputPlayer
+from .inputs import BUTTONS_DAY, BUTTONS_V10, InputPlayer
 from .inventory import write_inventory
 from .jsonl import JsonlWriter
 from .rng import Streams
@@ -74,18 +75,25 @@ class Session:
             write_inventory(inventory_out, self.sim.inventory_items())
 
 
-def run(mode, tuning, scenario, seed, frames, ticks, out_path, snapshot_every, inventory=None, inventory_out=None):
-    sess = Session(mode, tuning, scenario, seed, inventory)
-    player = InputPlayer(frames)
+def run(mode, tuning, scenario, seed, frames, ticks, out_path, snapshot_every, inventory=None, inventory_out=None, *, days=1):
+    sess = (DaySession(tuning, scenario, seed, days)
+            if mode == "day" else Session(mode, tuning, scenario, seed, inventory))
+    player = InputPlayer(frames, BUTTONS_DAY if mode == "day" else BUTTONS_V10)
     w = JsonlWriter(out_path)
     try:
+        if mode == "day":
+            for row in sess.pending_events:
+                w.write(row)
         w.write(sess.snapshot())  # tick 0: sau khi dựng scenario, trước mọi input
         last_snapped = 0
         while sess.tick < ticks and not sess.done:
             inp = player.advance(sess.tick)  # bước k đọc input có tick == k
-            for row in sess.step(inp):
+            rows = sess.step(inp)
+            for row in rows:
                 w.write(row)
-            if sess.tick % snapshot_every == 0 or sess.done:
+            if sess.tick % snapshot_every == 0 or sess.done or any(
+                row["name"] == "phase_start" for row in rows
+            ):
                 w.write(sess.snapshot())
                 last_snapped = sess.tick
         if last_snapped != sess.tick:
@@ -93,5 +101,6 @@ def run(mode, tuning, scenario, seed, frames, ticks, out_path, snapshot_every, i
         w.write(sess.end_row())
     finally:
         w.close()
-    sess.write_inventory_if_done(inventory_out)
+    if mode == "gather":
+        sess.write_inventory_if_done(inventory_out)
     return sess.sim
