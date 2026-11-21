@@ -10,6 +10,7 @@ import os
 import unittest
 
 from helpers import Workdir, events, frames, read_jsonl, run_headless, snapshots, write_json
+import v12_adapter as v12  # chuyển fixture/output P1–P2 sang kho cá thể v1.2 (xem tests/v12_adapter.py)
 
 with open("game.contract.json", encoding="utf-8") as _f:
     CONTRACT = json.load(_f)
@@ -21,7 +22,7 @@ NO_FISH = {"fish": [], "random_fish": False, "monsters": []}
 def run(w, mode, scenario=None, inputs=None, ticks=1, seed=1, extra=(), every=None):
     args = ["--mode", mode, "--seed", str(seed), "--ticks", str(ticks), "--out", w.path("o.jsonl"), *extra]
     if scenario is not None:
-        args += ["--scenario", write_json(w.path("sc.json"), scenario)]
+        args += ["--scenario", write_json(w.path("sc.json"), v12.scenario(scenario))]
     if inputs is not None:
         args += ["--inputs", write_json(w.path("in.json"), frames(*inputs))]
     if every:
@@ -29,7 +30,7 @@ def run(w, mode, scenario=None, inputs=None, ticks=1, seed=1, extra=(), every=No
     code, err = run_headless(*args)
     if code != 0:
         raise AssertionError(f"headless thoát mã {code}: {err}")
-    return read_jsonl(w.path("o.jsonl"))
+    return v12.view(read_jsonl(w.path("o.jsonl")))
 
 
 def code_of(w, *args):
@@ -174,7 +175,7 @@ class Inputs(unittest.TestCase):
 class ScenarioInvalid(unittest.TestCase):
     def expect2(self, mode, scenario):
         with Workdir() as w:
-            sc = write_json(w.path("sc.json"), scenario)
+            sc = write_json(w.path("sc.json"), v12.scenario(scenario))
             out = w.path("o.jsonl")
             code = code_of(w, "--mode", mode, "--seed", "1", "--ticks", "0", "--scenario", sc, "--out", out)
             self.assertEqual(code, 2, scenario)

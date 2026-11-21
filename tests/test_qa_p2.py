@@ -14,6 +14,7 @@ import unittest
 from collections import Counter
 
 from helpers import Workdir, events, frames, read_jsonl, run_headless, snapshots, write_json
+import v12_adapter as v12  # chuyển fixture/output P1–P2 sang kho cá thể v1.2 (xem tests/v12_adapter.py)
 
 with open("game.contract.json", encoding="utf-8") as _f:
     CONTRACT = json.load(_f)
@@ -49,7 +50,7 @@ DAY_TICKS = 22200
 def run(w, mode, scenario=None, inputs=None, ticks=1, seed=1, extra=(), every=None):
     args = ["--mode", mode, "--seed", str(seed), "--ticks", str(ticks), "--out", w.path("o.jsonl"), *extra]
     if scenario is not None:
-        args += ["--scenario", write_json(w.path("sc.json"), scenario)]
+        args += ["--scenario", write_json(w.path("sc.json"), v12.scenario(scenario))]
     if inputs is not None:
         args += ["--inputs", write_json(w.path("in.json"), frames(*inputs))]
     if every:
@@ -57,7 +58,7 @@ def run(w, mode, scenario=None, inputs=None, ticks=1, seed=1, extra=(), every=No
     code, err = run_headless(*args)
     if code != 0:
         raise AssertionError(f"headless thoát mã {code}: {err}")
-    return read_jsonl(w.path("o.jsonl"))
+    return v12.view(read_jsonl(w.path("o.jsonl")))
 
 
 def names(rows, tick=None):
@@ -74,7 +75,8 @@ NO_FISH = {"fish": [], "random_fish": False}
 # ======================================================== 1. Số chuẩn & manifest v1.1
 class StandardNumbers(unittest.TestCase):
     def test_ac_p2_01_contract_version_va_ca_chung(self):
-        self.assertEqual(CONTRACT["contract_version"], "1.1")
+        # TICKET-03 thay contract v1.1 bằng v1.2 (kho cá thể); số chuẩn P2 giữ nguyên
+        self.assertIn(CONTRACT["contract_version"], ("1.1", "1.2"))
         self.assertEqual((G["duration_s"], Q["duration_s"]), (180, 180))
         self.assertEqual((G["swim_speed"], Q["walk_speed"], G["oxygen_max_s"], G["hp_max"]), (4.0, 4.0, 30, 3))
         self.assertEqual((G["hold_capacity"], G["interact_radius"], G["catch_radius"], G["regrow_s"]), (12, 2.0, 2.0, 20))
@@ -250,7 +252,7 @@ class Crocodile(unittest.TestCase):
             self.assertEqual(events(rows, "faint")[0]["data"], {"cause": "monster", "lost": ["bong_sung", "ca_loc"], "hp": 0})
             self.assertEqual(rows[-1]["reason"], "fainted")
             with open(inv, encoding="utf-8") as f:
-                self.assertEqual(json.load(f), {"items": {}})
+                self.assertEqual(v12.inventory_view(json.load(f)), {"items": {}})
 
     def test_ac_p2_11_cap_ben_uu_tien_khi_con_mau(self):
         with Workdir() as w:
