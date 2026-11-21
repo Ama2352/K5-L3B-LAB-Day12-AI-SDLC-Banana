@@ -13,7 +13,7 @@ Nguồn: PRD-0 mục C, E, G; Contract v1.1 (Phase 2) mục 1.1, 4.3–4.5. Khi 
 - **Bên ghi** (gather, `--inventory-out`): ghi đúng một lần khi có `gather_end`, nội dung khớp `gather_end.data.inventory`. Ngất thì ghi kho rỗng. Chạm `--ticks` trước khi buổi sáng kết thúc thì không tạo và không ghi đè file. Ghi qua file tạm rồi thay thế nguyên tử.
 - **Bên đọc** (quan, `--inventory`): kho thành `stock` ở snapshot tick 0. Trần giỏ không áp lên kho quán. Không được khai cùng lúc `--inventory` và `scenario.quan.stock`.
 - Mẫu hợp lệ: [`inventory.sample.json`](inventory.sample.json). Kho thật lấy từ một lượt thu: [`docs/proof/phase-1/kho.json`](../proof/phase-1/kho.json).
-- Mode `day` (v1.1) sẽ tự bàn giao cùng schema này trong bộ nhớ. **Chưa làm:** `--mode day` hiện vẫn thoát mã 2 và `contract_version` vẫn là `"1.0"` (Integrator quyết khi nâng). Hai cờ file kho chỉ dùng cho hai mode độc lập.
+- Mode `day` (v1.1, PR #4) tự bàn giao cùng schema này trong bộ nhớ. Hai cờ file kho chỉ dùng cho hai mode độc lập.
 - Kiểm bàn giao: `python3 tools/check_handoff.py <gather.jsonl> <kho.json>` (mã 0 là khớp, 1 là lệch). Danh sách loại đọc từ `game.contract.json`.
 
 ## 2. Giao diện `sim/*` ↔ `client/ui`
