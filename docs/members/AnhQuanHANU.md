@@ -28,3 +28,17 @@
 - **Điều tôi học được:**
   - Thiết kế state machine tách bạch giữa trạng thái hiển thị tức thì (`upgrades`) và trạng thái hiệu lực theo chu kỳ game (`active_upgrades`), cùng cách mở rộng tính năng mô phỏng bằng tham số cấu hình tùy chọn (`burn_s`).
 
+## Phase 3
+- **Tôi đã làm:**
+  - Cập nhật và kiểm chứng toàn diện logic Bếp và Thanh toán cho kho cá thể (`fresh_stock`): tiêu thụ đúng ID cá thể đang giữ, chốt `base_price = floor(giá * avg_fresh / 100)` với thứ tự thực thi chuẩn (hao tươi xảy ra trước interact trong tick), sắp xếp danh sách `items` trong sự kiện `cook_started` theo `kind` rồi `id`.
+  - Kiểm chứng cơ chế tính tiền boa `tip = floor(base_price * 0.2)` dựa trên giá đã chốt theo độ tươi, cộng uy tín khi thu tiền boa dương và thanh toán tức thì khi đóng ca.
+  - Tương thích hóa mở rộng Cháy món (`burn`): tự động giải phóng bếp khi tuổi món > 1200 tick và re-reserve cá thể khả dụng tươi nhất (`fresh >= 30`), bỏ qua hàng đã ươn.
+  - Cập nhật `ShopSim.snapshot()` để hỗ trợ kho dạng danh sách cá thể (`list[dict]`) phục vụ hiển thị và bàn giao ngày mới.
+  - Viết bộ test `tests/test_tv4_phase3.py` bao phủ toàn diện các ca biên: nấu nhiều nguyên liệu, tính giá theo fresh, ngưỡng ươn 30, hòa id khi ươn, cháy món và snapshot Shop.
+- **Tôi đã review:**
+  - Rà soát chéo mã nguồn Lát 3 (`fresh_stock.py` và quản lý giữ chỗ) với TV3 (Nguyễn Ngọc Vinh), kiểm tra tính tương thích giữa cơ chế giữ chỗ và tương tác lấy đơn của bếp B1/B2.
+- **AI sai ở đâu và tôi phát hiện thế nào:**
+  - AI ban đầu tính giá chốt `base_price` của món ăn dựa trên độ tươi lúc bắt đầu tick mà không tính đến việc hao tươi kho xảy ra trước hành động tương tác nấu trong cùng một tick (làm độ tươi giảm đi 1/240 điểm). Khi chạy test kiểm tra món lẩu cá linh bông điên điển, test báo lệch giá 89 != 90. Tôi đã phát hiện ra nguyên nhân từ thứ tự tick chuẩn của PRD và cập nhật test cùng tài liệu giải thích rõ ràng.
+- **Điều tôi học được:**
+  - Hiểu sâu về tính tất định và thứ tự ưu tiên của các hệ thống con trong cùng một tick mô phỏng game (simulation pipeline order), cùng kỹ thuật dùng phân số (`Fraction`) để tính toán số học chính xác tuyệt đối mà không bị sai số dấu phẩy động.
+
