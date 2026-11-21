@@ -66,3 +66,19 @@ class Phase3FreshStock(unittest.TestCase):
                 {"id": "C1", "table_id": "T1", "dish_id": DISH, "reserved": ["I1"]},
                 {"id": "C2", "table_id": "T2", "dish_id": DISH, "reserved": ["I1"]},
             ])
+
+    def test_round_tripped_gather_value_spoils_on_second_tick(self):
+        sim = self.sim([{"id": "I1", "kind": "ca_loc", "fresh": 30.004166666666666}], [])
+        idle = SimpleNamespace(move=(0, 0), pressed=lambda _: False)
+        self.assertEqual(sim.step(idle), [])
+        self.assertEqual(sim.snapshot()["stock"][0]["fresh"], 30.0)
+        self.assertEqual(sim.step(idle), [
+            ("spoiled", {"item_id": "I1", "kind": "ca_loc", "location": "stock"}),
+        ])
+        self.assertEqual(sim.step(idle), [])
+
+    def test_off_grid_freshness_keeps_its_actual_threshold(self):
+        sim = self.sim([{"id": "I1", "kind": "ca_loc", "fresh": 29.999}], [])
+        idle = SimpleNamespace(move=(0, 0), pressed=lambda _: False)
+        self.assertEqual(sim.snapshot()["stock"][0]["fresh"], 29.999)
+        self.assertEqual(sim.step(idle), [])
