@@ -8,12 +8,12 @@
 
 | AC | Yêu cầu (PRD) | Cách kiểm chứng | Bằng chứng | Kết quả |
 |---|---|---|---|---|
-| AC-P1-01 | `game.contract.json` đủ khóa preset v1.0, số trong dải hợp lệ; `team`, `team_size` đúng thực tế | `tools/check_team.py` + đọc tay preset | [check-team.txt](../proof/phase-1/check-team.txt) | ⏳ team/team_size ✅ `14c5ccb`; preset v1.0 chưa đọc tay (main đã lên `contract_version` 1.1) |
-| AC-P1-02 | Cờ headless đúng mục B; mã thoát 0/1/2; `--ticks 0` chỉ dựng fixture; dòng `end` luôn cuối | smoke: `test_con_01_*`, `test_con_03_*` | [test-run.txt](../proof/phase-1/test-run.txt), [cli-tv6.txt](../proof/phase-1/cli-tv6.txt) | ✅ `14c5ccb` |
+| AC-P1-01 | `game.contract.json` đủ khóa preset, số trong dải hợp lệ; `team`, `team_size` đúng thực tế | `test_qa_spec.Manifest` (đủ khóa, giá trị chuẩn quán/gather), `test_qa_p2.StandardNumbers`, `tools/check_team.py` | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ (số chuẩn v1.1 ở main hiện tại) |
+| AC-P1-02 | Cờ headless đúng mục B; mã thoát 0/1/2; `--ticks 0` chỉ dựng fixture; dòng `end` luôn cuối | `test_qa_spec.Cli` (thiếu cờ, seed/ticks sai kiểu, `--snapshot-every`, lỗi ghi → mã 1, `--ticks 0`, không ghi kho khi lỗi), smoke `test_con_01/03` | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ |
 | AC-P1-03 | Cùng seed + đầu vào → JSONL và file kho giống từng byte | smoke: `test_con_02_deterministic_bytes`; qa: chạy lại 2 lần cho cả `gather` và `quan` | [test-run.txt](../proof/phase-1/test-run.txt) (`test_qa_p1.OutputFormat` ×2); [handoff-tv6.txt](../proof/phase-1/handoff-tv6.txt): 2 lượt `cmp` giống từng byte | ✅ `14c5ccb` |
-| AC-P1-04 | Inputs: nút chỉ tác động ở cạnh lên; frame chỉ cập nhật trường có mặt; trường sai, kiểu sai, tick lặp/giảm → mã 2 | smoke + qa | [test-run.txt](../proof/phase-1/test-run.txt) (`test_input_edges_and_inherit`, `test_bad_frames_raise`, `test_ac_p1_04_*`); [cli-tv6.txt](../proof/phase-1/cli-tv6.txt): tick lặp, kiểu sai → mã 2, không tạo output | ✅ `14c5ccb` |
-| AC-P1-05 | Scenario sai (khối sai mode, id trùng, ngoài miền, giỏ quá trần, stock + `--inventory`, giữ chỗ sai…) → mã 2, không ghi output | smoke: `ScenarioModes`, `test_scenario_out_of_domain_exit_2`; qa: thêm các ca còn thiếu | [test-run.txt](../proof/phase-1/test-run.txt) | ⏳ đạt các ca có test (`14c5ccb`); chưa có test riêng cho id trùng, giỏ quá trần, giữ chỗ sai |
-| AC-P1-06 | JSONL: snapshot ở tick 0, bội số `--snapshot-every`, tick dừng; đủ trường chung; `score = earned + 100 × floor(reputation)`; tọa độ 3 chữ số; mảng sắp theo id | smoke: `test_gather_snapshot_has_gather_fields`; qa: kiểm score, sắp id | [test-run.txt](../proof/phase-1/test-run.txt) (`test_ac_p1_06_*`, `test_gather_snapshot_has_gather_fields`) | ⏳ snapshot/score/sắp id ✅ `14c5ccb`; chưa có test làm tròn tọa độ 3 chữ số |
+| AC-P1-04 | Inputs: nút chỉ tác động ở cạnh lên; frame chỉ cập nhật trường có mặt; move chuẩn hóa; trường sai, kiểu sai, tick lặp/giảm → mã 2; nút sai pha bỏ qua | `test_qa_spec.Inputs`, `test_qa_p1.GatherNode.test_ac_p1_04_*`, smoke `test_con_03_*` | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ |
+| AC-P1-05 | Scenario sai → mã 2, không ghi output (gather: Máu/oxy/đếm ngạt ngoài miền, id trùng, kind lạ, cá trên mặt nước, regrow âm, time_left ngoài miền; quán: kind lạ, kho âm, khách trùng bàn/id, giữ khác công thức hoặc quá kho, món lạ, bếp/bàn lạ, bếp cooking timer 0, đơn assigned thiếu món, bếp và tay cùng đơn, món không khớp đơn, eating sai, unfulfillable còn giữ, món không có khách) | `test_qa_spec.ScenarioInvalid`, smoke `ScenarioModes` | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ `e3acdb9`+: quán độc lập trước đó **không** kiểm mâu thuẫn fixture, đã sửa (xem Cập nhật sau tag) |
+| AC-P1-06 | JSONL: snapshot tick 0, bội số `--snapshot-every` (mặc định 10), tick dừng; đủ trường chung/gather/quán; dòng end đủ trường; event trước snapshot, end cuối; tọa độ 3 chữ số; `score`; sắp id | `test_qa_spec.Output`, `test_qa_p1.OutputFormat` | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ |
 
 ## Gather — lát 1: bơi, oxy, Máu, giỏ (TV1)
 
@@ -42,20 +42,20 @@
 | AC | Yêu cầu (PRD) | Cách kiểm chứng | Bằng chứng | Kết quả |
 |---|---|---|---|---|
 | AC-P1-19 | Quán đọc kho: sai schema, kind lạ → mã 2; thiếu kho thì rỗng; tiền, earned đầu lượt = 0; uy tín theo tuning | smoke: `test_inv_bad_schema_exit_2`, `test_inventory_and_scenario_stock_conflict` | [test-run.txt](../proof/phase-1/test-run.txt) (`test_inv_bad_schema_exit_2`, `test_inventory_and_scenario_stock_conflict`, `test_inventory_flags_mode_mismatch_exit_2`) | ✅ `14c5ccb` |
-| AC-P1-20 | Khách đến ở `phase_tick` 120 rồi mỗi 900 tick; lấy bàn trống id nhỏ nhất; hết bàn thì bỏ lượt; không món đủ → `no_dish` | qa | `test-run.txt` | ⏳ chưa có test lát 3 (TV3) |
-| AC-P1-21 | Chọn đều theo seed trong các món đủ nguyên liệu khả dụng (tồn − giữ); giữ đúng công thức ngay; `customer_arrived`; hai khách tranh phần cuối được xử lý đúng | qa (fixture `random_customers:false`) | `test-run.txt` | ⏳ chưa có test lát 3 (TV3) |
-| AC-P1-22 | Kiên nhẫn giảm từ bước sau khi đến; về 0 khi còn giờ → `customer_left` `patience`, uy tín −0.5 (kẹp 0–5), nhả giữ chỗ, bỏ món của đơn | qa | `test-run.txt` | ⏳ chưa có test lát 3 (TV3) |
+| AC-P1-20 | Khách đến ở `phase_tick` 120 rồi mỗi 900 tick; lấy bàn trống id nhỏ nhất; hết bàn thì bỏ lượt; không món đủ → `no_dish` | `test_qa_quan.Arrival` (tick 120, data `customer_arrived`/`no_dish` theo mục E), `test_qa_p2.Restaurant` (120+900k, bàn id nhỏ nhất, hết bàn) | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt), [smoke-qa.txt](../proof/phase-2/smoke-qa.txt) | ❌ tại tag `phase-1` (`0d867a1`: quán chưa có khách); ✅ `e3acdb9`. Data event sửa theo đề ở `e3acdb9` |
+| AC-P1-21 | Chọn đều theo seed trong các món đủ nguyên liệu khả dụng (tồn − giữ); giữ đúng công thức ngay; `customer_arrived`; hai khách tranh phần cuối được xử lý đúng | `test_qa_quan.Arrival` (`giu_cho_tru_khoi_kho`, `chon_deu_theo_seed`, `cung_seed_cung_mon`, `chon_mon_du_nguyen_lieu`) | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ❌ tại tag `phase-1` (`0d867a1`: quán chưa có khách); ✅ `e3acdb9` |
+| AC-P1-22 | Kiên nhẫn giảm từ bước sau khi đến; về 0 khi còn giờ → `customer_left` `patience`, uy tín −0.5 (kẹp 0–5), nhả giữ chỗ, bỏ món của đơn | `test_qa_quan.Arrival` (`het_kien_nhan_roi_quan`, `nha_giu_cho`, `uy_tin_kep_0`) | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ❌ tại tag `phase-1` (`0d867a1`: quán chưa có khách); ✅ `e3acdb9` |
 
 ## Quán — lát 4: bếp, bưng, phục vụ, tiền (TV4)
 
 | AC | Yêu cầu (PRD) | Cách kiểm chứng | Bằng chứng | Kết quả |
 |---|---|---|---|---|
-| AC-P1-23 | Tối đa một `interact`/bước, chọn theo (khoảng cách, bếp trước bàn, id); đối tượng chọn được nhưng không tương tác được thì bỏ lượt | qa | `test-run.txt` | ⏳ chưa có test chọn interact khi hòa |
-| AC-P1-24 | Bếp idle lấy đơn reserved cũ nhất (order_tick, id bàn), tiêu nguyên liệu giữ, `cook_started` (items sắp theo kind, base_price); nấu xong → ready, `dish_ready` | qa | [test-run.txt](../proof/phase-1/test-run.txt) (`test_cook_and_pick_dish_at_stove`) | ✅ `14c5ccb` |
-| AC-P1-25 | Bếp ready + tay trống → `dish_picked`, bếp về idle; `carry_limit` 1 | qa | [test-run.txt](../proof/phase-1/test-run.txt) (`test_cook_and_pick_dish_at_stove`) | ⏳ nhặt món ✅ `14c5ccb`; chưa có test `carry_limit` khi tay đang cầm |
-| AC-P1-26 | Phục vụ đúng `order_id` → `served`, khách ăn 600 tick; boa = floor(giá × 0.2) nếu tỷ lệ kiên nhẫn ≥ 0.5, ngược lại 0 | qa | [test-run.txt](../proof/phase-1/test-run.txt) (`test_serve_eat_and_payment_with_tip`, `test_serve_at_exact_zero_patience_tick_is_valid`) | ⏳ boa khi ≥ 0.5 ✅ `14c5ccb`; chưa có test boa = 0 khi < 0.5 |
-| AC-P1-27 | Ăn xong → `paid` `finished_eating`, rời bàn; boa dương +0.2 uy tín (kẹp) | qa | [test-run.txt](../proof/phase-1/test-run.txt) (`test_serve_eat_and_payment_with_tip`: uy tín 3.0 → 3.2) | ✅ `14c5ccb` |
-| AC-P1-28 | Hết ca: khách đang ăn trả `closing`, khách chờ rời `closing` không trừ uy tín; `quan_end` đủ money/earned/shift_earned/reputation | qa | [test-run.txt](../proof/phase-1/test-run.txt) (`test_closing_immediate_payment_*`, `test_serve_at_closing_tick_*`) | ⏳ khách đang ăn trả `closing` ✅ `14c5ccb`; chưa có test khách chờ rời `closing` không trừ uy tín |
+| AC-P1-23 | Tối đa một `interact`/bước, chọn theo (khoảng cách, bếp trước bàn, id); đối tượng chọn được nhưng không tương tác được thì bỏ lượt | `test_qa_spec.InteractChoice` (hòa bếp/bàn, hòa hai bếp đúng mép, bỏ lượt, phục vụ sai đơn), `test_qa_p2.test_ac_p2_14_chon_tuong_tac_gan_nhat` | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ |
+| AC-P1-24 | Bếp idle lấy đơn reserved cũ nhất (order_tick, id bàn), tiêu nguyên liệu giữ, `cook_started` (items sắp theo kind, base_price); nấu xong → ready, `dish_ready` | `test_qa_quan.Kitchen` (data đủ, đơn cũ nhất, items theo kind, đúng `cook_s`) | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ `e3acdb9` |
+| AC-P1-25 | Bếp ready + tay trống → `dish_picked`, bếp về idle; `carry_limit` 1 | `test_qa_quan.Kitchen` (`bung_mon_tu_bep_ready`, `tay_day_khong_bung_them`) | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ `e3acdb9` |
+| AC-P1-26 | Phục vụ đúng `order_id` → `served`, khách ăn 600 tick; boa = floor(giá × 0.2) nếu tỷ lệ kiên nhẫn ≥ 0.5, ngược lại 0 | `test_qa_quan.Kitchen` (boa 12, boa 0 khi < 50%, đúng mốc 50%) | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ `e3acdb9` |
+| AC-P1-27 | Ăn xong → `paid` `finished_eating`, rời bàn; boa dương +0.2 uy tín (kẹp) | `test_qa_quan.Kitchen` (`an_xong_tra_tien`, `uy_tin_kep_toi_da_5`) | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ `e3acdb9` |
+| AC-P1-28 | Hết ca: khách đang ăn trả `closing`, khách chờ rời `closing` không trừ uy tín; `quan_end` đủ money/earned/shift_earned/reputation | `test_qa_quan.Kitchen.test_ac_p1_28_dong_ca` | [test-run-qa.txt](../proof/phase-2/test-run-qa.txt) | ✅ `e3acdb9` |
 
 ## Tích hợp & DoD (mục 7)
 
@@ -66,13 +66,21 @@
 | AC-P1-31 | README: chạy từ clone sạch ≤ 3 lệnh, điều khiển, cách tính điểm, lệnh test 1 lệnh | đọc tay README trên clone sạch | Clone sạch ở `14c5ccb`: lệnh test 1 lệnh chạy đạt 100/100 | ❌ README chưa có phím điều khiển (chỉ ở `docs/STARTER.md`) và cách tính điểm |
 | AC-P1-32 | TEAM.md đủ người + thỏa thuận; `team_size` khớp; hợp đồng kho có schema + ví dụ ở `docs/contracts/` | `tools/check_team.py`, đọc tay | [check-team.txt](../proof/phase-1/check-team.txt); `docs/contracts/README.md` có schema kho | ✅ `14c5ccb` |
 | AC-P1-33 | Ghi chép tối thiểu: `clarify.md`, `ai-usage-log.md`, verification + proof | đọc tay | — | ⏳ `clarify.md` còn trống; `docs/members/100678carwyn.md` (TV6) chưa có |
-| AC-P1-34 | Tag `phase-1` trỏ commit bàn giao trên `main`, trước 1:00 | `git show phase-1` | — | ⏳ chưa có tag `phase-1` trên remote |
+| AC-P1-34 | Tag `phase-1` trỏ commit bàn giao trên `main`, trước 1:00 | `git ls-remote --tags origin` | tag `phase-1` → `0d867a1` | ⚠️ có tag, nhưng tại commit đó lát 3 (khách) chưa vào `main` → AC-P1-20..22 chưa đạt tại tag. Xem mục "Cập nhật sau tag" |
 
 ## Đánh giá ngắn
 - Yêu cầu nào đạt / chưa đạt (TV6 kiểm trên `main` ở `14c5ccb`, 2026-11-21): 100/100 test đạt. Đạt 19 AC: 02–04, 07–17, 19, 24, 27, 29, 32. Còn dở 14 AC: 01, 05, 06, 18, 20–23, 25, 26, 28, 30, 33, 34. Chưa đạt 1 AC: 31 (README thiếu phím và cách tính điểm).
 - Lát 3 quán (AC-P1-20 đến 22) chưa có test nào. Đây là chỗ trống lớn nhất.
 - `main` đã chứa code phase 2 (`contract_version` 1.1, Cá Sấu, chế độ `day`). Tag `phase-1` cần trỏ commit bàn giao phase 1, khi đó TV6 chạy lại và đọc tay preset v1.0.
 - Điều cần chỉnh cho phase sau: thêm test lát 3 và các ca biên còn thiếu ở trên; bổ sung README; PO ghi `clarify.md`; mỗi người có file `docs/members/`.
+
+## Cập nhật sau tag (TV6, 2026-11-21 12:35)
+
+- Tại tag `phase-1` (`0d867a1`) quán **chưa có khách**: luật khách (lát 3, TV3) chưa vào `main`. Chạy quán có kho 200 tick → 0 `customer_arrived`. Bộ test lúc đó (100/100, [test-run.txt](../proof/phase-1/test-run.txt)) không có test nào cho lát 3 nên không phát hiện.
+- Lát 3 vào `main` ở PR #9 (`8d9fb80`, 11:43). Khi QA viết test so nguyên data theo PRD-0 mục E thì phát hiện code lệch đề: `customer_arrived` dùng `customer_id` (đề: `order_id`), `no_dish` có `{table_id}` (đề: `{}`). Lỗi có từ commit `1f10afe` (10:12). Đã sửa code và test `test_quan_p2.py` theo đề ở `e3acdb9`.
+- Không dời tag `phase-1`: mọi commit trên `main` có khách đều đã là contract v1.1. Phần khách được chấm lại ở các tag sau (test ẩn có kiểm lại phase trước).
+- Rà độ phủ theo đề, viết thêm `tests/test_qa_spec.py` (CLI, inputs, scenario sai, output, chọn interact, cá/Cá Sấu/vòng ngày chi tiết). Phát hiện quán độc lập không kiểm mâu thuẫn fixture (PRD-0 mục D): đã cho `runner.py` gọi `check_evening_fixture` với đủ thực đơn và bổ sung kiểm khách `eating`. 4 fixture trong `tests/test_tv4_quan.py` thiếu `order_status` (đơn có món trên tay phải `assigned`, khách `eating` phải `served`) nên sửa dữ liệu fixture, giữ nguyên assert.
+- Kết quả hiện tại: toàn bộ test đạt, xem [test-run-qa.txt](../proof/phase-2/test-run-qa.txt).
 
 ## Bảng theo dõi TV1 trước khi đồng bộ main
 
