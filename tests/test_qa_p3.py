@@ -89,12 +89,13 @@ class InventoryFile(Base):
             self.assertItems(saved["items"], [it(1, "ca_linh", 100 - G_DECAY)])
             end = events(rows, "gather_end")[0]["data"]
             self.assertEqual(end["reason"], "docked")
-            self.assertEqual(end["inventory"], saved, "gather_end.inventory cùng schema và khớp file")
+            # JSONL làm tròn số; đề v1.2: dung sai quan sát độ tươi ±0.01, id/kind so chính xác
+            self.assertEqual(list(end["inventory"]), ["items"], "gather_end.inventory cùng schema")
+            self.assertItems(end["inventory"]["items"], saved["items"])
             code, err = run_headless("--mode", "quan", "--seed", "42", "--inventory", inv, "--ticks", "0",
                                      "--out", w.path("q.jsonl"))
             self.assertEqual(code, 0, err)
-            self.assertEqual(snapshots(read_jsonl(w.path("q.jsonl")))[0]["stock"], saved["items"],
-                             "so chính xác id, kind, fresh")
+            self.assertItems(snapshots(read_jsonl(w.path("q.jsonl")))[0]["stock"], saved["items"])
 
     def test_ac_p3_02_xuat_file_theo_id(self):
         with Workdir() as w:
