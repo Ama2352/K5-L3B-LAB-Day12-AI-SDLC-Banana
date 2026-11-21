@@ -41,15 +41,21 @@ Mở địa chỉ in trong terminal, mặc định là `http://127.0.0.1:8000/`.
 Chạy các lệnh sau từ thư mục gốc của repo.
 
 ```bash
-PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
-python3 -m chonoi.headless --mode day --days 1 --seed 42 --ticks 22200 --out day.jsonl
+PYTHONPATH=tests:. python3 -m unittest discover -s tests -v                              # toàn bộ test (1 lệnh)
+python3 -m chonoi.headless --mode day --days 1 --seed 42 --ticks 22200 --out day.jsonl    # headless_cmd
+python3 -m chonoi.bench --seed 42 --duration 30 --out bench.json                          # bench_cmd (có render)
+python3 -m chonoi.soak --seed 7 --days 10 --out soak.json                                  # soak_cmd
 ```
 
-Để benchmark có render, dùng `bench_cmd` trong [game.contract.json](game.contract.json) của bản tích hợp Phase 4. Lệnh dưới lấy cấu hình từ manifest và chạy với seed 42 trong 30 giây để ghi `bench.json`.
+Các lệnh khai trong [game.contract.json](game.contract.json) (Contract v1.3): `run_cmd`, `headless_cmd`, `bench_cmd`, `soak_cmd`.
 
-```bash
-python3 -c 'import json, shlex, subprocess; cmd = json.load(open("game.contract.json", encoding="utf-8")).get("bench_cmd"); assert cmd, "bench_cmd is missing from game.contract.json"; subprocess.run([*shlex.split(cmd), "--seed", "42", "--duration", "30", "--out", "bench.json"], check=True)'
-```
+- **Benchmark** cần thêm Google Chrome hoặc Chromium (tự tìm; hoặc `--browser <đường dẫn>`, biến `CHONOI_BENCH_BROWSER`). Lệnh mở cảnh lặn lõi seed 42 bằng chính giao diện Canvas của game ở 1280×720, Út Sen đứng yên ở bến, làm nóng 3 s rồi đo, ghi `bench.json` gồm `avg_fps, p1_low_fps, frames, measured_s, load_ms`. Thêm `--headed` để xem cửa sổ thật.
+- **Soak** chạy 10 Ngày trong một tiến trình bằng bot tất định (kế hoạch D1–D5 lặp ở Ngày 6–10), ghi `soak.json` gồm `days, days_completed, crashes, results, duration_s`.
+- Kết quả đo của bản phát hành: [docs/proof/phase-4/](docs/proof/phase-4/).
+
+### Cảnh báo và tương phản cao
+
+HUD hiện chữ kèm biểu tượng cho ba cảnh báo: **Thủy quái!** (kèm viền tím khi thủy quái đuổi hoặc ở gần), **Hết hơi!** (oxy cạn dưới nước, thanh oxy đổi màu dưới 25%) và **😠 Khách sắp giận!** (kiên nhẫn dưới 25%). Nhấn **C** hoặc nút *Tương phản* để bật chế độ tương phản cao; lựa chọn được lưu giữa các lần mở game.
 
 ## Tự do sáng tạo
 
@@ -57,8 +63,8 @@ Ngoài phần đề yêu cầu, nhóm được **thêm** nhân vật, loài cá/
 
 ## Mở rộng đã chọn của nhóm Banana (Extensions)
 
-Nhóm 6 người hoàn thành 2 mở rộng theo yêu cầu của lab:
-1. **Cháy món (`burn`)** (TV4 - Quân phụ trách):
+Nhóm 6 người hoàn thành 2 mở rộng theo yêu cầu của lab. Mã có trong Test Contract được khai ở `extensions` của [game.contract.json](game.contract.json): `["burn"]` (kèm `quan.burn_s: 20`).
+1. **Cháy món (`burn`)** (TV4 - Quân phụ trách; test hộp đen theo đề `tests/test_qa_ext.py`):
    - Món chín ở bếp nếu để quá 20s (`burn_s: 20` tương đương 1.200 tick) sẽ bị cháy.
    - Khi `ready_ticks > 1200`: phát sự kiện `dish_burnt`, giải phóng bếp về `idle`.
    - Hệ thống tự động kiểm tra kho để giữ lại nguyên liệu (`reserved`) hoặc chuyển đơn sang `unfulfillable` nếu thiếu nguyên liệu tươi.
