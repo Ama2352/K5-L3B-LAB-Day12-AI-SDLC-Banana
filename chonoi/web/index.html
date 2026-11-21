@@ -578,6 +578,14 @@
  */
 const cv = document.getElementById("c");
 const ctx = cv.getContext("2d");
+// Benchmark (TICKET-04): canvas cố định 1280×720, đo khung sau làm nóng; null khi chơi bình thường
+const BENCH = (() => {
+  const q = new URLSearchParams(location.search);
+  if (q.get("bench") !== "1") return null;
+  return { w: 1280, h: 720, warmup: Number(q.get("warmup") || 3), duration: Number(q.get("duration") || 30),
+           first: null, firstEpoch: 0, marks: [], sent: false };
+})();
+if (BENCH) { cv.style.width = BENCH.w + "px"; cv.style.height = BENCH.h + "px"; }
 
 let snap = null;
 let offline = false;
@@ -1196,8 +1204,8 @@ function updateHudDom() {
 
 // ---------- Canvas Helpers ----------
 function fit() {
-  const dpr = window.devicePixelRatio || 1;
-  const w = innerWidth, h = innerHeight;
+  const dpr = BENCH ? 1 : (window.devicePixelRatio || 1);
+  const w = BENCH ? BENCH.w : innerWidth, h = BENCH ? BENCH.h : innerHeight;
   if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
     cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
   }
@@ -1861,7 +1869,7 @@ function drawPopups(sx, sy) {
   }
 }
 
-function frame() {
+function frame(ts) {
   requestAnimationFrame(frame);
   const [w, h] = fit();
   ctx.fillStyle = "#0e1d2b";
@@ -1869,6 +1877,23 @@ function frame() {
   if (snap) {
     if (activePhase() === "quan") drawQuan(w, h);
     else drawGather(w, h);
+    if (BENCH) benchFrame(ts);
+  }
+}
+
+// ---------- Benchmark (TICKET-04): chỉ bật với ?bench=1 do `python3 -m chonoi.bench` mở ----------
+function benchFrame(ts) {
+  const b = BENCH;
+  if (b.sent) return;
+  if (b.first === null) {                       // khung hình đầu tiên của cảnh đo
+    b.first = ts; b.firstEpoch = Date.now();
+  }
+  if (ts - b.first < b.warmup * 1000) return;   // làm nóng
+  b.marks.push(ts);
+  if (ts - b.marks[0] >= b.duration * 1000) {
+    b.sent = true;
+    fetch("/bench-result", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ frame_ts_ms: b.marks, first_frame_epoch_ms: b.firstEpoch }) });
   }
 }
 requestAnimationFrame(frame);
