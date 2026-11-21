@@ -1,5 +1,0 @@
-— phản tư cá nhân (TV5 · Nguyễn Mạnh Cường)
-Tôi đã làm (kèm link commit): Thiết kế và hoàn thiện giao diện 2 màn chơi (gather, quan) cùng HUD bảng gỗ miền Tây trong chonoi/web/index.html (đồng hồ, Oxy, HP, giỏ LIFO hỗ trợ {id, kind, fresh}, kho khả dụng trừ giữ chỗ, trạng thái bếp, bong bóng món gọi và kiên nhẫn khách). Bổ sung 3 cảnh báo (thủy quái gần, oxy sắp hết, khách sắp giận), chế độ tương phản cao (C), âm thanh WebAudio và bảng thực đơn (H). Cập nhật README.md (cách chạy ≤ 3 lệnh, điều khiển, công thức điểm, lệnh test) và CREDITS.md
-Tôi đã review : Kiểm tra cấu trúc snapshot/events của gather.py, quan.py và luồng bàn giao kho với TV2, TV4 để đảm bảo UI đọc đúng dữ liệu
-AI sai ở đâu và tôi phát hiện thế nào: Khi chỉnh sửa index.html, có lần AI chèn nhầm đoạn code JS vào bên trong thẻ <style> và ban đầu chưa xử lý hold[] dạng object {id, kind, fresh}. Tôi phát hiện khi đọc lại mã nguồn, đối chiếu với yêu cầu mới và yêu cầu sửa lại ngay.
-Điều tôi học được: Tách biệt hoàn toàn phần hiển thị (UI chỉ đọc snapshot/events) khỏi logic mô phỏng giúp làm việc song song hiệu quả và không làm lệch kết quả deterministic khi test.

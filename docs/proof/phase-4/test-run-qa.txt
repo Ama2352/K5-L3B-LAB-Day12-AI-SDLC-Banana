@@ -1,5 +1,5 @@
-Working tree = origin/main 636794b + thay đổi Phase 4 chưa commit (contract 1.3)  ngày: 2026-11-21 16:20
-$ PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
+Windows | Python 3.13.5 | Chrome 157.0.8103.79
+PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
 test_bat_ca_linh_yield_3_va_xoa_dan (test_gather_l2.Catch.test_bat_ca_linh_yield_3_va_xoa_dan) ... ok
 test_bat_o_mat_nuoc_khong_co_gi (test_gather_l2.Catch.test_bat_o_mat_nuoc_khong_co_gi) ... ok
 test_gio_thieu_cho_giu_dan_khong_thu_dan_khac (test_gather_l2.Catch.test_gio_thieu_cho_giu_dan_khong_thu_dan_khac) ... ok
@@ -50,6 +50,7 @@ test_dung_30_sau_buoc_chua_uon_buoc_sau_moi_uon (test_kho_v12.Spoil.test_dung_30
 test_fixture_ticket_fresh_30_uon_o_buoc_dau (test_kho_v12.Spoil.test_fixture_ticket_fresh_30_uon_o_buoc_dau) ... ok
 test_kep_day_0 (test_kho_v12.Spoil.test_kep_day_0) ... ok
 test_spoiled_mot_lan_theo_id_va_hang_uon_van_chiem_o (test_kho_v12.Spoil.test_spoiled_mot_lan_theo_id_va_hang_uon_van_chiem_o) ... ok
+test_day_screens_freeze_ticks_and_drop_input_before_shop (test_live.LiveServerTest.test_day_screens_freeze_ticks_and_drop_input_before_shop) ... ok
 test_state_input_and_clean_stop (test_live.LiveServerTest.test_state_input_and_clean_stop) ... ok
 test_evening_validates_against_actual_handoff (test_phase2_tv1.Phase2TV1.test_evening_validates_against_actual_handoff) ... ok
 test_last_shop_tick_and_three_day_spawns (test_phase2_tv1.Phase2TV1.test_last_shop_tick_and_three_day_spawns) ... ok
@@ -354,7 +355,7 @@ Kiểm chứng Quán và Shop lưu giữ chính xác tiền, uy tín và nâng c
 test_closing_immediate_payment_for_eating_customers (test_tv4_quan.TestQuanTV4.test_closing_immediate_payment_for_eating_customers)
 Kiểm tra khi hết ca: khách đang ăn trả tiền ngay với reason 'closing'. ... ok
 test_cook_and_pick_dish_at_stove (test_tv4_quan.TestQuanTV4.test_cook_and_pick_dish_at_stove)
-Kiểm tra Bếp: đứng gần B1, bấm interact bắt đầu nấu -> chín món -> nhặt lên tay. ... /Users/carwyn/K5-L3B-LAB-Day12-AI-SDLC-Banana/tests/test_tv4_quan.py:33: ResourceWarning: unclosed file <_io.TextIOWrapper name='/var/folders/n7/zmwc2xx97vn9xgw4_tgp6frw0000gn/T/tmprpt58bsp/sc.json' mode='r' encoding='utf-8'>
+Kiểm tra Bếp: đứng gần B1, bấm interact bắt đầu nấu -> chín món -> nhặt lên tay. ... C:\Users\AmaDev\AppData\Local\Temp\banana-pr13-jbfU7a\p4finish\tests\test_tv4_quan.py:33: ResourceWarning: unclosed file <_io.TextIOWrapper name='C:\\Users\\AmaDev\\AppData\\Local\\Temp\\tmp6m7v6jci\\sc.json' mode='r' encoding='utf-8'>
   sc = write_json(w.path("sc.json"), v12.scenario(json.load(open(sc, encoding="utf-8"))))
 ResourceWarning: Enable tracemalloc to get the object allocation traceback
 ok
@@ -366,6 +367,6 @@ test_serve_eat_and_payment_with_tip (test_tv4_quan.TestQuanTV4.test_serve_eat_an
 Kiểm tra Phục vụ & Thanh toán: tay có món, đứng tại bàn T1 bấm interact -> phục vụ -> ăn xong trả tiền + tip. ... ok
 
 ----------------------------------------------------------------------
-Ran 336 tests in 45.413s
+Ran 337 tests in 423.617s
 
 OK (skipped=5)

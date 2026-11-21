@@ -23,16 +23,20 @@ cd K5-L3B-LAB-Day12-AI-SDLC-Banana
 python3 -m chonoi.live --mode day --days 1
 ```
 
-Mở địa chỉ in trong terminal, mặc định là `http://127.0.0.1:8000/`. Nhấn `Ctrl+C` để dừng máy chủ.
+Mở địa chỉ in trong terminal, mặc định là `http://127.0.0.1:8000/`, rồi chọn **Chơi** trong menu chính. Menu cũng có **Âm thanh** và **Thoát**. Để chơi đủ 5 ngày, đổi `--days 1` thành `--days 5`. Nhấn `Ctrl+C` trong terminal để dừng máy chủ. Xem [ghi chú phát hành](docs/release-notes-v1.0.0.md).
 
 | Phím hoặc nút | Thao tác |
 |---|---|
 | WASD hoặc phím mũi tên | Bơi và đi bộ |
 | E | Cập bến, hái rau hoặc tương tác với bếp và bàn |
 | Space | Bắt cá dưới nước |
-| P hoặc Esc | Tạm dừng hoặc tiếp tục |
+| P hoặc Esc | Tạm dừng hoặc tiếp tục. Menu tạm dừng có **Tiếp tục**, **Âm thanh**, **Về menu** |
 | R | Chơi lại |
+| C / H | Bật hoặc tắt tương phản cao / xem thực đơn |
+| Âm thanh | Chỉnh Master, Nhạc, Hiệu ứng (SFX) hoặc tắt âm toàn bộ |
 | Nút trên màn hình Shop | Mua nâng cấp hoặc đóng Shop để hoàn thành ngày |
+
+Đầu ngày, Má Tư đọc kế hoạch món và nguyên liệu. Màn này tự chuyển sau 4 giây hoặc khi nhấn phím. Sau khi cập bến, xem số lượng nhập kho và món nấu được rồi chọn **Mở quán**. Cuối ca tối, xem khách đã phục vụ, khách bỏ đi, tiền, boa và thay đổi uy tín trước khi đến chợ đêm. Đóng Shop ngày cuối để xem tổng tiền, điểm, uy tín và món bán chạy.
 
 Điểm là `earned + 100 × floor(reputation)`. `earned` gồm tiền món và tiền boa, tính theo nghìn đồng.
 
@@ -57,21 +61,14 @@ Các lệnh khai trong [game.contract.json](game.contract.json) (Contract v1.3):
 
 HUD hiện chữ kèm biểu tượng cho ba cảnh báo: **Thủy quái!** (kèm viền tím khi thủy quái đuổi hoặc ở gần), **Hết hơi!** (oxy cạn dưới nước, thanh oxy đổi màu dưới 25%) và **😠 Khách sắp giận!** (kiên nhẫn dưới 25%). Nhấn **C** hoặc nút *Tương phản* để bật chế độ tương phản cao; lựa chọn được lưu giữa các lần mở game.
 
-## Tự do sáng tạo
+## Sáng tạo của nhóm
 
-Ngoài phần đề yêu cầu, nhóm được **thêm** nhân vật, loài cá/cây, sinh vật, món, bản đồ, cơ chế, câu chuyện, đồ họa, âm nhạc… với ba điều kiện: **không phá phần cố định** (tắt ở headless), ghi mục **"Sáng tạo của nhóm"** trong README của nhóm, và **làm lõi đúng trước**.
+Cảnh sông Chín Khúc và nhà bè được vẽ bằng Canvas, với HUD bảng gỗ và âm thanh Web Audio tự tổng hợp. Người chơi có thể chỉnh riêng âm lượng Master, Nhạc và Hiệu ứng. Mức âm lượng và trạng thái tắt âm được lưu trong trình duyệt. Các hiệu ứng này chạy trong giao diện web. Lượt chạy headless tiếp tục kiểm luật và dữ liệu theo Test Contract. [Kiểm giao diện](docs/proof/phase-4/web-ui.md) · [Regression](docs/proof/phase-4/test-run-qa.txt)
 
 ## Mở rộng đã chọn của nhóm Banana (Extensions)
 
-Nhóm 6 người hoàn thành 2 mở rộng theo yêu cầu của lab. Mã có trong Test Contract được khai ở `extensions` của [game.contract.json](game.contract.json): `["burn"]` (kèm `quan.burn_s: 20`).
-1. **Cháy món (`burn`)** (TV4 - Quân phụ trách; test hộp đen theo đề `tests/test_qa_ext.py`):
-   - Món chín ở bếp nếu để quá 20s (`burn_s: 20` tương đương 1.200 tick) sẽ bị cháy.
-   - Khi `ready_ticks > 1200`: phát sự kiện `dish_burnt`, giải phóng bếp về `idle`.
-   - Hệ thống tự động kiểm tra kho để giữ lại nguyên liệu (`reserved`) hoặc chuyển đơn sang `unfulfillable` nếu thiếu nguyên liệu tươi.
-   - Kiểm chứng đầy đủ qua test suite `tests/test_tv4_phase2.py`, `tests/test_tv4_phase3.py`.
-2. **Thiết lập âm thanh (`settings/audio`)** (TV5 - Cường phụ trách):
-   - Cho phép người chơi tùy chỉnh riêng âm lượng Master, Music và SFX trên giao diện.
-   - Thiết lập được lưu bền vững qua các phiên chơi.
+1. **Cháy món (`burn`).** Khi món chín nằm trên bếp quá 20 giây (`ready_ticks > 1200`), quán phát `dish_burnt`, giải phóng bếp và thử giữ lại nguyên liệu tươi. Đơn thiếu nguyên liệu chuyển sang `unfulfillable`. [Khai báo mở rộng](game.contract.json) · [Test hộp đen](tests/test_qa_ext.py)
+2. **Phụ đề SFX.** Các hiệu ứng âm thanh có chú thích trên màn hình, kể cả khi chọn **Tắt âm** trong **Âm thanh**. [Kiểm thử khi tắt âm](docs/proof/phase-4/web-ui.md)
 
 ## Lịch 3 giờ
 

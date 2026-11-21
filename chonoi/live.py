@@ -2,10 +2,11 @@
 
     python3 -m chonoi.live --mode gather|quan [--seed N] [--port 8000]
 
-Máy chủ HTTP nhỏ (ThreadingHTTPServer) phục vụ `chonoi/web/index.html` và hai API:
+Máy chủ HTTP nhỏ (ThreadingHTTPServer) phục vụ `chonoi/web/index.html` và các API:
     GET  /state  -> snapshot JSON hiện tại (cùng trường như dòng snapshot của headless) + `meta` + `events`
     POST /input  -> {"move": [a, b], "interact": bool, "catch": bool}   (trạng thái phím đang giữ)
     POST /restart -> chơi lại từ đầu (cùng seed, cùng scenario)
+    POST /screen -> thao tác trên các màn hình chuyển cảnh
 
 Mô phỏng chạy 60 tick/s trong một luồng nền, dùng CÙNG lớp sim như headless (qua `runner.Session`).
 Client chỉ ĐỌC snapshot và tự bỏ qua trường chưa có, nên luật do nhóm viết thêm trường nào cũng không vỡ.
@@ -19,12 +20,13 @@ import sys
 import threading
 import time
 import traceback
+from collections import Counter
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from .contract import is_v12, load_contract
 from .errors import BadInput
 from .inputs import BUTTONS_V11, LiveInputs
-from .inventory import read_inventory
+from .inventory import read_inventory, to_counts
 from .runner import Session
 from .scenario import load_scenario
 
@@ -32,12 +34,14 @@ WEB_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web")
 TICK_S = 1.0 / 60.0
 MAX_BODY = 4096
 RECENT_EVENTS = 40
+DAY_INTRO_S = 4
 
 
 class LiveGame:
     """Một lượt chơi + luồng nền bước 60 tick/s. Mọi truy cập trạng thái đi qua khóa."""
 
-    def __init__(self, mode, tuning, scenario, seed, inventory=None, inventory_out=None, days=1):
+    def __init__(self, mode, tuning, scenario, seed, inventory=None, inventory_out=None, days=1,
+                 *, guided=False):
         self._args = (mode, tuning, scenario, seed, inventory, days)
         self.mode = mode
         self.tuning = tuning
@@ -45,14 +49,63 @@ class LiveGame:
         self._lock = threading.Lock()
         self._stop = threading.Event()
         self._thread = None
+        self.guided = guided
+        self._revision = 0
         self._reset()
+        if guided:
+            self._set_screen("menu")
 
     def _reset(self):
         self.session = Session(*self._args)
-        self.inputs = LiveInputs()
         self.events = list(self.session.initial_events)
         self._saved = False
         self.error = None
+        self._revision += 1
+        self._sales = Counter()
+        self._evening = {}
+        self._new_day_stats()
+        self._set_screen("day_intro" if self.guided and self.mode == "day" else "playing")
+
+    def _set_screen(self, screen):
+        self.screen = screen
+        self.inputs = LiveInputs()
+        self._intro_deadline = time.monotonic() + DAY_INTRO_S if screen == "day_intro" else None
+
+    def _new_day_stats(self):
+        self._day_reputation = self.session.sim.reputation
+        self._result = {"served": 0, "left": 0, "tips": 0, "revenue": 0, "reputation_delta": 0}
+
+    def _track_events(self, rows):
+        for row in rows:
+            name, data = row["name"], row["data"]
+            if name == "served":
+                self._result["served"] += 1
+                self._sales[data["dish_id"]] += 1
+            elif name == "customer_left":
+                self._result["left"] += 1
+            elif name == "paid":
+                self._result["tips"] += data["tip"]
+                self._result["revenue"] += data["amount"]
+            elif name == "quan_end":
+                self._result["reputation_delta"] = round(data["reputation"] - self._day_reputation, 3)
+
+    def _change_screen(self, phase):
+        s = self.session
+        if s.done:
+            self._set_screen("summary")
+        elif phase != s.sim.phase:
+            if s.sim.phase == "gather":
+                self._new_day_stats()
+                self._set_screen("day_intro")
+            elif s.sim.phase == "quan":
+                stock = s.sim.snapshot()["stock"]
+                self._evening = {
+                    "stock": to_counts(stock) if isinstance(stock, list) else stock,
+                    "dishes": list(s.sim._available_orders()),
+                }
+                self._set_screen("evening_intro")
+            else:
+                self._set_screen("day_result")
 
     # --- luồng nền ----------------------------------------------------------------
     def start(self):
@@ -86,9 +139,17 @@ class LiveGame:
         s = self.session
         if s.done:
             return
-        for row in s.step(self.inputs.advance()):
-            self.events.append(row)
+        if self._intro_deadline is not None and time.monotonic() >= self._intro_deadline:
+            self._set_screen("playing")
+        if self.screen != "playing":
+            return
+        phase = s.sim.phase
+        rows = s.step(self.inputs.advance())
+        self.events.extend(rows)
         del self.events[:-RECENT_EVENTS]
+        self._track_events(rows)
+        if self.guided:
+            self._change_screen(phase)
         if s.done and not self._saved:
             self._saved = True
             if self.inventory_out:
@@ -106,6 +167,20 @@ class LiveGame:
                 snap["freshness"] = self.tuning["freshness"]
             snap["events"] = list(self.events)
             snap["finished"] = self.session.done
+            snap["screen"] = self.screen
+            snap["revision"] = self._revision
+            snap["menu"] = self.tuning.get("menu", {})
+            snap["day_result"] = self._result
+            if self.mode == "day":
+                snap["days_total"] = self.session.days
+            if self.screen == "evening_intro":
+                snap["evening"] = self._evening
+            if self.session.done:
+                snap["days_completed"] = getattr(self.session, "days_completed", 0)
+                bestseller_count = max(self._sales.values(), default=0)
+                snap["best_sellers"] = {
+                    dish: count for dish, count in sorted(self._sales.items()) if count == bestseller_count
+                }
             snap["reason"] = self.session.sim.reason if self.session.done else None
             snap["error"] = self.error
             return json.dumps(snap, ensure_ascii=False, separators=(",", ":")).encode("utf-8")
@@ -127,7 +202,19 @@ class LiveGame:
         if "buy" in body and (not isinstance(buy, str) or not buy):
             raise ValueError("buy phải là chuỗi khác rỗng")
         with self._lock:
-            self.inputs.set(move, buy=buy, **buttons)
+            if self.screen == "playing":
+                self.inputs.set(move, buy=buy, **buttons)
+
+    def present(self, action):
+        if action not in ("play", "menu", "exit", "continue"):
+            raise ValueError("action phải là play, menu, exit hoặc continue")
+        with self._lock:
+            if action == "play":
+                self._reset()
+            elif action in ("menu", "exit"):
+                self._set_screen(action)
+            elif self.screen in ("day_intro", "evening_intro", "day_result"):
+                self._set_screen("playing")
 
     def restart(self):
         with self._lock:
@@ -180,6 +267,11 @@ class _Handler(BaseHTTPRequestHandler):
                 self.game.set_input(body)
             elif path == "/restart":
                 self.game.restart()
+            elif path == "/screen":
+                body = json.loads(raw.decode("utf-8") or "{}")
+                if not isinstance(body, dict):
+                    raise ValueError("body phải là object")
+                self.game.present(body.get("action"))
             else:
                 self._send(404, b'{"error":"khong co"}')
                 return
@@ -241,7 +333,8 @@ def main(argv=None) -> int:
         inventory = read_inventory(a.inventory, instances=is_v12(tuning)) if a.inventory else None
         if inventory is not None and "stock" in scenario:
             raise BadInput("vừa có quan.stock vừa có --inventory")
-        game = LiveGame(a.mode, tuning, scenario, a.seed, inventory, a.inventory_out, a.days or 1)
+        days = a.days if a.days is not None else (5 if a.mode == "day" else 1)
+        game = LiveGame(a.mode, tuning, scenario, a.seed, inventory, a.inventory_out, days, guided=True)
         server = LiveServer(game, a.host, a.port)
     except BadInput as e:
         sys.stderr.write(f"đầu vào sai: {e}\n")

@@ -3,7 +3,7 @@
 > Nguồn: TICKET-03 "Mùa Nước Nổi", Test Contract v1.2 (lõi: kho cá thể, độ tươi). Test viết từ đề, hộp đen.
 > Lệnh: `PYTHONPATH=tests:. python3 -m unittest discover -s tests -v`. Test P3: `tests/test_qa_p3.py` (39 test).
 > Kết quả: ✅ đạt · ❌ chưa đạt · 🖐 kiểm tay. Bằng chứng: [test-run-qa.txt](../proof/phase-3/test-run-qa.txt) (306/306 OK), [smoke-qa.txt](../proof/phase-3/smoke-qa.txt).
-> Khi gắn tag `phase-3`: chạy lại lệnh trên đúng commit tag và thay dòng đầu `test-run-qa.txt`.
+> Chạy lại từ bản xuất tag `phase-3` (`a0e694f`): 306/306 test đạt, smoke bàn giao kho khớp, vòng `day` hoàn tất. Ca bổ sung với độ tươi lẻ sát ngưỡng được xử lý và kiểm lại ở [Phase 4](phase-4.md).
 
 | AC | Yêu cầu (TICKET-03) | Test | Kết quả |
 |---|---|---|---|
@@ -17,7 +17,7 @@
 | AC-P3-08 | Scenario v1.2: `hold`/`stock` mảng cá thể, `reserved` mảng id; sai/mâu thuẫn → mã 2; `day` Ngày kế cấp id mới theo mẫu | `ScenarioV12` (3) | ✅ |
 | AC-P3-09 | `day`: bàn giao cùng tick chuyển pha, không hao thêm | `Decay.test_ac_p3_09_*`, smoke mục 4 | ✅ |
 | AC-P3-10 | Regression P1–P2 còn hiệu lực với v1.2 | toàn bộ `tests/` (306) | ✅ — xem "Test đổi vì luật mới" |
-| AC-P3-11 | HUD đọc được độ tươi / nhận ra hàng ươn | 🖐 chơi `python3 -m chonoi.live`, chụp ảnh | 🖐 chưa kiểm |
+| AC-P3-11 | HUD đọc được độ tươi / nhận ra hàng ươn | Playwright, live v1.2 trên `a0e694f`, kho có hai cá lóc (fresh 100 và 25) | ✅ Giỏ có phần trăm và nhãn Ươn/Hỏng; kho quán hiển thị còn 1 khả dụng và 1 ươn. Xem thêm [kiểm UI Phase 4](../proof/phase-4/web-ui.md). |
 | AC-P3-12 | `CHANGELOG.md` ghi breaking change, schema mới, cách cập nhật fixture | đọc tay | ✅ |
 | Mở rộng | current / reservations | chưa khai `extensions` | — không làm |
 
