@@ -58,5 +58,45 @@ class LiveServerTest(unittest.TestCase):
         self.assertFalse(server._thread.is_alive())
 
 
+    def test_day_screens_freeze_ticks_and_drop_input_before_shop(self):
+        tuning = load_contract()["tuning"]
+        scenario = {
+            "gather": {"time_left_ticks": 1},
+            "quan": {"time_left_ticks": 1},
+        }
+        game = LiveGame("day", tuning, scenario, 42, guided=True)
+
+        def state():
+            return json.loads(game.state_json())
+
+        game._tick_once()
+        self.assertEqual((state()["screen"], state()["sim_tick"]), ("menu", 0))
+        game.present("play")
+        game._tick_once()
+        self.assertEqual((state()["screen"], state()["sim_tick"]), ("day_intro", 0))
+        game.present("continue")
+        game._tick_once()
+
+        self.assertEqual((state()["screen"], state()["phase"]), ("evening_intro", "quan"))
+        self.assertEqual(state()["evening"], {"stock": {}, "dishes": []})
+        game._tick_once()
+        self.assertEqual(state()["sim_tick"], 1)
+        game.present("continue")
+        game._tick_once()
+
+        self.assertEqual((state()["screen"], state()["phase"]), ("day_result", "shop"))
+        game.set_input({"shop_done": True})
+        game._tick_once()
+        self.assertEqual(state()["sim_tick"], 2)
+        game.present("continue")
+        game._tick_once()
+        self.assertEqual((state()["screen"], state()["phase"]), ("playing", "shop"))
+
+        game.set_input({"shop_done": True})
+        game._tick_once()
+        self.assertEqual((state()["screen"], state()["days_completed"]), ("summary", 1))
+        self.assertEqual(state()["reason"], "days_complete")
+
+
 if __name__ == "__main__":
     unittest.main()
