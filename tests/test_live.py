@@ -58,6 +58,18 @@ class LiveServerTest(unittest.TestCase):
         self.assertFalse(server._thread.is_alive())
 
 
+    def test_evening_intro_reports_faint(self):
+        # Ngạt ngay bước đầu: Máu 1, oxy 0, đếm ngạt 59, đang dưới nước -> ngất, quán mở với kho rỗng.
+        scenario = {"gather": {"player": {"pos": [5, 10], "oxygen_ticks": 0, "hp": 1, "zero_oxy_ticks": 59}}}
+        game = LiveGame("day", load_contract()["tuning"], scenario, 42, guided=True)
+        game.present("play")
+        game._tick_once()
+        game.present("continue")
+        game._tick_once()
+        state = json.loads(game.state_json())
+        self.assertEqual(state["screen"], "evening_intro")
+        self.assertEqual(state["evening"], {"stock": {}, "dishes": [], "reason": "fainted"})
+
     def test_day_screens_freeze_ticks_and_drop_input_before_shop(self):
         tuning = load_contract()["tuning"]
         scenario = {
@@ -78,7 +90,7 @@ class LiveServerTest(unittest.TestCase):
         game._tick_once()
 
         self.assertEqual((state()["screen"], state()["phase"]), ("evening_intro", "quan"))
-        self.assertEqual(state()["evening"], {"stock": {}, "dishes": []})
+        self.assertEqual(state()["evening"], {"stock": {}, "dishes": [], "reason": "time"})
         game._tick_once()
         self.assertEqual(state()["sim_tick"], 1)
         game.present("continue")

@@ -67,100 +67,17 @@
       }
     }
 
-    /* Khung bảng gỗ đặc trưng của Quán Ăn Chợ Nổi */
-    .wood-panel {
-      background: var(--wood-bg);
-      border: 2.5px solid var(--wood-border);
-      box-shadow: inset 0 0 0 1px rgba(255, 224, 178, 0.14), 0 6px 18px rgba(0, 0, 0, 0.45);
-      border-radius: 10px;
-      padding: 8px 12px;
-    }
 
-    .wood-title {
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.6px;
-      text-transform: uppercase;
-      color: var(--wood-highlight);
-      text-align: center;
-      border-bottom: 1px solid rgba(227, 184, 115, 0.25);
-      padding-bottom: 4px;
-      margin-bottom: 6px;
-    }
 
-    .hud-layer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 10px 14px;
-      z-index: 10;
-    }
 
-    .hud-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-    }
 
-    .hud-col {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-start;
-    }
 
-    .hud-col-right {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-end;
-    }
 
-    .hud-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
 
     /* Biển hiệu gỗ treo dây thừng ở giữa trên */
-    .sign-board {
-      position: relative;
-      margin-top: 8px;
-      background: linear-gradient(180deg, #523824, #332114);
-      border: 3px solid var(--wood-highlight);
-      border-radius: 10px;
-      padding: 7px 28px;
-      font-size: 20px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: #fff6e5;
-      text-shadow: 0 2px 0 #1b1109;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
-    }
 
-    .sign-board::before,
-    .sign-board::after {
-      content: "";
-      position: absolute;
-      top: -20px;
-      width: 4px;
-      height: 18px;
-      background: repeating-linear-gradient(180deg, #c79a63 0 3px, #7a552e 3px 6px);
-      border-radius: 2px;
-    }
 
-    .sign-board::before {
-      left: 26px;
-    }
 
-    .sign-board::after {
-      right: 26px;
-    }
 
     /* Đồng hồ & Thanh Oxy/HP */
     .timer-pill {
@@ -177,12 +94,6 @@
       animation: pulse 0.6s infinite alternate;
     }
 
-    .stat-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      min-width: 230px;
-    }
 
     .bar-row {
       display: flex;
@@ -272,10 +183,6 @@
     }
 
     /* Bảng Kho khả dụng & Thông số quán */
-    .stock-table {
-      min-width: 215px;
-      font-size: 14px;
-    }
 
     .stock-row {
       display: flex;
@@ -288,29 +195,9 @@
       color: #ffe082;
     }
 
-    .quan-money {
-      font-size: 18px;
-      font-weight: 800;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      text-align: right;
-    }
 
-    .stove-badge {
-      font-size: 15px;
-      font-weight: 800;
-      text-align: center;
-      color: #ffe082;
-    }
 
     /* Nút hành động */
-    .hud-actions {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      pointer-events: auto;
-    }
 
     .btn {
       background: #3d2a1c;
@@ -344,17 +231,7 @@
     }
 
     /* Kế hoạch ngày */
-    .plan-box {
-      max-width: 240px;
-      font-size: 13px;
-    }
 
-    .plan-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 2px 0;
-    }
 
     .plan-row.done {
       color: #9ccc65;
@@ -363,42 +240,10 @@
     }
 
     /* Dải điều khiển dưới đáy */
-    .hud-bottom {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
 
-    .context-pill {
-      padding: 4px 14px;
-      font-size: 14px;
-      font-weight: 800;
-      color: #ffe082;
-      border-color: var(--wood-highlight);
-    }
 
-    .controls-bar {
-      padding: 6px 18px;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.2px;
-      color: #fff3dc;
-    }
 
     /* Cảnh báo nổi bật */
-    .alert-stack {
-      position: fixed;
-      top: 64px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      pointer-events: none;
-      z-index: 15;
-    }
 
     .alert-pill {
       padding: 6px 18px;
@@ -501,7 +346,8 @@
       --text: #ffffff;
       --muted: #ffffff;
     }
-    body.high-contrast .wood-panel,
+    body.high-contrast .rail,
+    body.high-contrast .context-pill,
     body.high-contrast .sign-board,
     body.high-contrast .btn,
     body.high-contrast .modal {
@@ -524,7 +370,7 @@
       position: absolute; bottom: 2px; right: 2px;
       width: 7px; height: 7px; border-radius: 50%; border: 1px solid #000;
     }
-    .wood-title, .bar-val, .bar-tag, .depth-meta, .stock-table, .stock-row small,
+    .rail, .bar-val, .bar-tag, .depth-meta, .stock-row small,
     .plan-row, .stove-badge, #hud-hand-box, #hud-score, .context-pill, .controls-bar,
     .alert-pill, .caption-line {
       font-size: 18px;
@@ -532,13 +378,8 @@
 
     .bar-tag { width: 44px; }
     .bar-track { height: 27px; }
-    .stat-bars { min-width: 256px; }
-    .stove-badge { padding: 4px 6px; }
-    .hud-actions { justify-content: flex-end; flex-wrap: wrap; }
     .hud-actions .btn { min-height: 36px; font-size: 18px; }
-    #hud-hold-types { margin-top: 6px; }
     #hud-hand-box, #hud-score { color: var(--muted); }
-    #hud-hand-box { text-align: center; margin-top: 4px; }
     .alert-pill { text-align: center; }
     .overview .alert-pill:not(.alert-err), .overview .monster-vignette { display: none; }
     .screen-note { margin-top: 14px !important; }
@@ -546,7 +387,6 @@
     .stove-row b { color: var(--wood-highlight); }
     .stove-row.ready { color: #b7de86; }
     body.high-contrast .stove-row.ready { color: #ff0; }
-    .alert-stack { max-width: calc(100vw - 24px); width: max-content; }
     .modal-backdrop.is-open { display: flex; }
     .modal { min-width: 0; max-height: calc(100dvh - 24px); overflow: auto; }
     .modal p { font-size: 18px; }
@@ -566,6 +406,8 @@
       font-size: 18px;
     }
     .screen-rows { margin: 0; font-size: 18px; }
+    .modal p.screen-warn { color: #ffab91; font-weight: 800; }
+    body.high-contrast .modal p.screen-warn { color: #ff0; }
     .screen-rows div {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -602,7 +444,7 @@
     .caption-stack {
       position: fixed;
       z-index: 35;
-      bottom: clamp(110px, 17vh, 144px);
+      bottom: 140px;
       left: 50%;
       transform: translateX(-50%);
       width: max-content;
@@ -626,24 +468,138 @@
     body.high-contrast .bar-fill-oxy.low { background: #ff0; }
     body.high-contrast .bar-val { background: #000; inset: 0 auto; margin-inline: auto; padding: 0 4px; }
 
+
+    /* HUD: hai thanh ván như mạn ghe, khoảng giữa để trống cho cảnh game.
+       Canvas đo hai thanh này (hudInsets) nên không vẽ gì nằm dưới chúng. */
+    .hud-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      z-index: 10;
+    }
+    .rail {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px 20px;
+      padding: 6px 22px;
+      background:
+        repeating-linear-gradient(90deg, rgba(255, 222, 170, 0.035) 0 1px, transparent 1px 29px),
+        linear-gradient(180deg, #5d4029, #3a2616);
+      color: var(--text);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    }
+    .rail-top { display: grid; grid-template-columns: 1fr auto 1fr; border-bottom: 3px solid var(--wood-border); }
+    .rail-bottom { border-top: 3px solid var(--wood-border); flex-wrap: wrap; box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.45); }
+    /* Đinh đồng ở hai đầu ván */
+    .rail::before, .rail::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #f6deaa, #86663a);
+      transform: translateY(-50%);
+    }
+    .rail::before { left: 7px; }
+    .rail::after { right: 7px; }
+
+    .rail-group { display: flex; align-items: center; gap: 14px; }
+    .rail-title { font-weight: 800; color: var(--wood-highlight); white-space: nowrap; }
+    .rail-bottom > .rail-group:not(.hidden) ~ .rail-group:not(.hidden) {
+      border-left: 1px solid rgba(227, 184, 115, 0.3);
+      padding-left: 20px;
+    }
+    /* Nhóm dưới: dòng 1 là tên + số liệu, dòng 2 là ô giỏ hoặc trạng thái bếp */
+    .rail-bottom .rail-group { display: grid; grid-template-columns: auto auto; gap: 2px 12px; align-items: center; }
+    #hud-hold-slots, #hud-stove-status { grid-column: 1 / -1; grid-row: 2; }
+
+    .stat-head { display: flex; flex-direction: column; gap: 2px; }
+    .depth-meta { color: var(--muted); display: flex; gap: 10px; white-space: nowrap; }
+    .stat-bars { display: flex; flex-direction: column; gap: 5px; width: 230px; }
+    .quan-money { gap: 22px; font-weight: 800; white-space: nowrap; }
+    #hud-hand-box, #hud-score { color: var(--muted); }
+
+    .sign-board {
+      justify-self: center;
+      background: linear-gradient(180deg, #523824, #332114);
+      border: 2px solid var(--wood-highlight);
+      border-radius: 8px;
+      padding: 5px 22px;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #fff6e5;
+      text-shadow: 0 2px 0 #1b1109;
+      white-space: nowrap;
+    }
+    .hud-actions { justify-self: end; display: flex; gap: 6px; pointer-events: auto; }
+    .hud-actions .btn { min-height: 38px; min-width: 38px; padding: 3px 9px; font-size: 18px; }
+    .hud-actions kbd { font: inherit; font-weight: 800; color: var(--wood-highlight); }
+    body.high-contrast .hud-actions kbd { color: #ff0; }
+
+    .slots-grid { display: grid; grid-template-columns: repeat(12, 30px); gap: 4px; }
+    .slot { width: 30px; height: 30px; font-size: 17px; }
+
+    .inline-rows { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 16px; }
+    .inline-rows .screen-rows { display: flex; flex-wrap: wrap; gap: 2px 14px; margin: 0; font-size: 18px; }
+    .inline-rows .screen-rows div, .inline-rows .plan-row, .inline-rows .stock-row, .inline-rows .stove-row {
+      display: flex; gap: 6px; padding: 0; margin: 0; border: 0;
+    }
+    .inline-rows .screen-rows dd { font-weight: 800; }
+    .plan-row.done { color: #9ccc65; text-decoration: line-through; opacity: 0.85; }
+    .stock-row b { color: #ffe082; }
+    .stove-badge { font-weight: 800; color: #ffe082; }
+
+    .context-pill {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 16px;
+      border: 2px solid var(--wood-highlight);
+      border-radius: 8px;
+      background: var(--wood-bg);
+      color: #ffe082;
+      font-weight: 800;
+      white-space: nowrap;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+    .controls-bar { margin-left: auto; max-width: 380px; color: var(--muted); font-weight: 700; line-height: 1.25; text-align: right; text-wrap: balance; }
+
+    .alert-stack {
+      position: fixed;
+      top: 96px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: calc(100vw - 24px);
+      width: max-content;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      z-index: 15;
+    }
+
     @media (max-width: 850px) {
-      .hud-layer { padding: 6px; }
-      .hud-top { gap: 6px; }
-      .wood-panel { padding: 5px 8px; }
-      .sign-board { position: absolute; left: 50%; top: 0; transform: translateX(-50%); padding: 3px 10px; }
-      .hud-col, .hud-col-right { margin-top: 43px; }
-      .alert-stack { top: auto; bottom: clamp(164px, 26vh, 210px); }
-      .stat-bars { min-width: 0; }
-      .hud-actions { max-width: 100%; }
-      .hud-actions .btn { padding: 4px 7px; font-size: clamp(13px, 2.2vw, 18px); }
-      .wood-title, .bar-tag, .bar-val, .depth-meta, .stock-table, .stock-row small,
-      .plan-row, .stove-badge, #hud-hand-box, #hud-score, .controls-bar {
+      .rail { padding: 5px 18px; gap: 6px 12px; }
+      .rail-top { display: flex; flex-wrap: wrap; justify-content: center; }
+      .sign-board { order: -1; width: 100%; text-align: center; padding: 2px 10px; }
+      .rail, .bar-tag, .bar-val, .depth-meta, .stock-row small, .plan-row, .stove-badge,
+      #hud-hand-box, #hud-score, .controls-bar, .inline-rows .screen-rows {
         font-size: clamp(13px, 2.2vw, 18px);
       }
-      .slot { width: 25px; height: 25px; font-size: 15px; }
-      .slots-grid { grid-template-columns: repeat(4, 25px); }
-      .plan-box, .stock-table { min-width: 0; }
-      .context-pill, .controls-bar { text-align: center; }
+      .stat-bars { width: 160px; }
+      .hud-actions .btn { padding: 2px 6px; }
+      .slots-grid { grid-template-columns: repeat(6, 24px); }
+      .slot { width: 24px; height: 24px; font-size: 14px; }
+      .controls-bar { display: none; }
+      .rail-bottom > .rail-group:not(.hidden) ~ .rail-group:not(.hidden) { border-left: 0; padding-left: 0; }
     }
     @media (prefers-reduced-motion: reduce) {
       .alert-pill, .timer-pill, .bar-fill-oxy, .monster-vignette { animation: none !important; transition: none; }
@@ -656,14 +612,14 @@
   <div class="monster-vignette" id="monster-vignette"></div>
 
   <div class="hud-layer">
-    <div class="hud-top">
-      <!-- Cột trái -->
-      <div class="hud-col">
-        <div class="wood-panel stat-bars" id="hud-gather-left">
-          <div class="hud-row" style="justify-content:space-between">
-            <div class="timer-pill" id="hud-timer-g">⏱ --:--</div>
-            <div class="depth-meta"><span id="hud-pos">x 0 · d 0m</span><span id="hud-cd"></span></div>
-          </div>
+    <!-- Mạn ghe trên: chỉ số sống còn, biển tên ngày, nút -->
+    <header class="rail rail-top">
+      <div class="rail-group" id="hud-gather-left">
+        <div class="stat-head">
+          <div class="timer-pill" id="hud-timer-g">⏱ --:--</div>
+          <div class="depth-meta"><span id="hud-pos">Sâu 0 m</span><span id="hud-cd"></span></div>
+        </div>
+        <div class="stat-bars">
           <div class="bar-row">
             <span class="bar-tag">Oxy</span>
             <div class="bar-track">
@@ -679,56 +635,54 @@
             </div>
           </div>
         </div>
-
-        <div class="wood-panel" id="hud-hold-panel">
-          <div class="wood-title" id="hud-hold-title">Giỏ đồ</div>
-          <div class="slots-grid" id="hud-hold-slots"></div>
-          <div id="hud-hold-types"></div>
-        </div>
-
-        <div class="wood-panel stock-table hidden" id="hud-quan-stock">
-          <div class="wood-title">Kho Khả Dụng</div>
-          <div id="hud-stock-rows"></div>
-        </div>
       </div>
 
-      <!-- Biển hiệu trung tâm -->
-      <div class="sign-board" id="hud-sign">GATHER · BUỔI SÁNG</div>
-
-      <!-- Cột phải -->
-      <div class="hud-col-right">
-        <div class="hud-actions">
-          <button class="btn" id="btn-contrast" type="button" aria-pressed="false">🌓 Tương phản (C)</button>
-          <button class="btn" id="btn-help" type="button">📖 Thực đơn (H)</button>
-          <button class="btn" id="btn-pause" type="button">⏸ (P)</button>
-          <button class="btn" id="btn-audio" data-audio type="button">Âm thanh</button>
-          <button class="btn" id="btn-restart" type="button">↻ (R)</button>
-        </div>
-
-        <div class="wood-panel quan-money hidden" id="hud-quan-right">
-          <div class="timer-pill" id="hud-timer-q" style="justify-content:flex-end">⏱ --:--</div>
-          <div id="hud-money">Tiền: 0k</div>
-          <div id="hud-rep">Uy tín: ⭐ 3.0/5</div>
-          <div id="hud-score">Điểm: 0</div>
-        </div>
-
-        <div class="wood-panel hidden" id="hud-stove-panel" style="min-width:190px">
-          <div class="wood-title">Trạng Thái Bếp</div>
-          <div class="stove-badge" id="hud-stove-status">ĐANG RẢNH</div>
-          <div id="hud-hand-box">Tay trống</div>
-        </div>
-
-        <div class="wood-panel plan-box hidden" id="hud-day-plan">
-          <div class="wood-title" id="plan-title">Kế Hoạch Ngày</div>
-          <div id="plan-items"></div>
-        </div>
+      <div class="rail-group quan-money hidden" id="hud-quan-right">
+        <div class="timer-pill" id="hud-timer-q">⏱ --:--</div>
+        <div id="hud-money">Tiền: 0k</div>
+        <div id="hud-rep">Uy tín: ⭐ 3.0/5</div>
+        <div id="hud-score">Điểm: 0</div>
       </div>
-    </div>
 
-    <div class="hud-bottom">
-      <div class="wood-panel context-pill hidden" id="hud-context"></div>
-      <div class="wood-panel controls-bar" id="hud-controls">W, A, S, D | E: Tương tác | SPACE: Bắt</div>
-    </div>
+      <div class="sign-board" id="hud-sign">BUỔI SÁNG</div>
+
+      <div class="hud-actions">
+        <button class="btn" id="btn-contrast" type="button" aria-pressed="false" aria-label="Tương phản cao (C)" title="Tương phản cao (C)">🌓 <kbd>C</kbd></button>
+        <button class="btn" id="btn-help" type="button" aria-label="Thực đơn và điều khiển (H)" title="Thực đơn và điều khiển (H)">📖 <kbd>H</kbd></button>
+        <button class="btn" id="btn-pause" type="button" aria-label="Tạm dừng (P)" title="Tạm dừng (P)">⏸ <kbd>P</kbd></button>
+        <button class="btn" id="btn-audio" data-audio type="button" aria-label="Âm thanh" title="Âm thanh">🔊</button>
+        <button class="btn" id="btn-restart" type="button" aria-label="Chơi lại (R)" title="Chơi lại (R)">↻ <kbd>R</kbd></button>
+      </div>
+    </header>
+
+    <!-- Mạn ghe dưới: giỏ/kho, việc cần làm, phím -->
+    <footer class="rail rail-bottom">
+      <div class="context-pill hidden" id="hud-context"></div>
+
+      <div class="rail-group hold-group" id="hud-hold-panel">
+        <div class="rail-title" id="hud-hold-title">Giỏ đồ</div>
+        <div class="slots-grid" id="hud-hold-slots"></div>
+        <div class="inline-rows" id="hud-hold-types"></div>
+      </div>
+
+      <div class="rail-group hidden" id="hud-quan-stock">
+        <div class="rail-title">Kho</div>
+        <div class="inline-rows" id="hud-stock-rows"></div>
+      </div>
+
+      <div class="rail-group plan-box hidden" id="hud-day-plan">
+        <div class="rail-title" id="plan-title">Cần lấy</div>
+        <div class="inline-rows" id="plan-items"></div>
+      </div>
+
+      <div class="rail-group hidden" id="hud-stove-panel">
+        <div class="rail-title">Bếp</div>
+        <div class="stove-badge inline-rows" id="hud-stove-status"></div>
+        <div id="hud-hand-box">Tay trống</div>
+      </div>
+
+      <div class="controls-bar" id="hud-controls">W, A, S, D | E: Tương tác | SPACE: Bắt</div>
+    </footer>
   </div>
 
   <div class="caption-stack" id="sfx-captions" aria-live="polite" aria-label="Phụ đề hiệu ứng âm thanh"></div>
@@ -1245,12 +1199,16 @@
         buttons = ["btn-continue"];
       } else if (screen === "evening_intro") {
         title = `Ca tối · Ngày ${snap.day}`;
-        const { stock, dishes } = snap.evening;
+        const { stock, dishes, reason } = snap.evening;
         const total = Object.values(stock).reduce((sum, count) => sum + count, 0);
-        body = `<h3>Nhập kho · ${total} nguyên liệu</h3>
+        // Theo luật: ngất thì mất cả giỏ; khách chỉ vào khi kho đủ cho ít nhất một món.
+        const fainted = reason === "fainted"
+          ? `<p class="screen-warn">Út Sen bị ngất nên mất hết giỏ. Kho tối nay trống.</p>` : "";
+        body = `${fainted}<h3>Nhập kho · ${total} nguyên liệu</h3>
           ${total ? countsRows(stock, KIND_NAME) : "<p>Kho trống.</p>"}
           <h3>Món có thể nấu</h3>
-          <p>${dishes.length ? dishes.map((id) => DISH_NAME[id] || id).join(" · ") : "Chưa đủ nguyên liệu để nấu món trong kế hoạch."}</p>`;
+          <p>${dishes.length ? dishes.map((id) => DISH_NAME[id] || id).join(" · ")
+            : "Không đủ nguyên liệu cho món nào trong kế hoạch, nên tối nay sẽ không có khách vào quán. Ca tối vẫn chạy đến hết giờ."}</p>`;
         nextLabel = "Mở quán";
         buttons = ["btn-continue"];
       } else if (screen === "day_result") {
@@ -1496,7 +1454,7 @@
         const planBox = document.getElementById("hud-day-plan");
         if (snap.day_plan && snap.day_plan.ingredients) {
           planBox.classList.remove("hidden");
-          document.getElementById("plan-title").textContent = `Cần Cho Ngày ${snap.day || 1}`;
+          document.getElementById("plan-title").textContent = "Cần lấy";
           const req = snap.day_plan.ingredients;
           showHtml("plan-items", Object.keys(req).map((k) => {
             const got = usable[k] || 0, need = req[k];
@@ -1738,13 +1696,22 @@
       ctx.restore();
     }
 
+    // Khoảng trống giữa hai thanh ván HUD; khi HUD ẩn (menu) thì dùng lề mặc định.
+    function hudInsets(h, top0, bottom0) {
+      if (hudLayer.classList.contains("hidden")) return [top0, bottom0];
+      const t = document.querySelector(".rail-top").getBoundingClientRect().bottom;
+      const b = document.querySelector(".rail-bottom").getBoundingClientRect().top;
+      return [t + 8, h - b + 8];
+    }
+
     function drawGather(w, h) {
       const meta = snap.meta || {};
       const b = meta.bounds || { x: [0, 100], d: [0, 30] };
       const X = b.x[1], D = b.d[1], SKY = 8.2;
-      const top = 62, bottom = 54;
+      const [top, bottom] = hudInsets(h, 62, 54);
       const s = Math.max(1, Math.min((w - 24) / (X + 4), (h - top - bottom) / (D + SKY + 1)));
-      const ox = (w - s * (X + 4)) / 2 + 2 * s, oy = top + SKY * s;
+      const ox = (w - s * (X + 4)) / 2 + 2 * s;
+      const oy = top + Math.max(0, (h - top - bottom - s * (D + SKY + 1)) / 2) + SKY * s;
       const sx = (x) => ox + x * s, sy = (d) => oy + d * s;
       const t = (snap.tick || 0) / 60;
 
@@ -1753,7 +1720,7 @@
       skyGrad.addColorStop(0, "#a6d8e8");
       skyGrad.addColorStop(0.55, "#f7cfc1");
       skyGrad.addColorStop(1, "#ffe9c8");
-      ctx.fillStyle = skyGrad; ctx.fillRect(0, top, w, SKY * s);
+      ctx.fillStyle = skyGrad; ctx.fillRect(0, top, w, oy - top);
 
       // Mặt trời bình minh ở giữa
       ctx.fillStyle = "rgba(255, 240, 195, 0.85)";
@@ -1917,6 +1884,8 @@
         if (!(p.invuln_ticks > 0 && Math.floor(snap.tick / 5) % 2)) {
           const a = ((p.heading_deg || 0) * Math.PI) / 180;
           ctx.save(); ctx.translate(px, py); ctx.rotate(a);
+          // Bản đồ 100 m nên s chỉ ~9 px/m ở 1280px: phóng nhân vật lên tối thiểu như s = 20 để không lẫn vào nhà bến.
+          const ks = Math.max(1, 20 / s); ctx.scale(ks, ks);
           // Chân vịt vàng
           ctx.fillStyle = "#f5c542"; ctx.strokeStyle = "#4d3808"; ctx.lineWidth = 1.3;
           ctx.beginPath(); ctx.moveTo(-0.7 * s, -0.15 * s); ctx.lineTo(-1.45 * s, -0.52 * s); ctx.lineTo(-1.45 * s, -0.05 * s); ctx.closePath(); ctx.fill(); ctx.stroke();
@@ -1944,7 +1913,7 @@
     function drawQuan(w, h) {
       const meta = snap.meta || {};
       const b = meta.bounds || { x: [0, 16], z: [0, 10] };
-      const X = b.x[1], Z = b.z[1], top = 66, bottom = 58;
+      const X = b.x[1], Z = b.z[1], [top, bottom] = hudInsets(h, 66, 58);
       const s = Math.max(1, Math.min((w - 56) / X, (h - top - bottom) / Z));
       const ox = (w - s * X) / 2, oy = top + (h - top - bottom - s * Z) / 2;
       const sx = (x) => ox + x * s, sy = (z) => oy + (Z - z) * s;

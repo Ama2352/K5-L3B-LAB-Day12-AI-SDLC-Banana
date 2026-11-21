@@ -73,6 +73,7 @@ class LiveGame:
 
     def _new_day_stats(self):
         self._day_reputation = self.session.sim.reputation
+        self._gather_reason = None
         self._result = {"served": 0, "left": 0, "tips": 0, "revenue": 0, "reputation_delta": 0}
 
     def _track_events(self, rows):
@@ -86,6 +87,8 @@ class LiveGame:
             elif name == "paid":
                 self._result["tips"] += data["tip"]
                 self._result["revenue"] += data["amount"]
+            elif name == "gather_end":
+                self._gather_reason = data["reason"]
             elif name == "quan_end":
                 self._result["reputation_delta"] = round(data["reputation"] - self._day_reputation, 3)
 
@@ -102,6 +105,7 @@ class LiveGame:
                 self._evening = {
                     "stock": to_counts(stock) if isinstance(stock, list) else stock,
                     "dishes": list(s.sim._available_orders()),
+                    "reason": self._gather_reason,
                 }
                 self._set_screen("evening_intro")
             else:
