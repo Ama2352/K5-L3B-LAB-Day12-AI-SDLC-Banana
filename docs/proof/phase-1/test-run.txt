@@ -1,4 +1,5 @@
-commit: 03a779a  ngày: 2026-11-21 11:04
+commit: 14c5ccb  ngày: 2026-11-21 11:12
+$ PYTHONPATH=tests:. python3 -m unittest discover -s tests -v
 test_bat_ca_linh_yield_3_va_xoa_dan (test_gather_l2.Catch.test_bat_ca_linh_yield_3_va_xoa_dan) ... ok
 test_bat_o_mat_nuoc_khong_co_gi (test_gather_l2.Catch.test_bat_o_mat_nuoc_khong_co_gi) ... ok
 test_gio_thieu_cho_giu_dan_khong_thu_dan_khac (test_gather_l2.Catch.test_gio_thieu_cho_giu_dan_khong_thu_dan_khac) ... ok
@@ -110,6 +111,6 @@ test_serve_eat_and_payment_with_tip (test_tv4_quan.TestQuanTV4.test_serve_eat_an
 Kiểm tra Phục vụ & Thanh toán: tay có món, đứng tại bàn T1 bấm interact -> phục vụ -> ăn xong trả tiền + tip. ... ok
 
 ----------------------------------------------------------------------
-Ran 100 tests in 9.170s
+Ran 100 tests in 9.211s
 
 OK

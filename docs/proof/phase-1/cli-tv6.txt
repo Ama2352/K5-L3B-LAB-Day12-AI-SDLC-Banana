@@ -1,0 +1,25 @@
+commit: 14c5ccb  ngày: 2026-11-21 11:12  (TV6 kiểm CLI mục A–C)
+(eval):2: no matches found: x*.jsonl
+$ python3 -m chonoi.headless --mode gather --seed 1 --ticks 0 --out t0.jsonl
+exit=0 
+  số dòng: 2 · dòng cuối: {"mode":"gather","state":"playing","sim_tick":0,"money":0,"earned":0,"reputation":3.0,"sco
+$ python3 -m chonoi.headless --mode gather --seed -7 --ticks 60 --out neg.jsonl
+exit=0 
+$ python3 -m chonoi.headless --mode quan --seed 1 --ticks 600 --out q.jsonl
+exit=0 
+  dòng cuối: {"mode":"quan","state":"playing","sim_tick":600,"money":0,"earned":0,"reputation":3.0,"score":300,"type":"end","ticks":600,"reason":"tick_li
+$ python3 -m chonoi.headless --mode bogus --seed 1 --ticks 10 --out x.jsonl
+exit=2 usage: chonoi.headless [-h] --mode {gather,quan,day} --seed SEED --ticks TICKS
+                       [--days DAYS] --out OUT [--scenario SCENARIO]
+            
+$ python3 -m chonoi.headless --mode gather --seed abc --ticks 10 --out x2.jsonl
+exit=2 usage: chonoi.headless [-h] --mode {gather,quan,day} --seed SEED --ticks TICKS
+                       [--days DAYS] --out OUT [--scenario SCENARIO]
+            
+  có tạo output? không
+$ python3 -m chonoi.headless --mode gather --seed 1 --ticks 10 --inputs dup.json --out x3.jsonl
+exit=2 đầu vào sai: frame 1: tick trùng hoặc giảm
+  (dup.json: tick 5 lặp) có tạo output? không
+$ python3 -m chonoi.headless --mode gather --seed 1 --ticks 10 --inputs typ.json --out x4.jsonl
+exit=2 đầu vào sai: frame 0: move phải là [x, d] (gather) hoặc [x, z] (quan), mỗi số trong [-1, 1]
+  (typ.json: move kiểu chuỗi) có tạo output? không

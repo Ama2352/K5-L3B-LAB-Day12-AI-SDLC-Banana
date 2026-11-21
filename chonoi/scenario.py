@@ -8,8 +8,9 @@ phải có đúng một món, khách eating thiếu giá/tip...) — xem PRD-0 m
 import json
 import math
 
+from .contract import is_v12
 from .errors import BadInput
-from .inventory import FISH_KINDS, KINDS, NODE_KINDS, validate_items
+from .inventory import FISH_KINDS, KINDS, NODE_KINDS, validate_instances, validate_items
 from .sim.day import gather_tuning, validate_day
 
 GATHER_KEYS = {"player", "hold", "nodes", "fish", "monsters", "random_fish", "time_left_ticks"}
@@ -106,7 +107,9 @@ def _validate_gather(b, tuning):
         raise BadInput("random_fish phải là boolean")
     if "hold" in b:
         h = b["hold"]
-        if not isinstance(h, list) or any(k not in KINDS for k in h):
+        if is_v12(tuning):  # v1.2: mảng cá thể {id, kind, fresh}, id duy nhất
+            validate_instances(h, name="gather.hold")
+        elif not isinstance(h, list) or any(k not in KINDS for k in h):
             raise BadInput("hold phải là mảng id nguyên liệu hợp lệ")
         if len(h) > g["hold_capacity"]:
             raise BadInput("hold vượt sức chứa")

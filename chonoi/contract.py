@@ -3,10 +3,15 @@
 import json
 import os
 
-from .errors import BadInput
-from .inventory import FISH_KINDS, NODE_KINDS
+# Phiên bản dùng kho cá thể + độ tươi: v1.3 (TICKET-04) giữ gameplay, tuning, kho và JSONL theo v1.2
+INSTANCE_VERSIONS = ("1.2", "1.3")
 
-DEFAULT_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "game.contract.json")
+from .errors import BadInput
+from .inventory import FISH_KINDS, FRESH_UNIT, NODE_KINDS
+
+# CHONOI_CONTRACT: chạy thử với contract khác (vd. v1.2 trong lúc chuyển kho) mà không sửa file ở gốc repo
+DEFAULT_PATH = os.environ.get("CHONOI_CONTRACT") or os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "game.contract.json")
 
 
 def _num(v):
@@ -25,7 +30,37 @@ def load_contract(path=DEFAULT_PATH) -> dict:
     except (OSError, ValueError) as e:
         raise BadInput(f"không đọc được {path}: {e}")
     validate_tuning(c.get("tuning"))
+    _validate_freshness(c)
+    c["tuning"]["contract_version"] = c.get("contract_version")  # để sim chọn schema kho (is_v12)
     return c
+
+
+def is_v12(tuning) -> bool:
+    """Kho cá thể + độ tươi bật khi contract_version là 1.2 hoặc 1.3 (có tuning.freshness ở 1.1 vẫn chạy kho đếm)."""
+    return tuning.get("contract_version") in INSTANCE_VERSIONS
+
+
+def _validate_freshness(c):
+    """tuning.freshness bắt buộc ở contract_version 1.2; khai sẵn ở 1.1 được (chưa dùng) nhưng phải hợp lệ."""
+    fr = c["tuning"].get("freshness")
+    if fr is None:
+        if c.get("contract_version") in INSTANCE_VERSIONS:
+            raise BadInput(f"tuning.freshness bắt buộc với contract_version {c['contract_version']}")
+        return
+    if not isinstance(fr, dict) or set(fr) != {"initial", "gather_decay_per_s", "quan_decay_per_s", "spoiled_below"}:
+        raise BadInput("tuning.freshness phải có đúng initial, gather_decay_per_s, quan_decay_per_s, spoiled_below")
+    _between("freshness.initial", fr["initial"], 0, 100)
+    _between("freshness.spoiled_below", fr["spoiled_below"], 0, 100)
+    _between("freshness.quan_decay_per_s", fr["quan_decay_per_s"], 0, 100)
+    _between("freshness.gather_decay_per_s", fr["gather_decay_per_s"], 0, 100)
+    # gather lưu độ tươi bằng số nguyên FRESH_UNIT/điểm: hao mỗi tick phải là số nguyên đơn vị
+    if fr["gather_decay_per_s"] * FRESH_UNIT / c["tuning"]["tick_hz"] % 1:
+        raise BadInput(f"tuning.freshness.gather_decay_per_s phải là bội của {c['tuning']['tick_hz'] / FRESH_UNIT}")
+
+
+def decay_units_per_tick(tuning, where) -> int:
+    """Số đơn vị tươi (1/FRESH_UNIT điểm) mất mỗi tick ở 'gather' hoặc 'quan'."""
+    return round(tuning["freshness"][f"{where}_decay_per_s"] * FRESH_UNIT / tuning["tick_hz"])
 
 
 def _int_between(name, v, lo, hi):

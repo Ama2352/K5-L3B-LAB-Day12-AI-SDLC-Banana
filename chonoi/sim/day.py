@@ -86,6 +86,12 @@ def check_evening_fixture(scenario, stock, menu):
         elif status in ("assigned", "served", "unfulfillable"):
             if customer.get("reserved", {}):
                 raise BadInput("đơn không ở trạng thái reserved vẫn giữ nguyên liệu")
+            if customer.get("state") == "eating":
+                eat = customer.get("eat_ticks_left")
+                # PRD-0 mục D: khách eating phải là served, có timer ăn dương và khai base_price, tip đã chốt
+                if (status != "served" or type(eat) is not int or eat <= 0
+                        or "base_price" not in customer or "tip" not in customer):
+                    raise BadInput("khách eating cần served, eat_ticks_left > 0, base_price và tip")
             if status == "assigned":
                 assigned.add(customer["id"])
         else:

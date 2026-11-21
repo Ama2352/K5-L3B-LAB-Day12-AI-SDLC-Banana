@@ -1,0 +1,10 @@
+commit: 14c5ccb  ngày: 2026-11-21 11:11  (TV6 chạy lại smoke mục G trên main)
+dock.json: {"gather":{"hold":["ca_loc","bong_sung","bong_sung"]}}
+dock-inputs.json: {"frames":[{"tick":0,"interact":true}]}
+$ python3 -m chonoi.headless --seed 42 --mode gather --scenario dock.json --inputs dock-inputs.json --ticks 1 --inventory-out catch.json --out gather.jsonl
+exit=0
+catch.json: {"items":{"bong_sung":2,"ca_loc":1}}
+gather_end: {"type":"event","tick":1,"phase":"gather","name":"gather_end","data":{"reason":"docked","inventory":{"items":{"bong_sung":2,"ca_loc":1}}}}
+$ python3 -m chonoi.headless --seed 42 --mode quan --inventory catch.json --ticks 1 --out quan.jsonl
+exit=0
+quan tick 0 stock: "stock":{"bong_sung":2,"ca_loc":1}
