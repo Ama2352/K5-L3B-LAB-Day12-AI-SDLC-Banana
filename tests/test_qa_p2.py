@@ -76,7 +76,7 @@ NO_FISH = {"fish": [], "random_fish": False}
 class StandardNumbers(unittest.TestCase):
     def test_ac_p2_01_contract_version_va_ca_chung(self):
         # TICKET-03 thay contract v1.1 bằng v1.2 (kho cá thể); số chuẩn P2 giữ nguyên
-        self.assertIn(CONTRACT["contract_version"], ("1.1", "1.2"))
+        self.assertIn(CONTRACT["contract_version"], ("1.1", "1.2", "1.3"))  # TICKET-04: v1.3 giữ số chuẩn
         self.assertEqual((G["duration_s"], Q["duration_s"]), (180, 180))
         self.assertEqual((G["swim_speed"], Q["walk_speed"], G["oxygen_max_s"], G["hp_max"]), (4.0, 4.0, 30, 3))
         self.assertEqual((G["hold_capacity"], G["interact_radius"], G["catch_radius"], G["regrow_s"]), (12, 2.0, 2.0, 20))

@@ -67,7 +67,8 @@ class Base(unittest.TestCase):
 # ============================================================ AC-P3-01 Manifest v1.2
 class Manifest(Base):
     def test_ac_p3_01_contract_version_1_2_va_freshness(self):
-        self.assertEqual(CONTRACT["contract_version"], "1.2")
+        # TICKET-04: v1.3 giữ gameplay, tuning, kho và JSONL theo v1.2
+        self.assertIn(CONTRACT["contract_version"], ("1.2", "1.3"))
         self.assertEqual(CONTRACT["tuning"].get("freshness"),
                          {"initial": 100, "gather_decay_per_s": 0.5, "quan_decay_per_s": 0.25, "spoiled_below": 30})
 
@@ -258,6 +259,43 @@ class Spoil(Base):
         with Workdir() as w:
             rows = run(w, "gather", {"gather": {"hold": [it(1, "ca_linh", 30.01)], **NO_FISH}}, ticks=2, every=1)
             self.assertEqual([e["tick"] for e in events(rows, "spoiled")], [2], "30.01 → 30.0017 ở tick 1, < 30 ở tick 2")
+
+    # Ca biên sát ngưỡng 30 (không nằm trên lưới 1/240). Đề: "So ngưỡng trước làm tròn", "Tick của event biên phải chính xác".
+    # Kỳ vọng tính bằng số học chính xác: gather hao 0.5/60 mỗi tick, quán 0.25/60.
+    def _spoil_ticks(self, mode, fresh, ticks=3):
+        key, kind = ("hold", "ca_linh") if mode == "gather" else ("stock", "ca_loc")
+        sc = {mode: {key: [it(1, kind, fresh)], **({"random_customers": False} if mode == "quan" else NO_FISH)}}
+        with Workdir() as w:
+            return [e["tick"] for e in events(run(w, mode, sc, ticks=ticks, every=1), "spoiled")]
+
+    def test_ac_p3_05_bien_da_duoi_30_khong_phat_spoiled_gather(self):
+        self.assertEqual(self._spoil_ticks("gather", 29.999), [], "29.999 đã < 30 từ đầu: không có bước ≥30 → <30")
+
+    def test_ac_p3_05_bien_da_duoi_30_khong_phat_spoiled_quan(self):
+        self.assertEqual(self._spoil_ticks("quan", 29.999), [])
+
+    def test_ac_p3_05_bien_30_001_uon_o_tick_1_gather(self):
+        self.assertEqual(self._spoil_ticks("gather", 30.001), [1], "30.001 − 0.00833 = 29.9927 < 30")
+
+    def test_ac_p3_05_bien_30_001_uon_o_tick_1_quan(self):
+        self.assertEqual(self._spoil_ticks("quan", 30.001), [1], "30.001 − 0.00417 = 29.9968 < 30")
+
+    def test_ac_p3_05_bien_30_008_uon_o_tick_1_gather(self):
+        self.assertEqual(self._spoil_ticks("gather", 30.008), [1], "30.008 − 0.00833 = 29.9997 < 30")
+
+    def test_ac_p3_05_bien_30_004_uon_o_tick_1_quan(self):
+        self.assertEqual(self._spoil_ticks("quan", 30.004), [1], "30.004 − 0.00417 = 29.9998 < 30")
+
+    def test_ac_p3_10_chay_dai_ca_the_uon_dung_mot_lan_id_khong_trung(self):
+        # Regression chạy cả buổi gather (10800 tick) với kho cá thể v1.2
+        with Workdir() as w:
+            sc = {"gather": {"hold": [it(1, "ca_linh", 100), it(2, "ca_loc", 50), it(3, "bong_sung", 31)], **NO_FISH}}
+            rows = run(w, "gather", sc, ticks=10800, every=2000)
+            sp = events(rows, "spoiled")
+            self.assertEqual(sorted(e["data"]["item_id"] for e in sp), ["I1", "I2", "I3"], "mỗi cá thể ươn đúng một lần")
+            last = snapshots(rows)[-1]["hold"]
+            self.assertEqual(len({x["id"] for x in last}), len(last))
+            self.assertTrue(all(0 <= x["fresh"] < 30 for x in last), last)
 
     def test_ac_p3_05_nhieu_ca_the_cung_tick_theo_id(self):
         with Workdir() as w:
