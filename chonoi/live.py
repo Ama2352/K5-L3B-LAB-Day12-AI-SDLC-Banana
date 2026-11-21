@@ -102,6 +102,8 @@ class LiveGame:
         with self._lock:
             snap = self.session.snapshot()
             snap["meta"] = self.tuning[snap["phase"]]
+            if "freshness" in self.tuning:
+                snap["freshness"] = self.tuning["freshness"]
             snap["events"] = list(self.events)
             snap["finished"] = self.session.done
             snap["reason"] = self.session.sim.reason if self.session.done else None

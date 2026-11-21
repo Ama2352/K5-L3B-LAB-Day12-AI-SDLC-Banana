@@ -604,4 +604,4 @@ Sau 3:00, demo trực tiếp hoặc nộp video .mp4 dưới 5 phút. Cả hai h
  Chơi một Ngày từ Lặn & Hái qua Mở Quán đến khi đóng Shop.
  Chạy test và cho thấy kết quả đạt.
  Chỉ ra bằng chứng chia việc, phối hợp và đóng góp của từng người trong repo chung.
- Mở ma trận truy vết và chỉ ra bằng chứng tương ứng.
+ Mở ma trận truy vết và chỉ ra bằng chứng tương ứng.git 
