@@ -2,5 +2,6 @@
 
 | Phase | Người | Công cụ / model | Việc | Token / chi phí ước tính | Ghi chú (AI sai ở đâu?) |
 |---|---|---|---|---|---|
+| Phase 1 | Ama2352 | Codex | Hoàn thiện oxy, ngạt, Máu, mất đồ LIFO và kiểm kho khi ngất. | Không đo | 5 test mới đều phát hiện luật còn thiếu trước khi sửa. Đã đối chiếu tick ngạt đầu và thứ tự choke → faint → gather_end qua headless. |
 | Phase 1 | AnhQuanHANU | Gemini / Antigravity | Triển khai Lát 4 (Bếp, bưng bê, phục vụ, thanh toán, uy tín, đóng ca) & Viết bộ test `test_tv4_quan.py` | ~15,000 tokens | AI ban đầu gán tick của dish_ready là 360 thay vì 361 theo quy ước ghi event tại k+1 của PRD-0 mục F |
 | Phase 1 | qavu2407-lang | Claude Code / Claude Opus 5.5 | Lát 2 gather (hái, mọc lại, bắt cá, hồi chiêu, giỏ đầy), 11 test, lệnh + skill kiểm bàn giao kho, lượt thu thật, hợp đồng kho/sự kiện | Không đo | (1) Dựng fixture test sai: đặt cá ở d = 0.5 (vẫn là mặt nước) và người chơi trong vùng bến; phát hiện khi test đỏ. (2) Quên `.gitignore` bỏ qua `*.jsonl` nên file bằng chứng `gather.jsonl` không được commit; phát hiện khi gộp thử trên bản sạch thì `check_handoff` báo không thấy file. (3) Tự chọn rebase lên `main` khi chưa hỏi; tôi dừng lệnh và chọn chỉ push nhánh. |

@@ -6,8 +6,8 @@ Mặt cắt dòng sông nhìn NGANG: vị trí `[x, d]` (x sang phải, `d` đ�
 Đã làm sẵn để smoke test chạy được: bơi + tăng/giảm tốc, chặn mép (d không âm), đồng hồ và hết giờ,
 cập bến (`interact` trong vùng bến -> `gather_end` reason `docked`), xuất kho, snapshot đầy đủ trường gather.
 
-Nhóm viết tiếp (đúng thứ tự một bước trong PRD mục 13.8, "Gather"):
-  TODO(nhóm, lát 1): bơi + oxy + biên + giỏ
+Thứ tự một bước theo PRD-0 mục F, Gather:
+  Lát 1: bơi + oxy + biên + giỏ
       - oxy: dưới nước (d > surface_depth) trừ 1 tick/tick, mặt nước hồi oxygen_refill_per_tick, kẹp [0, max]
       - ngạt: oxy = 0 và đang dưới nước -> đếm zero_oxy_ticks, đủ choke_interval_ticks thì -1 Máu (choke)
       - Máu về 0 -> ngất (faint, gather_end reason `fainted`, mất toàn bộ giỏ, kho rỗng)
@@ -108,19 +108,27 @@ class GatherSim:
                 if n["regrow_ticks"] == 0:
                     events.append(("node_regrown", {"node_id": n["id"]}))
         # 2. bơi + chặn mép
+        was_at_surface = self._at_surface()
         self._move(inp)
-        # TODO(nhóm, lát 1): so phân vùng đầu/cuối bước -> dive / surface (data: pos).
-        # TODO(nhóm, lát 1): oxy theo d CUỐI bước (mặt nước hồi, dưới nước trừ), oxygen_empty khi từ dương
-        #   xuống 0, đếm ngạt, choke (-1 Máu). Máu 0 -> faint + gather_end("fainted") với giỏ rỗng, return.
+        at_surface = self._at_surface()
+        if was_at_surface != at_surface:
+            events.append(("surface" if at_surface else "dive", {"pos": self.pos.copy()}))
+        self._update_oxygen(at_surface, events)
+        if self.hp == 0:
+            lost = list(reversed(self.hold))
+            self.hold.clear()
+            events.append(("faint", {"cause": "choke", "lost": lost, "hp": self.hp}))
+            self._finish("fainted", events)
+            return events
         # 3. interact: bến trước, rồi hái
         if inp.pressed("interact"):
             if self._in_dock():
                 self._finish("docked", events)
                 return events
-            if self._at_surface():
+            if at_surface:
                 self._harvest(events)
         # 4. bắt cá
-        if inp.pressed("catch") and self.catch_cd_ticks == 0 and not self._at_surface():
+        if inp.pressed("catch") and self.catch_cd_ticks == 0 and not at_surface:
             self._catch(events)
         # 5. hết giờ
         if self.time_left_ticks <= 0:
@@ -130,6 +138,25 @@ class GatherSim:
     # --- tiện ích ---------------------------------------------------------------
     def _at_surface(self) -> bool:
         return self.pos[1] <= self.t["surface_depth"]
+
+    def _update_oxygen(self, at_surface, events):
+        if at_surface:
+            self.oxygen_ticks = min(self.oxygen_max, self.oxygen_ticks + self.t["oxygen_refill_per_tick"])
+            self.zero_oxy_ticks = 0
+            return
+
+        if self.oxygen_ticks > 0:
+            self.oxygen_ticks -= 1
+            if self.oxygen_ticks > 0:
+                return
+            events.append(("oxygen_empty", {"oxygen_ticks": 0}))
+
+        # Bước vừa chạm 0 là bước đầu tiên của chu kỳ ngạt.
+        self.zero_oxy_ticks += 1
+        if self.zero_oxy_ticks >= self.t["choke_interval_ticks"]:
+            self.zero_oxy_ticks = 0
+            self.hp -= 1
+            events.append(("choke", {"hp": self.hp}))
 
     def _in_dock(self) -> bool:
         return math.dist(self.pos, self.t["dock_pos"]) <= self.t["dock_radius"]
